@@ -32,7 +32,7 @@ You can run the application using **Docker** or **Manually**.
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/lancedguzman/heal.ai.git](https://github.com/lancedguzman/BuyTheWay.git)
+git clone [https://github.com/lancedguzman/BuyTheWay.ai.git](https://github.com/lancedguzman/BuyTheWay.git)
 cd BuyTheWay
 ```
 
