@@ -1,33 +1,167 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home</title>
+    <link rel="icon" type="image/png" href="{% static 'icons/favicon.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            background-color: #3D70EF;
+            padding-left: 3vw;
+            padding-right: 3vw;
+            padding-top: 1.5vw;
+            padding-bottom: 1.5vw;
+            position: relative;
+        }
+        footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        search {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        search input {
+            width: 40vw;
+            height: 3vw;
+            border-radius: 2vw;
+            border: none;
+            padding-left: 1.2vw;
+            padding-right: 4vw;
+            font-size: 1.2vw;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 600;
+        }
+        search input::placeholder {
+            color: #D4D4D4;
+        }
+        search button {
+            padding-top: .5vw;
+            padding-bottom: .5vw;
+            padding-left: 1vw;
+            padding-right: 1vw;
+            background-color: #0036BC;
+            border: none;
+            border-radius: 1.5vw;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        search button:hover {
+            background-color: #8AABFF;
+        }
+        search button img {
+            width: 1vw;
+        }
+        .blue-footer {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            background-color: #3D70EF;
+        }
+        .purple-footer {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            background-color: #9B71F7;
+        }
+        footer h1 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 3.5vw;
+            font-weight: 900;
+            color: #FCFCFC;
+        }
+        footer h2 {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 2vw;
+            font-weight: 900;
+            color: #FCFCFC;
+            padding-top: 2vw;
+            padding-bottom: 2vw;
+        }
+        footer h2:hover {
+            color: #CDB8FB;
+        }
+        .home-link {
+            margin-right: auto;
+        }
+        .search-link {
+            position: absolute; 
+            right: .5vw;
+        }
+        .nav-icons {
+            margin-left: auto; 
+            display: flex; 
+            gap: 2vw;
+        }
+        .text-link {
+            text-decoration: none;
+        }
+    </style>
+
 </head>
 
 <body>
     <header>
-        <nav style="background-color: #3D70EF;">
-            <img class="logo" src="icons/logo.png" alt="">
+        <nav>
+            <a class="home-link" href="{% url 'home' %}"><img src="{% static 'icons/logo.png' %}" style="width: 3vw" alt=""></a>
+            
             <search>
-                <input type="text" placeholder="FIND">
-                <img src="icons/search.png" alt="">
+                <input type="text" placeholder="What are you looking for?">
+                <a class="search-link" href="">
+                    <button type="button">
+                        <img src="{% static 'icons/search.png' %}" alt="">
+                    </button>
+                </a>
             </search>
-            <ul class="icons">
-                <li class="chat"><a href=""><img src="icons/chat.png" alt=""> </a> </li>
-                <li class="cart"><a href=""><img src="icons/cart.png" alt=""> </a></li>
-                <li class="profile"><a href=""><img src="icons/profile.png" alt=""></a></li>
-            </ul>
+
+            <div class="nav-icons">
+                <a href=""><img src="{% static 'icons/chat.png' %}" style="width: 2vw;" alt=""></a>
+                <a href=""><img src="{% static 'icons/cart.png' %}" style="width: 2.5vw;" alt=""></a>
+                <a href=""><img src="{% static 'icons/profile.png' %}" style="width: 1.8vw; padding-left: .2vw;" alt=""></a>
+            </div>
         </nav>
     </header>
 
-    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 
     <footer>
-        <h1><a>* BUY THE WAY *</a></h1>
-        <h2><a>HELP CENTER</a></h2>
+        <div class="blue-footer"><img src="{% static 'icons/asterisk.png' %}" style="width: 1.5vw; margin: 1.5vw;" alt=""><h1><a>BUY THE WAY</a></h1><img src="{% static 'icons/asterisk.png' %}" style="width: 1.5vw; margin: 1.5vw" alt=""></div>
+        <div class="purple-footer"><a class="text-link" href=""><h2>HELP CENTER</h2></a></div>
     </footer>
 </body>
 
