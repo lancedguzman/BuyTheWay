@@ -122,10 +122,8 @@
 .quantities-sel {
 
     display: flex;
-    align-items: center;
-    background-color: var(--qty-purple-dark);
-    border-radius: 4px;
-    overflow: hidden;
+    align-items: stretch;
+    gap: 3px;
 
 }
 
@@ -139,11 +137,9 @@
 
 .quantity-btn {
 
-    background: none;
+    background-color: var(--qty-purple-bg);
     border: none;
-    color: var(--primary-blue);
-    font-weight: bold;
-    padding: 8px 12px;
+    padding: 8px 15px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -151,12 +147,39 @@
 
 }
 
+.quantity-btn:first-of-type {
+
+    border-radius: 20px 0 0 20px; 
+
+}
+
+.quantity-btn:first-of-type:hover {
+
+    background-color: var(--qty-purple-dark);
+
+}
+
+.quantity-btn:last-of-type {
+
+    border-radius: 0 20px 20px 0; 
+
+}
+
+.quantity-btn:last-of-type:hover {
+
+    background-color: var(--qty-purple-dark);
+
+}
+
 .quantity-num {
 
-    background-color: var(--qty-purple-bg);
+    background-color: var(--qty-purple-bg); 
     padding: 8px 15px;
     color: var(--primary-blue);
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
@@ -168,6 +191,7 @@
 
 }
 input[type="checkbox"] {
+
     appearance: none;
     -webkit-appearance: none;
     width: 22px;
@@ -177,6 +201,21 @@ input[type="checkbox"] {
     cursor: pointer;
     position: relative;
     outline: none;
+
+}
+
+input[type="checkbox"] {
+
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background-color: #bec0c4; 
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+
 }
 
 input[type="checkbox"]:checked {
@@ -207,6 +246,12 @@ input[type="checkbox"]:checked::after {
     
     font-weight: bold;
     
+}
+
+.unitPrice-col, .total-col{
+
+    text-align: center;
+
 }
 
 .remove-product-btn {
