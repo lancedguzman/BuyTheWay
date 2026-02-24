@@ -3,8 +3,8 @@
 
 .shcart-content {
 
-    max-width: 1400px;
-    width: 92%;
+    max-width: none;
+    width: 94.5%;
     margin: 40px auto;
     font-family: 'Roboto', sans-serif;
     color: var(--text-dark);
