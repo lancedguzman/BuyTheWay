@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('sh-cart/', views.cart_view, name='shopping_cart'),
     path('account_management/', include('account_management.urls')),
+    path("account_management/", include("django.contrib.auth.urls")),
 ]

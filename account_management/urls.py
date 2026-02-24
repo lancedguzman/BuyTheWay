@@ -6,14 +6,15 @@ from django.urls import reverse_lazy
 app_name = 'account_management'
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
+    path('signup/', RegisterView.as_view(), name='signup'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path(
      'password-reset/',
      auth_views.PasswordResetView.as_view(
           template_name='registration/password_reset_form.html',
-          success_url=reverse_lazy('accounts:password_reset_done'),
+          email_template_name='registration/password_reset_email.html',
+          success_url=reverse_lazy('account_management:password_reset_done'),
      ),
      name='password_reset',
      ),
@@ -28,7 +29,7 @@ urlpatterns = [
         'reset/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
             template_name='registration/password_reset_confirm.html',
-            success_url=reverse_lazy('accounts:password_reset_complete'),
+            success_url=reverse_lazy('account_management:password_reset_complete'),
         ),
         name='password_reset_confirm',
     ),

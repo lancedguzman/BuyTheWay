@@ -40,10 +40,15 @@ class UserProfile(AbstractUser):
         null=False,
     )
     
+    store_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    
     phone_number = models.CharField(
         validators=[phone_regex], 
         max_length=13, 
-        help_text="Format: +639123456789 or 09123456789"
     )
     
     gender = models.CharField(
@@ -56,7 +61,6 @@ class UserProfile(AbstractUser):
     birthdate = models.DateField(
         blank=True, 
         null=True, 
-        help_text="Format: YYYY-MM-DD"
     )
     
     profile_picture = models.ImageField(

@@ -8,8 +8,8 @@ from django.contrib.auth.views import LoginView
 
 class RegisterView(FormView):
     form_class = UserProfileForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('accounts:login')
+    template_name = 'registration/signup.html'
+    success_url = reverse_lazy('account_management:login')
 
     def form_valid(self, form):
         form.save()
