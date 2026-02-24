@@ -1,0 +1,263 @@
+@import '/static/css/root.css';
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap);
+
+.shcart-content {
+
+    max-width: 1400px;
+    width: 92%;
+    margin: 40px auto;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-dark);
+
+}
+
+.shcart-banner {
+
+    background-color: var(--light-blue-bg);
+    color: white;
+    text-align: center;
+    padding: 5px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+}
+
+.shcart-banner h1 {
+
+    margin: 0;
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+
+}
+
+.cart-sortbar, .cart-section {
+
+    display: grid;
+    grid-template-columns: 120px 4fr 1fr 1fr 50px;
+    align-items: center;
+    gap: 15px;
+
+}
+
+.cart-header {
+
+    background-color: var(--bg-gray);
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+    border: 1px solid var(--border-gray);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+
+}
+
+.col-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.name-of-store {
+
+    font-size: 1.1rem;
+    margin: 10px 0 10px 10px;
+
+}
+
+.cart-item {
+
+    background-color: var(--bg-gray);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-gray);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+
+}
+
+.product-details-list {
+    
+    display: flex;
+    gap: 20px;
+
+}
+
+.product-displayPic {
+
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid var(--border-gray);
+    background-color: white;
+
+}
+
+.product-info {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.product-title {
+
+    margin: 0;
+    font-weight: bold;
+    font-size: 1rem;
+
+}
+
+.product-actions {
+    
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+
+}
+
+.quantities-sel {
+
+    display: flex;
+    align-items: center;
+    background-color: var(--qty-purple-dark);
+    border-radius: 4px;
+    overflow: hidden;
+
+}
+
+.arrow-icon {
+
+    width: 12px;
+    height: auto;
+    display: block;
+
+}
+
+.quantity-btn {
+
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    font-weight: bold;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.quantity-num {
+
+    background-color: var(--qty-purple-bg);
+    padding: 8px 15px;
+    color: var(--primary-blue);
+    font-weight: bold;
+
+}
+
+.stock-stats {
+
+    color: var(--primary-blue);
+    font-weight: bold;
+    font-size: 0.9rem;
+
+}
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background-color: var(--qty-purple-bg);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+}
+
+input[type="checkbox"]:checked {
+
+    background-color: var(--qty-purple-dark);
+
+}
+
+input[type="checkbox"]:checked::after {
+
+    content: '✔';
+    position: absolute;
+    color: var(--text-dark);
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+.blue-text {
+    
+    color: var(--primary-blue);
+
+}
+
+.bold-font {
+    
+    font-weight: bold;
+    
+}
+
+.remove-product-btn {
+
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.cart-summary {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-gray);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-gray);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+
+}
+
+.summary-text {
+
+    color: var(--primary-blue);
+    font-weight: bold;
+    font-size: 1.2rem;
+
+}
+
+.checkout-product-btn {
+
+    background-color: var(--check-out-blue);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    letter-spacing: 1px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.checkout-product-btn:hover {
+
+    background-color: #2b5bc7;
+
+}

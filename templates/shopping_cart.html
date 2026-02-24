@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <title>Cart</title>
+    <link rel="stylesheet" href="{% static "css/shopping_cart.css" %}">
+
+    <main class="shcart-content">
+
+        <div class="shcart-banner">
+            <h1>SHOPPING CART</h1>
+        </div>
+
+        <div class="cart-header cart-sortbar">
+            <div class="col-select">
+                <input type='checkbox' checked id="selectAll">
+                <label for="selectAll">Select All</label>
+            </div>
+
+            <div class="product-col"></div>
+            <div class="unitPrice-col">Unit Price</div>
+            <div class="total-col">Total Price</div>
+            <div class="action-col"></div>
+
+        </div>
+
+        <h2 class="name-of-store">JapanGoods</h2> <!-- insert backend django tag for name of store -->
+
+        <div class="cart-item cart-section">
+            <div class='select-product'>
+                <input type="checkbox" checked>
+            </div>
+
+            <!-- insert backend django tag for product details -->
+            <div class="product-col product-details-list">
+                <img src="{% static 'images/sample-product.png'%}" alt="product-dp" class="product-displayPic">
+
+                <div class="product-info">
+
+                    <p class="product-title">FINO Hair Mask Premium Imported Touch Hair Treatment</p>
+
+                    <div class="product-actions">
+                        <div class="quantities-sel">
+                            <button class="quantity-btn">
+                                <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
+                            </button>
+                            <span class="quantity-num">1</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
+                            <button class="quantity-btn">
+                                <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
+                            </button>
+                        </div>
+
+                        <span class="stock-stats">10 PCS LEFT</span> <!-- insert backend django tag for math operations on stock -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="unitPrice-col blue-text bold-font">₱640</div>
+            <div class="total-col blue-text bold-font">₱640</div>
+
+            <div class="action-col">
+                <button class='remove-product-btn'>&times;</button>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-text text-blue font-bold">TOTAL: ₱640 (1 item)</div>
+            <button class="checkout-product-btn">PASABUY NOW</button>
+        </div>
+
+    </main>
+{% endblock %}
