@@ -1,8 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, FileExtensionValidator
 
 
-class UserProfile(models.Model):
+class UserProfile(AbstractUser):
     """Model representing a user profile with 
     their personal information
     """
@@ -13,6 +14,11 @@ class UserProfile(models.Model):
         ('O', 'Other'),
         ('P', 'Prefer not to say'),
     ]
+    
+    USER_CHOICES = [
+        ('B', 'Buyer'),
+        ('S', 'Seller'),
+    ]
 
     # Philippine Phone Number Validator (+639XXXXXXXXX or 09XXXXXXXXX)
     phone_regex = RegexValidator(
@@ -20,15 +26,29 @@ class UserProfile(models.Model):
         message="Phone number must be entered in the format: '+639XXXXXXXXX' or '09XXXXXXXXX'."
     )
 
-    # Fields
-    email = models.EmailField(primary_key=True, unique=True, max_length=254)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    # Use email as username
+    username = None
+    email = models.EmailField(unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    # Custom fields
+    user_type = models.CharField(
+        max_length=1,
+        choices=USER_CHOICES,
+        blank=False,
+        null=False,
+    )
+    
+    store_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     
     phone_number = models.CharField(
         validators=[phone_regex], 
         max_length=13, 
-        help_text="Format: +639123456789 or 09123456789"
     )
     
     gender = models.CharField(
@@ -41,7 +61,6 @@ class UserProfile(models.Model):
     birthdate = models.DateField(
         blank=True, 
         null=True, 
-        help_text="Format: YYYY-MM-DD"
     )
     
     profile_picture = models.ImageField(
