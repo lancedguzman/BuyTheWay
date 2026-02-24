@@ -21,4 +21,5 @@ from apps import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('sh-cart/', views.cart_view, name='shopping_cart'),
 ]
