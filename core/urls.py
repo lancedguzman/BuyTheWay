@@ -21,6 +21,7 @@ from apps import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('marketplace/', views.marketplace_view, name='marketplace'),
     path('sh-cart/', views.cart_view, name='shopping_cart'),
     path('account_management/', include('account_management.urls')),
     path("account_management/", include("django.contrib.auth.urls")),
