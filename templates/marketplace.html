@@ -90,7 +90,7 @@
         margin-top: 1vw;
     }
     
-    .recommendations-img {
+    .header-img {
         width: 100vw;
     }
     
@@ -219,7 +219,7 @@
         margin-bottom: 2vw;
     }
     
-    .see-more-button {
+    .button {
         width: 15vw;
         height: 3vw;
         background-color: #CDB8FB;
@@ -274,9 +274,17 @@
                 <!-- Right scroll button -->
                 <img src="{% static 'icons/rightscroll.png' %}" onclick="scrollCategories(1)" class="scroll-btn-right" alt="Scroll Right">
             </div>
-            <img src="{% static 'icons/recommendations.png' %}" class="recommendations-img" alt="">
+            <img src="{% static 'icons/recommendations.png' %}" class="header-img" alt="">
 
         {% else %}
+            <div style="display: flex; align-items: center; justify-content: center; margin: 2vw;">
+                <a href="" style="text-decoration: none;">
+                    <button class="button">
+                    ADD NEW LISTING
+                    </button>
+                </a>
+            </div>
+            <img src="{% static 'icons/myproductlist.png' %}" class="header-img" alt="">
 
         {% endif %}
 
@@ -323,19 +331,69 @@
                         <p>Check back later!</p>
                     </div>
                 {% endfor %}
-            {% if products|length > 5 %}
-                <div class="see-more-container">
-                    <button class="see-more-button" onclick="showMoreProducts()">
-                        SEE MORE LISTINGS
-                        <img src="{% static 'icons/dropdown-button.png' %}" class="dropdown-icon" alt="dropdown">
-                    </button>
-                </div>
-            {% endif %}
-                </div>
+
+                {% if products|length > 5 %}
+                    <div class="see-more-container">
+                        <button class="button" onclick="showMoreProducts()">
+                            SEE MORE LISTINGS
+                            <img src="{% static 'icons/dropdown-button.png' %}" class="dropdown-icon" alt="dropdown">
+                        </button>
+                    </div>
+                {% endif %}
 
             {% else %}
-                    <h1> seller </h1>
+                {% for product in products %}
+                    {% if product.seller == user %}
+                    <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
+                        <a href="" class="product-link">
+                            <div class="product-card">
+                        
+                            <div class="product-image-container">
+                                <span class="price-badge">₱{{ product.price }}</span>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                {% else %}
+                                    <div class="no-image-placeholder">
+                                        No Image Available
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="product-info">
+                                
+                                <h2 class="product-title">{{ product.name }}</h2>
+                                
+                                <div class="product-meta">
+                                    <span class="store-name">{{ product.seller.store_name }}</span>
+                                </div>
+
+                                <div class="product-meta">
+                                    <span class="product-location">{{ product.location }}</span>
+                                    <span class="stock-stats">{{ product.sold }} Sold</span>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                {% empty %}
+                    <div class="empty-state">
+                        <h2>No products available right now.</h2>
+                        <p>Check back later!</p>
+                    </div>
+                {% endfor %}
+
+                {% if products|length > 5 %}
+                    <div class="see-more-container">
+                        <button class="button" onclick="showMoreProducts()">
+                            SEE MORE LISTINGS
+                            <img src="{% static 'icons/dropdown-button.png' %}" class="dropdown-icon" alt="dropdown">
+                        </button>
+                    </div>
+                {% endif %}
             {% endif %}
+        </div>
 
 
     <script>
