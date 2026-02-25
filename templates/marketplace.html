@@ -1,64 +1,363 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-    <title>Marketplace - All Products</title>
+{% block title %} Marketplace {% endblock %}
+
+{% block stylesheet %}
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
     
-    <link rel="stylesheet" href="{% static 'css/marketplace.css' %}">
+    .marketplace-content {
+        background-color: #fcfcfc;
+    }
+    
+    .categories-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90vw;
+        margin: 2vw auto -3vw auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .categories-header img {
+        width: 90vw;
+    }
+    
+    .category-box {
+        background-color: #3D70EF;
+        border-radius: 2vw;
+        height: 10vw;
+        width: 90vw;
+        margin: 0 auto 2vw auto;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        padding: 0 4vw;
+        box-sizing: border-box;
+    }
+    
+    .scroll-btn-left {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 2vw;
+        height: 2vw;
+        cursor: pointer;
+        z-index: 2;
+        margin-top: 1vw;
+    }
+    
+    #categoryContainer {
+        display: flex;
+        gap: 1vw;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        flex: 1;
+        margin-top: 2vw;
+    }
+    
+    .category-btn {
+        background-color: #F6F6F6;
+        color: #0036BC;
+        min-width: 15vw;
+        height: 4vw;
+        border: none;
+        border-radius: 2vw;
+        padding: 1vw 2vw;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2vw;
+        font-weight: 900;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    
+    .scroll-btn-right {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(50%, -50%);
+        width: 2vw;
+        height: 2vw;
+        cursor: pointer;
+        z-index: 2;
+        margin-top: 1vw;
+    }
+    
+    .recommendations-img {
+        width: 100vw;
+    }
+    
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2.5vw;
+        padding: 2vw;
+        justify-content: center;
+    }
+    
+    .product-item {
+        display: block;
+    }
+    
+    .product-item.hidden {
+        display: none;
+    }
+    
+    .product-link {
+        text-decoration: none;
+    }
+    
+    .product-card {
+        box-sizing: border-box;
+        background-color: #f6f6f6;
+        width: 16vw;
+        height: 24vw;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+    
+    .product-image-container {
+        width: 16vw;
+        height: 16vw;
+        overflow: hidden;
+        flex-shrink: 0;
+        position: relative;
+    }
+    
+    .price-badge {
+        position: absolute;
+        font-size: 1vw;
+        font-weight: 900;
+        background-color: #F55D46;
+        color: white;
+        padding: .8vw;
+        min-width: 5vw;
+        z-index: 1;
+        text-align: center;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .no-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #f6f6f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+    }
+    
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 0.8vw;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .product-title {
+        font-size: 1vw;
+        font-weight: 500;
+        color: #000000;
+        line-height: 1.5;
+        height: 3vw;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5vw;
+    }
+    
+    .store-name {
+        font-size: 1vw;
+        font-weight: 400;
+        color: #989898;
+    }
+    
+    .product-location {
+        font-size: 1vw;
+        color: #989898;
+    }
+    
+    .stock-stats {
+        font-size: 1vw;
+        font-weight: 400;
+        color: #989898;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        width: 100%;
+    }
+    
+    .see-more-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 2vw;
+    }
+    
+    .see-more-button {
+        width: 15vw;
+        height: 3vw;
+        background-color: #CDB8FB;
+        color: #0036BC;
+        border: none;
+        border-radius: 1vw;
+        font-size: 1.2vw;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .dropdown-icon {
+        position: absolute;
+        bottom: -0.75vw;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1.5vw;
+        height: 1.5vw;
+    }
 
-    <main class="marketplace-content">
+</style>{% endblock %}
 
-        <div class="marketplace-banner">
-            <h1>ALL PRODUCTS</h1>
-        </div>
 
-        <div class="product-grid" style="display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center;">
+{% block content %}
+
+    <div class="marketplace-content">
+
+        {% if user.user_type == "B" %}
+            <div class="categories-header">
+                <img src="{% static 'icons/categories.png' %}" alt="">
+            </div>
+            <div class="category-box">
+                <!-- Left scroll button -->
+                <img src="{% static 'icons/leftscroll.png' %}" onclick="scrollCategories(-1)" class="scroll-btn-left" alt="Scroll Left">
+                
+                <!-- Category buttons container -->
+                <div id="categoryContainer">
+                    <button class="category-btn">MEN'S CLOTHING</button>
+                    <button class="category-btn">WOMEN'S CLOTHING</button>
+                    <button class="category-btn">BEAUTY</button>
+                    <button class="category-btn">TECHNOLOGY</button>
+                    <button class="category-btn">ACCESSORIES</button>
+                    <button class="category-btn">HAIR & BODY CARE</button>
+                    <button class="category-btn">OTHER</button>
+                </div>
+                
+                <!-- Right scroll button -->
+                <img src="{% static 'icons/rightscroll.png' %}" onclick="scrollCategories(1)" class="scroll-btn-right" alt="Scroll Right">
+            </div>
+            <img src="{% static 'icons/recommendations.png' %}" class="recommendations-img" alt="">
+
+        {% else %}
+
+        {% endif %}
+
+        <div class="product-grid">
+
+            {% if user.user_type == "B" %}
             
-            {% for product in products %}
-                <div class="product-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; width: 280px; display: flex; flex-direction: column;">
-                    
-                    <div class="product-image-container" style="height: 200px; overflow: hidden; border-radius: 4px; margin-bottom: 15px;">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        {% else %}
-                            <div style="width: 100%; height: 100%; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #888;">
-                                No Image Available
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="product-info" style="display: flex; flex-direction: column; flex-grow: 1;">
-                        <span style="font-size: 0.8rem; text-transform: uppercase; color: #888; letter-spacing: 0.5px;">{{ product.category }}</span>
-                        <h2 class="product-title" style="font-size: 1.2rem; margin: 5px 0 10px 0;">{{ product.name }}</h2>
+                {% for product in products %}
+                    <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
+                        <a href="" class="product-link">
+                            <div class="product-card">
                         
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span class="unitPrice-col blue-text bold-font" style="font-size: 1.2rem;">₱{{ product.price }}</span>
-                            <span style="font-size: 0.9rem; color: #555;">📍 {{ product.location }}</span>
+                            <div class="product-image-container">
+                                <span class="price-badge">₱{{ product.price }}</span>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                {% else %}
+                                    <div class="no-image-placeholder">
+                                        No Image Available
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="product-info">
+                                
+                                <h2 class="product-title">{{ product.name }}</h2>
+                                
+                                <div class="product-meta">
+                                    <span class="store-name">{{ product.seller.store_name }}</span>
+                                </div>
+
+                                <div class="product-meta">
+                                    <span class="product-location">{{ product.location }}</span>
+                                    <span class="stock-stats">{{ product.sold }} Sold</span>
+                                </div>
+                            </div>
                         </div>
-
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #666; margin-bottom: 15px;">
-                            <span>⭐ {{ product.rating }} / 5</span>
-                            <span class="stock-stats">{{ product.stock }} PCS LEFT</span>
-                        </div>
-
-                        <p style="font-size: 0.9rem; color: #444; margin-bottom: 20px; flex-grow: 1;">
-                            {{ product.description|truncatewords:12 }}
-                        </p>
-
-                        <button class="checkout-product-btn" style="width: 100%; padding: 10px; cursor: pointer; border-radius: 4px; border: none; background-color: #0056b3; color: white; font-weight: bold;">
-                            VIEW DETAILS
-                        </button>
+                        </a>
                     </div>
+
+                {% empty %}
+                    <div class="empty-state">
+                        <h2>No products available right now.</h2>
+                        <p>Check back later!</p>
+                    </div>
+                {% endfor %}
+            {% if products|length > 5 %}
+                <div class="see-more-container">
+                    <button class="see-more-button" onclick="showMoreProducts()">
+                        SEE MORE LISTINGS
+                        <img src="{% static 'icons/dropdown-button.png' %}" class="dropdown-icon" alt="dropdown">
+                    </button>
+                </div>
+            {% endif %}
                 </div>
 
-            {% empty %}
-                <div class="empty-state" style="text-align: center; padding: 50px; width: 100%;">
-                    <h2>No products available right now.</h2>
-                    <p>Check back later!</p>
-                </div>
-            {% endfor %}
+            {% else %}
+                    <h1> seller </h1>
+            {% endif %}
 
+
+    <script>
+        function scrollCategories(direction) {
+            const container = document.getElementById('categoryContainer');
+            const scrollAmount = 300; // pixels to scroll
+            container.scrollLeft += direction * scrollAmount;
+        }
+
+        function showMoreProducts() {
+            const hiddenProducts = document.querySelectorAll('.product-item.hidden');
+            
+            // Show all hidden products at once
+            hiddenProducts.forEach(product => {
+                product.classList.remove('hidden');
+            });
+            
+            // Hide the button after showing all products
+            document.querySelector('.see-more-container').style.display = 'none';
+        }
+    </script>
         </div>
 
-    </main>
+    </div>
 {% endblock %}

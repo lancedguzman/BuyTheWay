@@ -1,6 +1,31 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, FileExtensionValidator
+from django.contrib.auth.models import BaseUserManager
+
+
+class UserProfileManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Email must be provided")
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(email, password, **extra_fields)
 
 
 class UserProfile(AbstractUser):
@@ -31,6 +56,8 @@ class UserProfile(AbstractUser):
     email = models.EmailField(unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = UserProfileManager()
 
     # Custom fields
     user_type = models.CharField(
@@ -70,6 +97,13 @@ class UserProfile(AbstractUser):
         null=True,
         help_text="Only .png and .jpg formats are allowed."
     )
+
+    def clean(self):
+        """Validate that sellers have a store name."""
+        from django.core.exceptions import ValidationError
+        super().clean()
+        if self.user_type == 'S' and not self.store_name:
+            raise ValidationError({'store_name': 'Store name is required for sellers.'})
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
