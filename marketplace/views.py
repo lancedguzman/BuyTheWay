@@ -15,6 +15,8 @@ def cart_view(request):
     if request.method == 'GET':
         cart = (request.user.cart_buyer.select_related('product', 'product__store'))
         grouped = {}
+        cart_price = 0
+        cart_size = 0
         for item in cart:
             store = item.product.store
 
@@ -27,7 +29,9 @@ def cart_view(request):
 
             grouped[store.id]["items"].append(item)
             grouped[store.id]["total_prices"][item] = item.quantity * item.product.price
-        return render(request, 'shopping_cart.html', {'cart': grouped})
+            cart_price += item.quantity * item.product.price
+            cart_size += item.quantity
+        return render(request, 'shopping_cart.html', {'cart': grouped, 'cart_price': cart_price, 'cart_size': cart_size})
     
     return render(request, 'shopping_cart.html')
 
