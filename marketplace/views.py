@@ -42,7 +42,7 @@ def marketplace_view(request):
                   {'products': products})
 
 
-def product_detail(request, pk):
+def product_view(request, pk):
     """View for the product page."""
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'product_view.html', {'product': product})
@@ -63,7 +63,7 @@ def add_product(request):
             product.store = request.user.store
             product.rating = 0  # Default starting rating
             product.save()
-            return redirect('marketplace:product_detail', pk=product.pk)
+            return redirect('marketplace:product_view', pk=product.pk)
     else:
         form = ProductForm()
 
@@ -83,7 +83,7 @@ def edit_product(request, pk):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('marketplace:product_detail', pk=product.pk)
+            return redirect('marketplace:product_view', pk=product.pk)
     else:
         form = ProductForm(instance=product)
 
