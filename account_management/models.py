@@ -98,5 +98,12 @@ class UserProfile(AbstractUser):
         help_text="Only .png and .jpg formats are allowed."
     )
 
+    def clean(self):
+        """Validate that sellers have a store name."""
+        from django.core.exceptions import ValidationError
+        super().clean()
+        if self.user_type == 'S' and not self.store_name:
+            raise ValidationError({'store_name': 'Store name is required for sellers.'})
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"

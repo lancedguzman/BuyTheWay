@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from marketplace.models import Product, Order, Store
 
 # Create your views here.
@@ -14,6 +15,7 @@ def cart_view(request):
     return render(request, 'shopping_cart.html') #just for testing 2
 
 
+@login_required
 def marketplace_view(request):
     """View for the marketplace page."""
     products = Product.objects.all()

@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField()),
                 ('rating', models.PositiveIntegerField()),
-                ('picture', models.ImageField(upload_to='store_images/')),
+                ('picture', models.ImageField(blank=True, null=True, upload_to='store_images/')),
             ],
         ),
         migrations.CreateModel(
@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('date', models.DateTimeField(auto_now_add=True)),
                 ('address', models.CharField(max_length=255)),
+                ('quantity', models.PositiveIntegerField()),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='marketplace.product')),
             ],
         ),

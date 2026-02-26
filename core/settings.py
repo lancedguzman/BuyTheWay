@@ -136,5 +136,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# Media files (User uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Email Configuration (Development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
