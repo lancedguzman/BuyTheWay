@@ -294,7 +294,7 @@
             
                 {% for product in products %}
                     <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
-                        <a href="" class="product-link">
+                        <a href="{% url 'marketplace:product_detail' product.pk %}" class="product-link">
                             <div class="product-card">
                         
                             <div class="product-image-container">
@@ -313,7 +313,7 @@
                                 <h2 class="product-title">{{ product.name }}</h2>
                                 
                                 <div class="product-meta">
-                                    <span class="store-name">{{ product.seller.store_name }}</span>
+                                    <span class="store-name">{{ product.store.name }}</span>
                                 </div>
 
                                 <div class="product-meta">
@@ -343,9 +343,9 @@
 
             {% else %}
                 {% for product in products %}
-                    {% if product.seller == user %}
+                    {% if product.store.seller == user %}
                     <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
-                        <a href="" class="product-link">
+                        <a href="{% url 'marketplace:product_detail' product.pk %}" class="product-link">
                             <div class="product-card">
                         
                             <div class="product-image-container">
@@ -364,7 +364,7 @@
                                 <h2 class="product-title">{{ product.name }}</h2>
                                 
                                 <div class="product-meta">
-                                    <span class="store-name">{{ product.seller.store_name }}</span>
+                                    <span class="store-name">{{ product.store.name }}</span>
                                 </div>
 
                                 <div class="product-meta">
@@ -415,7 +415,5 @@
             document.querySelector('.see-more-container').style.display = 'none';
         }
     </script>
-        </div>
-
     </div>
 {% endblock %}
