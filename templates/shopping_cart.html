@@ -67,7 +67,7 @@
         
         {% endfor %}
         <div class="cart-summary">
-            <div class="summary-text text-blue font-bold">TOTAL: ₱640 (1 item)</div>
+            <div class="summary-text text-blue font-bold">TOTAL: {{ cart_price }} ({{ cart_size }} item{{ cart_size|pluralize:"s" }})</div>
             <button class="checkout-product-btn">PASABUY NOW</button>
         </div>
 
