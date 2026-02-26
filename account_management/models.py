@@ -31,7 +31,7 @@ class UserProfileManager(BaseUserManager):
 
 class UserProfile(AbstractUser):
     """
-    Model representing a user profile with 
+    Model representing a user profile with
     their personal information
     """
     # Gender Choices
@@ -41,7 +41,7 @@ class UserProfile(AbstractUser):
         ('O', 'Other'),
         ('P', 'Prefer not to say'),
     ]
-    
+
     USER_CHOICES = [
         ('B', 'Buyer'),
         ('S', 'Seller'),
@@ -68,44 +68,32 @@ class UserProfile(AbstractUser):
         blank=False,
         null=False,
     )
-    
-    store_name = models.CharField(
-        max_length=255,
+
+    phone_number = models.CharField(
+        validators=[phone_regex],
+        max_length=13,
+    )
+
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
         blank=True,
         null=True,
     )
-    
-    phone_number = models.CharField(
-        validators=[phone_regex], 
-        max_length=13, 
-    )
-    
-    gender = models.CharField(
-        max_length=1, 
-        choices=GENDER_CHOICES, 
-        blank=True, 
-        null=True
-    )
-    
+
     birthdate = models.DateField(
-        blank=True, 
-        null=True, 
+        blank=True,
+        null=True,
     )
-    
+
     profile_picture = models.ImageField(
         upload_to='profile_pics/',
-        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+        validators=[FileExtensionValidator(
+            allowed_extensions=['png', 'jpg', 'jpeg'])],
         blank=True,
         null=True,
         help_text="Only .png and .jpg formats are allowed."
     )
-
-    def clean(self):
-        """Validate that sellers have a store name."""
-        from django.core.exceptions import ValidationError
-        super().clean()
-        if self.user_type == 'S' and not self.store_name:
-            raise ValidationError({'store_name': 'Store name is required for sellers.'})
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"

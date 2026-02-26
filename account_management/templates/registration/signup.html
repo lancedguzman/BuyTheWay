@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Body & Layout */
+
         body {
             margin: 0;
             padding: 0;
@@ -69,7 +69,6 @@
             margin: 0;
         }
 
-        /* Form Labels */
         .form-container label {
             display: block;
             margin-bottom: 0.8vw;
@@ -79,7 +78,6 @@
             color: #000000;
         }
 
-        /* Input Fields & Dropdowns */
         .form-container input,
         .form-container select {
             width: 20vw;
@@ -90,45 +88,25 @@
             box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
             box-sizing: border-box;
             padding: 0 1vw;
-
             font-family: 'Roboto', sans-serif;
             font-size: 1.2vw;
             font-weight: 500;
             color: #000000;
         }
 
-        .form-container input::placeholder {
-            color: #8D8D8D;
-        }
-
-        /* Seller Additional Field */
+        /* Seller field full width */
         #seller-additional-field {
             grid-column: 1 / -1;
         }
 
         #seller-additional-field input {
             width: 100%;
-            height: 3vw;
-            background-color: #F6F6F6;
-            border: none;
-            border-radius: 1vw;
-            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-            box-sizing: border-box;
-            padding: 0 1vw;
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.2vw;
         }
 
-        #seller-additional-field label {
-            display: block;
-            margin-bottom: 0.8vw;
-            font-size: 1.2vw;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 500;
-            color: #000000;
+        .hidden {
+            display: none;
         }
 
-        /* Submit Button */
         button[type="submit"] {
             grid-column: 1 / -1;
             justify-self: center;
@@ -143,6 +121,14 @@
             font-family: 'Roboto', sans-serif;
             font-weight: 900;
         }
+
+        .errorlist {
+            color: red;
+            font-size: 0.9vw;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 0.4vw 0;
+        }
     </style>
 </head>
 
@@ -152,46 +138,57 @@
         <div class="left-panel">
             <img src="{% static 'icons/logo.png' %}" alt="">
         </div>
+
         <div class="right-panel">
             <img src="{% static 'icons/joinus.png' %}">
             <div class="form-wrapper">
+
                 <form method="post" class="form-container">
                     {% csrf_token %}
-                    {{ form.as_p }}
+
+                    <p>{{ form.first_name.errors }}{{ form.first_name.label_tag }}{{ form.first_name }}</p>
+                    <p>{{ form.last_name.errors }}{{ form.last_name.label_tag }}{{ form.last_name }}</p>
+
+                    <p>{{ form.user_type.errors }}{{ form.user_type.label_tag }}{{ form.user_type }}</p>
+                    <p>{{ form.birthdate.errors }}{{ form.birthdate.label_tag }}{{ form.birthdate }}</p>
+
+                    <p id="seller-additional-field" class="hidden">
+                        {{ form.store_name.errors }}
+                        {{ form.store_name.label_tag }}
+                        {{ form.store_name }}
+                    </p>
+                    
+                    <p>{{ form.email.errors }}{{ form.email.label_tag }}{{ form.email }}</p>
+                    <p>{{ form.phone_number.errors }}{{ form.phone_number.label_tag }}{{ form.phone_number }}</p>
+
+                    <p>{{ form.password1.errors }}{{ form.password1.label_tag }}{{ form.password1 }}</p>
+                    <p>{{ form.password2.errors }}{{ form.password2.label_tag }}{{ form.password2 }}</p>
+
                     <button type="submit">SIGN UP</button>
                 </form>
+
             </div>
         </div>
     </main>
-</body>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
     const userTypeSelect = document.getElementById('id_user_type');
-    const formContainer = document.querySelector('.form-container');
-    
-    // Create the additional field container
-    const sellerField = document.createElement('div');
-    sellerField.id = 'seller-additional-field';
-    sellerField.style.display = 'none';
-    sellerField.innerHTML = `
-        <label for="id_store_name">Store Name:</label>
-        <input type="text" id="id_store_name" name="store_name">
-    `;
-    
-    // Insert after birthdate field
-    const birthdateField = document.getElementById('id_birthdate').closest('p');
-    birthdateField.after(sellerField);
-    
-    // Listen for changes
-    userTypeSelect.addEventListener('change', function() {
-        if (this.value === 'S') {  // 'S' for Seller
-            sellerField.style.display = 'block';
+    const sellerField = document.getElementById('seller-additional-field');
+
+    function toggleSellerField() {
+        if (userTypeSelect.value === 'S') {
+            sellerField.classList.remove('hidden');
         } else {
-            sellerField.style.display = 'none';
+            sellerField.classList.add('hidden');
         }
-    });
+    }
+
+    toggleSellerField();
+    userTypeSelect.addEventListener('change', toggleSellerField);
 });
 </script>
 
+</body>
 </html>
