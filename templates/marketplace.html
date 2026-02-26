@@ -276,9 +276,9 @@
             </div>
             <img src="{% static 'icons/recommendations.png' %}" class="header-img" alt="">
 
-        {% else %}
+        {% elif user.user_type == "S" %}
             <div style="display: flex; align-items: center; justify-content: center; margin: 2vw;">
-                <a href="" style="text-decoration: none;">
+                <a href="{% url 'marketplace:add_product' %}" style="text-decoration: none;">
                     <button class="button">
                     ADD NEW LISTING
                     </button>

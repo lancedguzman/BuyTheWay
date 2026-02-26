@@ -16,7 +16,8 @@ class Product(models.Model):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    seller = models.ForeignKey('account_management.UserProfile', on_delete=models.CASCADE, related_name='products', limit_choices_to={'user_type': 'S'})
+    seller = models.ForeignKey('account_management.UserProfile', on_delete=models.CASCADE, 
+                               related_name='products', limit_choices_to={'user_type': 'S'})
     description = models.TextField()
     stock = models.PositiveIntegerField()
     category = models.CharField(max_length=1, choices=CATEGORY_CHOICES)

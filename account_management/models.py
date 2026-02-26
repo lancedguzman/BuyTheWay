@@ -5,6 +5,7 @@ from django.contrib.auth.models import BaseUserManager
 
 
 class UserProfileManager(BaseUserManager):
+    """Custom user manager to handle user creation with email as username."""
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("Email must be provided")
@@ -29,7 +30,8 @@ class UserProfileManager(BaseUserManager):
 
 
 class UserProfile(AbstractUser):
-    """Model representing a user profile with 
+    """
+    Model representing a user profile with 
     their personal information
     """
     # Gender Choices
