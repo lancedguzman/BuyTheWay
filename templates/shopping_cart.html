@@ -45,7 +45,7 @@
                                 <button class="quantity-btn">
                                     <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
                                 </button>
-                                <span class="quantity-num">1</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
+                                <span class="quantity-num">{{ item.quantity }}</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
                                 <button class="quantity-btn">
                                     <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
                                 </button>

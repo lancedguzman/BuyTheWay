@@ -73,7 +73,10 @@
         </section>
         
         <section class="purchase-actions">
-            <button class="addToCart-btn">ADD TO CART</button>
+            <form method="POST">
+                {% csrf_token %}
+                <button class="addToCart-btn" type="submit" >ADD TO CART</button>
+            </form>
             <button class="pasabuyNow-btn">
                 PASABUY NOW
                 <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
