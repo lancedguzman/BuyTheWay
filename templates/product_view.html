@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <title>[Product Short Title]</title>
+    <title>{{ product.name }}</title>
     <link rel="stylesheet" href="{% static "css/buyer_productview.css" %}">
 
     <main class="buyerProduct-container">
@@ -14,7 +14,7 @@
                     <img class src="{% static 'icons/photogallery-leftarrow.png' %}" alt="Last Picture">
                 </button>
 
-                <img src="{% static 'images/sample-product-larger.png'%}" alt="product-dp" class="product-displayPic">
+                <img src="{{ product.image.url }}" alt="product-dp" class="product-displayPic">
 
                 <button class="nav-arrow right-arrow">
                     <img class src="{% static 'icons/photogallery-rightarrow.png' %}" alt="Next Picture">
@@ -24,18 +24,18 @@
             <div class="product-details">
 
                 <h1 class="product-name">
-                    FINO Hair Mask Premium Imported Touch Hair Treatment
+                    {{ product.name }}
                 </h1>
 
                 <p class='product-subdata'>
-                    JapanGoods | Tokyo, Japan | Estimated Delivery by 2/7 | 4.5 <span class="star">⭐</span>
+                    {{ product.store }} | {{ product.location }} | Estimated Delivery by {{ product.expected_delivery }} | {{ product.rating }} <span class="star">⭐</span>
                 </p>
 
-                <span class="category-tag">HAIR & BODY CARE</span>
+                <span class="category-tag">{{ product.get_category_display }}</span>
 
                 <div class="price-box">
-                    <h2 class="price">₱640</h2>
-                    <span class="items-sold">1k+ Sold</span>
+                    <h2 class="price">₱{{ product.price }}</h2>
+                    <span class="items-sold">{{ product.sold }} Sold</span>
                     <a href="#" class="compare-link">COMPARE PRICE</a>
                 </div>
 
@@ -49,7 +49,7 @@
                             <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
                         </button>
                     </div>
-                    <span class="stocks-left">10 PCS LEFT</span>
+                    <span class="stocks-left"> {{ product.stock }} PCS LEFT</span>
                 </div>
 
             </div>
@@ -58,17 +58,16 @@
         <section class="info-card description-box">
             <h3 class="card-title">Product Description</h3>
             <p>
-                Transform your hair with the Shiseido Fino Premium Touch Hair Mask! This intensive repair formula is designed to rejuvenate and repair damaged hair, leaving it smooth and silky. Enriched with six types of beauty essence ingredients, it penetrates deeply to moisturize and enhance the shine of your hair. Perfect for all hair types, this mask is your go-to solution for a radiant hair transformation!
+                {{ product.description }}
             </p>
-            <p>Purchasing from Tokyo, Japan as I will be flying home from my vacation there soon.</p>
         </section>
 
         <section class="info-card seller-box">
             <div class="seller-information">
                 <div class="seller-avatar">
-                    <img src="{% static 'icons/user-photo.png'%}" alt="user-icon" class="user-icon">
+                    <img src="{{ product.store.picture }}" alt="{{ product.store.name }}" class="user-icon">
                 </div>
-                <h2 class="name-of-seller">JapanGoods</h2>
+                <h2 class="name-of-seller">{{ product.store.name }}</h2>
             </div>
             <button class="chat-seller-btn">CHAT WITH SELLER</button>
         </section>
