@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('marketplace.urls')),
     path('account_management/', include('account_management.urls')),
-    path("account_management/", include("django.contrib.auth.urls")),
+    path('accounts/', include("django.contrib.auth.urls")),
 ]
 
 # Serve media files in development
