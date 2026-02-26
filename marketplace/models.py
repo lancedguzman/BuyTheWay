@@ -103,6 +103,7 @@ class Cart(models.Model):
                                 related_name='cart_items')
     quantity = models.PositiveIntegerField(default=1)
 
+    @property
     def subtotal(self):
         """Calculates subtotal for the cart"""
         return self.product.price * self.quantity;
