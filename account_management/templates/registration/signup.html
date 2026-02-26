@@ -1,0 +1,194 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="icon" type="image/png" href="{% static 'icons/favicon.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+        }
+
+        .left-panel {
+            display: flex;
+            background-color: #3D70EF;
+            width: 50vw;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left-panel img {
+            width: 25vw;
+        }
+
+        .right-panel {
+            width: 50vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel > img {
+            width: 50vw;
+        }
+
+        .form-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 3.5vw;
+            row-gap: 0.8vw;
+            padding-top: 0.8vw;
+            padding-left: 2.5vw;
+        }
+
+        .form-container p {
+            margin: 0;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 0.8vw;
+            font-size: 1.2vw;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 20vw;
+            height: 3vw;
+            background-color: #F6F6F6;
+            border: none;
+            border-radius: 1vw;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            box-sizing: border-box;
+            padding: 0 1vw;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2vw;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        /* Seller field full width */
+        #seller-additional-field {
+            grid-column: 1 / -1;
+        }
+
+        #seller-additional-field input {
+            width: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button[type="submit"] {
+            grid-column: 1 / -1;
+            justify-self: center;
+            width: 15vw;
+            height: 3vw;
+            margin-top: 3vw;
+            background-color: #9B71F7;
+            color: white;
+            border: none;
+            border-radius: 1vw;
+            font-size: 1.2vw;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 900;
+        }
+
+        .errorlist {
+            color: red;
+            font-size: 0.9vw;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 0.4vw 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <div class="left-panel">
+            <img src="{% static 'icons/logo.png' %}" alt="">
+        </div>
+
+        <div class="right-panel">
+            <img src="{% static 'icons/joinus.png' %}">
+            <div class="form-wrapper">
+
+                <form method="post" class="form-container">
+                    {% csrf_token %}
+
+                    <p>{{ form.first_name.errors }}{{ form.first_name.label_tag }}{{ form.first_name }}</p>
+                    <p>{{ form.last_name.errors }}{{ form.last_name.label_tag }}{{ form.last_name }}</p>
+
+                    <p>{{ form.user_type.errors }}{{ form.user_type.label_tag }}{{ form.user_type }}</p>
+                    <p>{{ form.birthdate.errors }}{{ form.birthdate.label_tag }}{{ form.birthdate }}</p>
+
+                    <p id="seller-additional-field" class="hidden">
+                        {{ form.store_name.errors }}
+                        {{ form.store_name.label_tag }}
+                        {{ form.store_name }}
+                    </p>
+                    
+                    <p>{{ form.email.errors }}{{ form.email.label_tag }}{{ form.email }}</p>
+                    <p>{{ form.phone_number.errors }}{{ form.phone_number.label_tag }}{{ form.phone_number }}</p>
+
+                    <p>{{ form.password1.errors }}{{ form.password1.label_tag }}{{ form.password1 }}</p>
+                    <p>{{ form.password2.errors }}{{ form.password2.label_tag }}{{ form.password2 }}</p>
+
+                    <button type="submit">SIGN UP</button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const userTypeSelect = document.getElementById('id_user_type');
+    const sellerField = document.getElementById('seller-additional-field');
+
+    function toggleSellerField() {
+        if (userTypeSelect.value === 'S') {
+            sellerField.classList.remove('hidden');
+        } else {
+            sellerField.classList.add('hidden');
+        }
+    }
+
+    toggleSellerField();
+    userTypeSelect.addEventListener('change', toggleSellerField);
+});
+</script>
+
+</body>
+</html>

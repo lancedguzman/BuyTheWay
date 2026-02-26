@@ -15,8 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from apps import views
+from django.conf import settings
+from django.urls import path, include
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,3 +25,8 @@ urlpatterns = [
     path('sh-cart/', views.cart_view, name='shopping_cart'),
     path('buyer-product-view/', views.buyer_product_view, name='buyer_product_view'),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

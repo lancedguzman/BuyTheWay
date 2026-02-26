@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps',
+    'account_management',
+    'marketplace',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+# Custom User Model
+AUTH_USER_MODEL = 'account_management.UserProfile'
+
+# Login/Logout URLs
+LOGIN_REDIRECT_URL = '/marketplace'
+LOGIN_URL = '/account_management/login/'
+LOGOUT_REDIRECT_URL = '/account_management/login/'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TEMPLATES = [
     {
@@ -122,3 +135,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Media files (User uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Email Configuration (Development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
