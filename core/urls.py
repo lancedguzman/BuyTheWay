@@ -23,6 +23,8 @@ from apps import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('account_management/', include('account_management.urls')),
+    path('accounts/', include("django.contrib.auth.urls")),
     path('sh-cart/', views.cart_view, name='shopping_cart'),
     path('buyer-product-view/', views.buyer_product_view, name='buyer_product_view'),
 ]
