@@ -1,39 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import Product, Cart
+from .models import Product
 from .forms import ProductForm
-from decimal import Decimal
 
-@login_required
+
 def cart_view(request):
     """View for the shopping cart page."""
-    # Ensure only buyers can access carts
-    if request.user.user_type != 'B':
-        raise PermissionDenied("Only buyers can access carts")
+    return render(request, 'shopping_cart.html')  # just for testing 2
 
-    if request.method == 'GET':
-        cart = (request.user.cart_buyer.select_related('product', 'product__store'))
-        grouped = {}
-        cart_price = 0
-        cart_size = 0
-        for item in cart:
-            store = item.product.store
-
-            if store.id not in grouped:
-                grouped[store.id] = {
-                    "store": store,
-                    "items": [],
-                    "total_prices": {},
-                }
-
-            grouped[store.id]["items"].append(item)
-            grouped[store.id]["total_prices"][item] = item.quantity * item.product.price
-            cart_price += item.quantity * item.product.price
-            cart_size += item.quantity
-        return render(request, 'shopping_cart.html', {'cart': grouped, 'cart_price': cart_price, 'cart_size': cart_size})
-    
-    return render(request, 'shopping_cart.html')
 
 def marketplace_view(request):
     """View for the marketplace page."""
@@ -45,7 +20,7 @@ def marketplace_view(request):
 def product_detail(request, pk):
     """View for the product page."""
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'product_view.html', {'product': product})
+    return render(request, 'product_detail.html', {'product': product})
 
 
 @login_required

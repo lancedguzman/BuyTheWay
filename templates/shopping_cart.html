@@ -23,51 +23,48 @@
             <div class="action-col"></div>
 
         </div>
-        {% for store_id, data in cart.items %}
-        <h2 class="name-of-store">{{ data.store.name }}</h2> <!-- insert backend django tag for name of store -->
-            
-            {% for item in data.items %}
-            <div class="cart-item cart-section">
-                <div class='select-product'>
-                    <input type="checkbox" checked>
-                </div>
 
-                <!-- insert backend django tag for product details -->
-                <div class="product-col product-details-list">
-                    <img src="{{ item.product.image.url }}" alt="product-dp" class="product-displayPic">
+        <h2 class="name-of-store">JapanGoods</h2> <!-- insert backend django tag for name of store -->
 
-                    <div class="product-info">
+        <div class="cart-item cart-section">
+            <div class='select-product'>
+                <input type="checkbox" checked>
+            </div>
 
-                        <p class="product-title">{{ item.product.name }}</p>
+            <!-- insert backend django tag for product details -->
+            <div class="product-col product-details-list">
+                <img src="{% static 'images/sample-product.png'%}" alt="product-dp" class="product-displayPic">
 
-                        <div class="product-actions">
-                            <div class="quantities-sel">
-                                <button class="quantity-btn">
-                                    <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
-                                </button>
-                                <span class="quantity-num">1</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
-                                <button class="quantity-btn">
-                                    <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
-                                </button>
-                            </div>
+                <div class="product-info">
 
-                            <span class="stock-stats">{{ item.product.stock }} PCS LEFT</span> <!-- insert backend django tag for math operations on stock -->
+                    <p class="product-title">FINO Hair Mask Premium Imported Touch Hair Treatment</p>
+
+                    <div class="product-actions">
+                        <div class="quantities-sel">
+                            <button class="quantity-btn">
+                                <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
+                            </button>
+                            <span class="quantity-num">1</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
+                            <button class="quantity-btn">
+                                <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
+                            </button>
                         </div>
+
+                        <span class="stock-stats">10 PCS LEFT</span> <!-- insert backend django tag for math operations on stock -->
                     </div>
                 </div>
-
-                <div class="unitPrice-col blue-text bold-font">{{ item.product.price }}</div>
-                <div class="total-col blue-text bold-font">{{ item.subtotal }}</div>
-
-                <div class="action-col">
-                    <button class='remove-product-btn'>&times;</button>
-                </div>
             </div>
-            {% endfor %}
-        
-        {% endfor %}
+
+            <div class="unitPrice-col blue-text bold-font">₱640</div>
+            <div class="total-col blue-text bold-font">₱640</div>
+
+            <div class="action-col">
+                <button class='remove-product-btn'>&times;</button>
+            </div>
+        </div>
+
         <div class="cart-summary">
-            <div class="summary-text text-blue font-bold">TOTAL: {{ cart_price }} ({{ cart_size }} item{{ cart_size|pluralize:"s" }})</div>
+            <div class="summary-text text-blue font-bold">TOTAL: ₱640 (1 item)</div>
             <button class="checkout-product-btn">PASABUY NOW</button>
         </div>
 
