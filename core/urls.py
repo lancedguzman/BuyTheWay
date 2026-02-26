@@ -18,12 +18,15 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
+from apps import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('marketplace.urls')),
+    path('', views.home, name='home'),
     path('account_management/', include('account_management.urls')),
     path('accounts/', include("django.contrib.auth.urls")),
+    path('sh-cart/', views.cart_view, name='shopping_cart'),
+    path('buyer-product-view/', views.buyer_product_view, name='buyer_product_view'),
 ]
 
 # Serve media files in development
