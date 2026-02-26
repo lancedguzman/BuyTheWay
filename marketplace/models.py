@@ -91,19 +91,3 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
-
-class Cart(models.Model):
-    """Model representing the associative relationship 
-    between buyers and the current products in their shopping cart"""
-    buyer = models.ForeignKey('account_management.UserProfile',
-                              on_delete=models.CASCADE,
-                              related_name='cart_buyer')
-    product = models.ForeignKey(Product,
-                                on_delete=models.CASCADE,
-                                related_name='cart_items')
-    quantity = models.PositiveIntegerField(default=1)
-
-    @property
-    def subtotal(self):
-        """Calculates subtotal for the cart"""
-        return self.product.price * self.quantity;
