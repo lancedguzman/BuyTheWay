@@ -51,26 +51,30 @@ def product_view(request, pk):
 
     # add product to cart, if its not there yet
     if request.method == 'POST':
-        if request.user.user_type != "B":
-            raise PermissionDenied("Only buyers can add products to shopping cart")
+        action = request.POST.get('action')
+        if action == "add-to-cart":
+            if request.user.user_type != "B":
+                raise PermissionDenied("Only buyers can add products to shopping cart")
 
-        product = get_object_or_404(Product, pk=pk)
-        # check if already in cart
-        item, created = Cart.objects.get_or_create(
-            buyer = request.user,
-            product = product,
-            defaults=('quantity', 1)
-        )
+            product = get_object_or_404(Product, pk=pk)
+            qty = int(request.POST.get('quantity'))
 
-        if not created:
-            if item.quantity + 1 > product.stock:
-                # insert flash or warning that stock is not enough
-                return redirect("marketplace:product_view", pk=pk)
-            item.quantity += 1
-            item.save()
-        
-        # notify user thru message or flash that success!
-        return redirect("marketplace:product_view", pk=pk)
+            # check if already in cart
+            item, created = Cart.objects.get_or_create(
+                buyer = request.user,
+                product = product,
+                defaults=('quantity', 1)
+            )
+
+            if not created:
+                if item.quantity + qty > product.stock:
+                    # insert flash or warning that stock is not enough
+                    return redirect("marketplace:product_view", pk=pk)
+                item.quantity += qty
+                item.save()
+            
+            # notify user thru message or flash that success!
+            return redirect("marketplace:product_view", pk=pk)
 
 
 
