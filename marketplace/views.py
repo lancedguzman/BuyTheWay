@@ -77,7 +77,7 @@ def product_view(request, pk):
             item, created = Cart.objects.get_or_create(
                 buyer = request.user,
                 product = product,
-                defaults=('quantity', 1)
+                defaults={'quantity': 1}
             )
 
             if not created:
