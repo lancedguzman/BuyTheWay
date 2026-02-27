@@ -169,3 +169,9 @@ def seller_view_order_history(request):
     return render(request, 'transaction_history.html', {
         'orders': orders
     })
+
+def order_history(request):
+    """View for the buyer's order history page."""
+    # This fetches orders that the logged-in user has made
+    buyer_orders = Order.objects.filter(buyer=request.user).order_by('-date')
+    return render(request, 'order_history.html', {'orders': buyer_orders})
