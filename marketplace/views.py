@@ -147,5 +147,5 @@ def seller_view_order_history(request):
         raise PermissionDenied("Only Sellers can see their transaction history")
     store = request.user.store
     orders = Order.objects.filter(product__store=store).select_related('product', 'product__store')
-    return render(request, 'seller_view_order_history.html', 
+    return render(request, 'transaction_history.html', 
                   {'orders': orders})
