@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Transactions - Buy The Way{% endblock %}
+
+{% block stylesheet %}
+<style>
+    .transactions-wrapper {
+        background-color: #fcfcfc;
+        min-height: 100vh;
+        padding-bottom: 4vw;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .header-banner {
+        width: 100vw;
+        margin-bottom: 3vw;
+        display: block;
+    }
+
+    .transactions-container {
+        max-width: 65vw;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2vw;
+    }
+
+    .order-card {
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 1vw 1.5vw;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 1vw;
+        font-weight: 700;
+        color: #000;
+    }
+
+    .order-body {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .product-section {
+        flex: 1;
+        display: flex;
+        padding: 1.5vw;
+        gap: 1.5vw;
+        background-color: #f6f6f6;
+    }
+
+    .product-image {
+        width: 8vw;
+        height: 8vw;
+        object-fit: cover;
+        background-color: #fff;
+        border: 1px solid #eaeaea;
+    }
+
+    .product-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .product-name {
+        font-size: 1.1vw;
+        font-weight: 700;
+        color: #000;
+        margin: 0;
+    }
+
+    .price-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: center;
+        font-size: 1vw;
+        font-weight: 500;
+        color: #000;
+        margin-top: 0.5vw;
+    }
+
+    .price-row .total {
+        text-align: right;
+    }
+
+    .address-status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 2vw;
+        margin-top: 1vw;
+    }
+
+    .address {
+        font-size: 0.9vw;
+        color: #000;
+        line-height: 1.4;
+        flex: 1;
+        max-width: 70%;
+    }
+
+    .status-dropdown {
+        background-color: #E0D4FF;
+        color: #21005D;
+        border: none;
+        border-radius: 2vw;
+        padding: 0.6vw 2vw 0.6vw 1.5vw;
+        font-size: 0.9vw;
+        font-weight: 900;
+        font-family: 'Roboto', sans-serif;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2321005D'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5vw center;
+        background-size: 1.2vw;
+        outline: none;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .buyer-section {
+        flex: 0 0 20vw;
+        background-color: #1F0068;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5vw;
+        padding: 2vw;
+    }
+
+    .buyer-name {
+        color: #ffffff;
+        font-size: 1.5vw;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .see-profile-btn {
+        background-color: #E0D4FF;
+        color: #21005D;
+        border: none;
+        border-radius: 2vw;
+        padding: 0.8vw 2vw;
+        font-size: 0.9vw;
+        font-weight: 900;
+        font-family: 'Roboto', sans-serif;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background-color 0.2s;
+    }
+
+    .see-profile-btn:hover {
+        background-color: #CDB8FB;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="transactions-wrapper">
+    <img src="{% static 'icons/mytransactions.png' %}" class="header-banner" alt="My Transactions Banner" onerror="this.style.display='none'">
+
+    <div class="transactions-container">
+        <div class="order-card">
+            <div class="order-header">
+                <span>Order No.</span>
+                <span>01/28/2026</span>
+            </div>
+            <div class="order-body">
+                <div class="product-section">
+                    <img class="product-image" src="{% static 'images/sample-product.png' %}" alt="Product">
+                    <div class="product-details">
+                        <h3 class="product-name">FINO Hair Mask Premium Imported Touch Hair Treatment</h3>
+                        <div class="price-row">
+                            <span>3x</span>
+                            <span>₱640</span>
+                            <span class="total">Total: ₱1920</span>
+                        </div>
+                        <div class="address-status-row">
+                            <div class="address">Katipunan Avenue, Loyola Heights,<br>Quezon City, 1108 Philippines</div>
+                            <select class="status-dropdown">
+                                <option value="processing" selected>PROCESSING</option>
+                                <option value="shipping">SHIPPING</option>
+                                <option value="completed">COMPLETED</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="buyer-section">
+                    <div class="buyer-name">Buyer's Name</div>
+                    <button class="see-profile-btn">SEE PROFILE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-card">
+            <div class="order-header">
+                <span>Order No.</span>
+                <span>01/28/2026</span>
+            </div>
+            <div class="order-body">
+                <div class="product-section">
+                    <img class="product-image" src="{% static 'images/sample-product.png' %}" alt="Product">
+                    <div class="product-details">
+                        <h3 class="product-name">FINO Hair Mask Premium Imported Touch Hair Treatment</h3>
+                        <div class="price-row">
+                            <span>1x</span>
+                            <span>₱640</span>
+                            <span class="total">Total: ₱640</span>
+                        </div>
+                        <div class="address-status-row">
+                            <div class="address">Katipunan Avenue, Loyola Heights,<br>Quezon City, 1108 Philippines</div>
+                            <select class="status-dropdown">
+                                <option value="processing" selected>PROCESSING</option>
+                                <option value="shipping">SHIPPING</option>
+                                <option value="completed">COMPLETED</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="buyer-section">
+                    <div class="buyer-name">Buyer's Name</div>
+                    <button class="see-profile-btn">SEE PROFILE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
