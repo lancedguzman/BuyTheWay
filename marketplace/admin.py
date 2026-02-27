@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Order, Store
+from .models import Product, Order, Store, Cart
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -30,7 +30,12 @@ class StoreAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('rating',)
 
+class CartAdmin(admin.ModelAdmin):
+    """Admin interface for the Cart model."""
+    model = Cart
+    search_fields = ('buyer__name',)
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Store, StoreAdmin)
+admin.site.register(Cart, CartAdmin)

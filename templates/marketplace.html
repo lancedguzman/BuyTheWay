@@ -294,7 +294,7 @@
             
                 {% for product in products %}
                     <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
-                        <a href="{% url 'marketplace:product_detail' product.pk %}" class="product-link">
+                        <a href="{% url 'marketplace:product_view' product.pk %}" class="product-link">
                             <div class="product-card">
                         
                             <div class="product-image-container">
@@ -345,7 +345,7 @@
                 {% for product in products %}
                     {% if product.store.seller == user %}
                     <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
-                        <a href="{% url 'marketplace:product_detail' product.pk %}" class="product-link">
+                        <a href="{% url 'marketplace:product_view' product.pk %}" class="product-link">
                             <div class="product-card">
                         
                             <div class="product-image-container">

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/buyer_productview.css' %}">
+    {% comment %} <script src={% static "js/product_view.js" %}></script> {% endcomment %}
+
+    <main class="buyerProduct-container">
+
+        <div class="product-topRow">
+
+            <div class="product-photos">
+                <button class="nav-arrow left-arrow">
+                    <img class src="{% static 'icons/photogallery-leftarrow.png' %}" alt="Last Picture">
+                </button>
+
+                <img src="{{ product.image.url }}" alt="product-dp" class="product-displayPic">
+
+                <button class="nav-arrow right-arrow">
+                    <img class src="{% static 'icons/photogallery-rightarrow.png' %}" alt="Next Picture">
+                </button>
+            </div>
+
+            <div class="product-details">
+
+                <h1 class="product-name">
+                    {{ product.name }}
+                </h1>
+
+                <p class='product-subdata'>
+                    {{ product.store }} | {{ product.location }} | Estimated Delivery by {{ product.expected_delivery }} | {{ product.rating }} <span class="star">⭐</span>
+                </p>
+
+                <span class="category-tag">{{ product.get_category_display }}</span>
+
+                <div class="price-box">
+                    <h2 class="price">₱{{ product.price }}</h2>
+                    <span class="items-sold">{{ product.sold }} Sold</span>
+                    <a href="#" class="compare-link">COMPARE PRICE</a>
+                </div>
+
+                <div class="quantity-box">
+                    <div class="quantity-controllers">
+                        <button type="button" class="quantity-btn" onclick="decreaseQty()">
+                            <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
+                        </button>
+                        <span class="quantity-num" id="quantity-display">1</span> 
+                        <button type="button" class="quantity-btn" onclick="increaseQty()">
+                            <img src="{% static 'icons/right-chevron.png'%}" alt="increase" class="arrow-icon">
+                        </button>
+                    </div>
+                    <span class="stocks-left"> {{ product.stock }} PCS LEFT</span>
+                </div>
+
+            </div>
+        </div>
+
+        <section class="info-card description-box">
+            <h3 class="card-title">Product Description</h3>
+            <p>
+                {{ product.description }}
+            </p>
+        </section>
+
+        <section class="info-card seller-box">
+            <div class="seller-information">
+                <div class="seller-avatar">
+                    <img src="{{ product.store.picture }}" alt="{{ product.store.name }}" class="user-icon">
+                </div>
+                <h2 class="name-of-seller">{{ product.store.name }}</h2>
+            </div>
+            <button class="chat-seller-btn">CHAT WITH SELLER</button>
+        </section>
+        
+        <section class="purchase-actions">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" id="quantity-input" value="1">
+                <button class="addToCart-btn" name="action" value="add-to-cart" type="submit" >ADD TO CART</button>
+            </form>
+            <button class="pasabuyNow-btn">
+                PASABUY NOW
+                <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
+            </button>
+        </section>
+
+    </main>
+
+<script>
+
+    const display = document.getElementById("quantity-display");
+    const input = document.getElementById("quantity-input");
+    const max = {{ product.stock }};
+
+function increaseQty() {
+    let value = parseInt(input.value);
+    if (value < max) {
+        value++;
+        input.value = value;
+        display.innerText = value;
+    }
+    console.log(input.value)
+}
+
+function decreaseQty() {
+    let value = parseInt(input.value);
+    if (value > 1) {
+        value--;
+        input.value = value;
+        display.innerText = value;
+    }
+    console.log(input.value)
+}
+</script>
+
+{% endblock %}
