@@ -39,9 +39,13 @@ def cart_view(request):
         product = Product.objects.get(pk=product_id)
         item = Cart.objects.get(product=product, buyer=request.user)
         if action == 'increase':
+            if item.quantity >= item.product.stock:
+                return redirect("marketplace:shopping_cart")
             item.quantity += 1
             item.save()
         elif action == 'decrease':
+            if item.quantity <= 0:
+                return redirect("marketplace:shopping_cart")
             item.quantity += -1
             item.save()
         elif action == 'remove':
