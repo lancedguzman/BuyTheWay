@@ -132,14 +132,16 @@ def edit_product(request, pk):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, 'product_form.html',
-                  {'form': form,
-                   'product': product,
-                   'action': 'Edit'})
+    return render(request, 'product_form.html', {
+        'form': form,
+        'product': product,
+        'action': 'Edit'
+    })
 
 
 @login_required
 def seller_view_order_history(request):
+    """View for sellers to see their transaction history."""
     if request.user.user_type != "S":
         raise PermissionDenied("Only Sellers can see their transaction history")
 
