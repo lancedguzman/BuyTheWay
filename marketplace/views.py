@@ -97,28 +97,24 @@ def product_view(request, pk):
             return redirect("marketplace:product_view", pk=pk)
 
 
-
-
 @login_required
 def add_product(request):
     """View for a seller to add a new product."""
-    # Ensure only sellers can add products
     if request.user.user_type != 'S':
         raise PermissionDenied("Only sellers can add products.")
 
     if request.method == 'POST':
-        # request.FILES is required for the image upload
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
             product.store = request.user.store
-            product.rating = 0  # Default starting rating
+            product.rating = 0  
             product.save()
             return redirect('marketplace:product_view', pk=product.pk)
     else:
         form = ProductForm()
 
-    return render(request, 'add_product.html',
+    return render(request, 'product_form.html',
                   {'form': form,
                    'action': 'Add'})
 
@@ -126,8 +122,6 @@ def add_product(request):
 @login_required
 def edit_product(request, pk):
     """View for a seller to edit their existing product."""
-    # Fetch the product, ensuring the logged-in
-    # user is the owner of the store that has this product
     product = get_object_or_404(Product, pk=pk, store__seller=request.user)
 
     if request.method == 'POST':
@@ -138,13 +132,16 @@ def edit_product(request, pk):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, 'edit_product.html',
-                  {'form': form,
-                   'product': product,
-                   'action': 'Edit'})
+    return render(request, 'product_form.html', {
+        'form': form,
+        'product': product,
+        'action': 'Edit'
+    })
 
-login_required
+
+@login_required
 def seller_view_order_history(request):
+    """View for sellers to see their transaction history."""
     if request.user.user_type != "S":
         raise PermissionDenied("Only Sellers can see their transaction history")
 

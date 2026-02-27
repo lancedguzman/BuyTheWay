@@ -65,7 +65,11 @@
         <section class="info-card seller-box">
             <div class="seller-information">
                 <div class="seller-avatar">
-                    <img src="{{ product.store.picture.url }}" alt="{{ product.store.name }}" class="user-icon">
+                    {% if product.store.picture %}
+                        <img src="{{ product.store.picture.url }}" alt="{{ product.store.name }}" class="user-icon">
+                    {% else %}
+                        <img src="{% static 'icons/user-photo.png' %}" alt="{{ product.store.name }}" class="user-icon">
+                    {% endif %}
                 </div>
                 <h2 class="name-of-seller">{{ product.store.name }}</h2>
             </div>
