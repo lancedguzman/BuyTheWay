@@ -53,6 +53,8 @@ def cart_view(request):
 
     return redirect("marketplace:shopping_cart")
 
+
+@login_required
 def marketplace_view(request):
     """View for the marketplace page."""
     products = Product.objects.all()

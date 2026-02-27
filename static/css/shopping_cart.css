@@ -139,7 +139,7 @@
 
     background-color: var(--qty-purple-bg);
     border: none;
-    padding: 8px 15px;
+    padding: 10px 15px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -147,25 +147,25 @@
 
 }
 
-.quantity-btn:first-of-type {
+.quantities-sel form:first-of-type .quantity-btn {
 
     border-radius: 20px 0 0 20px; 
 
 }
 
-.quantity-btn:first-of-type:hover {
+.quantities-sel form:first-of-type .quantity-btn:hover {
 
     background-color: var(--qty-purple-dark);
 
 }
 
-.quantity-btn:last-of-type {
+.quantities-sel form:last-of-type .quantity-btn {
 
     border-radius: 0 20px 20px 0; 
 
 }
 
-.quantity-btn:last-of-type:hover {
+.quantities-sel form:last-of-type .quantity-btn:hover {
 
     background-color: var(--qty-purple-dark);
 
