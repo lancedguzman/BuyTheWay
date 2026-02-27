@@ -69,7 +69,11 @@
                 <div class="total-col blue-text bold-font">{{ item.subtotal }}</div>
 
                 <div class="action-col">
-                    <button class='remove-product-btn'>&times;</button>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="product" value ={{ item.product.pk }}>
+                        <button class='remove-product-btn' type='submit' name='action' value='remove'>&times;</button>
+                    </form>
                 </div>
             </div>
             {% endfor %}

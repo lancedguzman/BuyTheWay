@@ -40,9 +40,12 @@ def cart_view(request):
         item = Cart.objects.get(product=product, buyer=request.user)
         if action == 'increase':
             item.quantity += 1
+            item.save()
         elif action == 'decrease':
             item.quantity += -1
-        item.save()
+            item.save()
+        elif action == 'remove':
+            item.delete()
 
     return redirect("marketplace:shopping_cart")
 
