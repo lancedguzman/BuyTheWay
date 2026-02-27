@@ -141,11 +141,29 @@ def edit_product(request, pk):
                    'product': product,
                    'action': 'Edit'})
 
-@login_required
+login_required
 def seller_view_order_history(request):
     if request.user.user_type != "S":
         raise PermissionDenied("Only Sellers can see their transaction history")
+
     store = request.user.store
-    orders = Order.objects.filter(product__store=store).select_related('product', 'product__store')
-    return render(request, 'transaction_history.html', 
-                  {'orders': orders})
+
+    # Get only orders belonging to this seller's store
+    orders = Order.objects.filter(
+        product__store=store
+    ).select_related('product', 'product__store', 'buyer')
+
+    if request.method == "POST":
+        order_id = request.POST.get("order_id")
+        new_status = request.POST.get("status")
+
+        order = get_object_or_404(Order, id=order_id, product__store=store)
+
+        order.status = new_status
+        order.save()
+
+        return redirect('marketplace:transaction-history')
+
+    return render(request, 'transaction_history.html', {
+        'orders': orders
+    })

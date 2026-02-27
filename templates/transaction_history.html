@@ -186,15 +186,25 @@
                         <div class="price-row">
                             <span>{{ order.quantity }}</span>
                             <span>{{ order.product.price }}</span>
-                            <span class="total">{{ order.product.total_price }}</span>
+                            <span class="total">{{ order.total_price }}</span>
                         </div>
                         <div class="address-status-row">
                             <div class="address">{{ order.address }}</div>
-                            <select class="status-dropdown">
-                                <option value="processing" selected>PROCESSING</option>
-                                <option value="shipping">SHIPPING</option>
-                                <option value="completed">COMPLETED</option>
-                            </select>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+
+                                <select name="status"
+                                        onchange="this.form.submit()"
+                                        class="status-dropdown">
+                                    {% for value, label in order.STATUS_CHOICES %}
+                                        <option value="{{ value }}"
+                                            {% if order.status == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
                         </div>
                     </div>
                 </div>
