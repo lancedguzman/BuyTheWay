@@ -42,13 +42,22 @@
 
                         <div class="product-actions">
                             <div class="quantities-sel">
-                                <button class="quantity-btn">
-                                    <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
-                                </button>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <button class="quantity-btn" name="action" value="decrease" type="submit">
+                                        <input type="hidden" name="product" value={{ item.product.pk }}>
+                                        <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
+                                    </button>
+                                </form>
                                 <span class="quantity-num">{{ item.quantity }}</span> <!-- insert backend django tag for math operations on add/reduce quantities -->
-                                <button class="quantity-btn">
-                                    <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
-                                </button>
+                                
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <button class="quantity-btn" name="action" value="increase" type="submit">
+                                        <input type="hidden" name="product" value={{ item.product.pk }}>
+                                        <img src="{% static 'icons/right-chevron.png'%}" alt="decrease" class="arrow-icon">
+                                    </button>
+                                </form>
                             </div>
 
                             <span class="stock-stats">{{ item.product.stock }} PCS LEFT</span> <!-- insert backend django tag for math operations on stock -->

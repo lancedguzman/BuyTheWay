@@ -33,7 +33,18 @@ def cart_view(request):
             cart_size += item.quantity
         return render(request, 'shopping_cart.html', {'cart': grouped, 'cart_price': cart_price, 'cart_size': cart_size})
     
-    return render(request, 'shopping_cart.html')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        product_id = int(request.POST.get('product'))
+        product = Product.objects.get(pk=product_id)
+        item = Cart.objects.get(product=product, buyer=request.user)
+        if action == 'increase':
+            item.quantity += 1
+        elif action == 'decrease':
+            item.quantity += -1
+        item.save()
+
+    return redirect("marketplace:shopping_cart")
 
 def marketplace_view(request):
     """View for the marketplace page."""
