@@ -97,8 +97,6 @@ def product_view(request, pk):
             return redirect("marketplace:product_view", pk=pk)
 
 
-
-
 @login_required
 def add_product(request):
     """View for a seller to add a new product."""
@@ -118,7 +116,7 @@ def add_product(request):
     else:
         form = ProductForm()
 
-    return render(request, 'add_product.html',
+    return render(request, 'product_form.html',
                   {'form': form,
                    'action': 'Add'})
 
@@ -138,7 +136,7 @@ def edit_product(request, pk):
     else:
         form = ProductForm(instance=product)
 
-    return render(request, 'edit_product.html',
+    return render(request, 'product_form.html',
                   {'form': form,
                    'product': product,
                    'action': 'Edit'})
