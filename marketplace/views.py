@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import Product, Cart
+from .models import Product, Cart, Order
 from .forms import ProductForm
 from decimal import Decimal
 
@@ -140,3 +140,12 @@ def edit_product(request, pk):
                   {'form': form,
                    'product': product,
                    'action': 'Edit'})
+
+@login_required
+def seller_view_order_history(request):
+    if request.user.user_type != "S":
+        raise PermissionDenied("Only Sellers can see their transaction history")
+    store = request.user.store
+    orders = Order.objects.filter(product__store=store).select_related('product', 'product__store')
+    return render(request, 'seller_view_order_history.html', 
+                  {'orders': orders})
