@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import Product, Cart
+from .models import Product, Cart, Order
 from .forms import ProductForm
 from decimal import Decimal
 
@@ -100,17 +100,15 @@ def product_view(request, pk):
 @login_required
 def add_product(request):
     """View for a seller to add a new product."""
-    # Ensure only sellers can add products
     if request.user.user_type != 'S':
         raise PermissionDenied("Only sellers can add products.")
 
     if request.method == 'POST':
-        # request.FILES is required for the image upload
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
             product.store = request.user.store
-            product.rating = 0  # Default starting rating
+            product.rating = 0  
             product.save()
             return redirect('marketplace:product_view', pk=product.pk)
     else:
@@ -124,8 +122,6 @@ def add_product(request):
 @login_required
 def edit_product(request, pk):
     """View for a seller to edit their existing product."""
-    # Fetch the product, ensuring the logged-in
-    # user is the owner of the store that has this product
     product = get_object_or_404(Product, pk=pk, store__seller=request.user)
 
     if request.method == 'POST':
@@ -140,3 +136,31 @@ def edit_product(request, pk):
                   {'form': form,
                    'product': product,
                    'action': 'Edit'})
+
+
+@login_required
+def seller_view_order_history(request):
+    if request.user.user_type != "S":
+        raise PermissionDenied("Only Sellers can see their transaction history")
+
+    store = request.user.store
+
+    # Get only orders belonging to this seller's store
+    orders = Order.objects.filter(
+        product__store=store
+    ).select_related('product', 'product__store', 'buyer')
+
+    if request.method == "POST":
+        order_id = request.POST.get("order_id")
+        new_status = request.POST.get("status")
+
+        order = get_object_or_404(Order, id=order_id, product__store=store)
+
+        order.status = new_status
+        order.save()
+
+        return redirect('marketplace:transaction-history')
+
+    return render(request, 'transaction_history.html', {
+        'orders': orders
+    })
