@@ -1,16 +1,24 @@
 # BuyTheWay
 BuyTheWay is created by the group, SanaHaul. As a project to centralize and secure the pasabuy experience in the Philippines.
 
+## 👥 Group Members
+1. Alinus Abuke
+2. Hanzo Castillo
+3. Paige Carbonell
+4. Lance De Guzman
+5. Kimberly Sioco
+
 ## 📋 Project Overview
 
-The objectives go here.
+The objectives of the project are the following:
+1. To create centralized website for the Pasabuy community
+2. To allow communication between Sellers and Buyers
 
 ## 🛠 Tech Stack
 
 * **Language:** Python 3.13
 * **Backend Framework:** Django 6.0
 * **Frontend Framework:** Vue.js
-* **Containerization:** Docker & Docker Compose
 * **Deployment:** PythonAnywhere
 
 ---
@@ -23,28 +31,28 @@ The objectives go here.
 
 ## 🚀 Installation & Running
 
-You can run the application using **Docker** or **Manually**.
+You can run the application using **Python**.
 
 ### Prerequisites
 * [Git](https://git-scm.com/)
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for Docker method)
 * [Python 3.13+](https://www.python.org/) (for Manual method)
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/lancedguzman/BuyTheWay.git
-cd BuyTheWay
 ```
 
 ### 2. Configure Environment Variables
 Create your own .env from the given example
 ```bash
 # Linux/Mac
+cd BuyTheWay
 cp .env.example .env
 ```
 
 ```bash
 # Windows
+cd BuyTheWay
 copy .env.example .env
 ```
 
@@ -64,7 +72,7 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-### 5. Create Migrations
+### 5. Create Migrations and Migrate
 ```bash
 python manage.py makemigrations
 python manage.py migrate
@@ -75,18 +83,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## 7. Docker Setup
-```bash
-docker-compose up --build
-```
-
 ## 🧪 Running Tests
-To run the Rest API test
-```bash
-# Via Docker
-docker-compose run web python manage.py test
-```
-
+To run the Unit Cases
 ```bash
 # Via Python
 python manage.py test
