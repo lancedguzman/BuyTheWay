@@ -171,20 +171,22 @@
     <img src="{% static 'icons/mytransactions.png' %}" class="header-banner" alt="My Transactions Banner" onerror="this.style.display='none'">
 
     <div class="transactions-container">
+        {% for order in orders %}
         <div class="order-card">
             <div class="order-header">
-                <span>Order No.</span>
-                <span>01/28/2026</span>
+              
+                <span>{{ order.id }}</span>
+                <span>{{ order.timestamp }}</span>
             </div>
             <div class="order-body">
                 <div class="product-section">
-                    <img class="product-image" src="{% static 'images/sample-product.png' %}" alt="Product">
+                    <img class="product-image" src="{{ order.product.image.url }}" alt="Product">
                     <div class="product-details">
-                        <h3 class="product-name">FINO Hair Mask Premium Imported Touch Hair Treatment</h3>
+                        <h3 class="product-name">{{ order.product.name }}</h3>
                         <div class="price-row">
-                            <span>3x</span>
-                            <span>₱640</span>
-                            <span class="total">Total: ₱1920</span>
+                            <span>{{ order.quantity }}</span>
+                            <span>{{ order.product.price }}</span>
+                            <span class="total">{{ order.product.total_price }}</span>
                         </div>
                         <div class="address-status-row">
                             <div class="address">Katipunan Avenue, Loyola Heights,<br>Quezon City, 1108 Philippines</div>
@@ -202,7 +204,7 @@
                 </div>
             </div>
         </div>
-
+        {% endfor %}
         <div class="order-card">
             <div class="order-header">
                 <span>Order No.</span>
