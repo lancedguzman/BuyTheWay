@@ -172,3 +172,7 @@ def order_history(request):
     # This fetches orders that the logged-in user has made
     buyer_orders = Order.objects.filter(buyer=request.user).order_by('-date')
     return render(request, 'order_history.html', {'orders': buyer_orders})
+
+def track_list(request):
+    """View for the seller's product tracking list"""
+    return render(request, 'seller_products.html')
