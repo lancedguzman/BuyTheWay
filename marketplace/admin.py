@@ -17,14 +17,18 @@ class OrderAdmin(admin.ModelAdmin):
     """Admin interface for the Order model."""
     model = Order
 
-    list_display = ('product', 'date', 'address')
-    search_fields = ('product__name', 'address')
+    list_display = ('product', 'date',
+                    'address')
+    search_fields = ('product__name',
+                     'address')
     list_filter = ('date',)
 
 
 class StoreAdmin(admin.ModelAdmin):
     """Admin interface for the Store model."""
-    list_display = ('name', 'seller', 'rating', 'has_gcash', 'has_maya', 'has_bank')
+    list_display = ('name', 'seller',
+                    'rating', 'has_gcash',
+                    'has_maya', 'has_bank')
     search_fields = ('name', 'seller__username')
     list_filter = ('rating',)
 
@@ -53,7 +57,8 @@ class CartAdmin(admin.ModelAdmin):
 
 class PaymentAdmin(admin.ModelAdmin):
     """Admin interface for the Payment model."""
-    list_display = ('order', 'payment_method', 'amount', 'timestamp')
+    list_display = ('order', 'payment_method',
+                    'amount', 'timestamp')
     search_fields = ('order__id',)
     list_filter = ('payment_method', 'timestamp')
 
