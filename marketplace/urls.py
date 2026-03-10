@@ -12,4 +12,5 @@ urlpatterns = [
     path('transaction-history', views.seller_view_order_history, name='transaction-history'),
     path('orders/0/', views.order_detail, name='buyer_order_detail'),
     path('orders/', views.order_history, name='order_history'),
+    path('track/', views.track_list, name='track_list')
 ]
