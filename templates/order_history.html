@@ -203,33 +203,34 @@
                         <span>Order Total: ₱{{ order.total_price }}</span>
                     </div>
                 </div>
-
-                <div class="card-body">
-                    {% if order.product.image %}
-                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="product-img">
-                    {% else %}
-                        <div class="product-img no-image-placeholder">No Image</div>
-                    {% endif %}
-                    
-                    <div class="product-details">
-                        <h3 class="product-title">{{ order.product.name }}</h3>
-                        <span class="product-qty">x{{ order.quantity }}</span>
-                    </div>
-
-                    <div class="price-col">
-                        ₱{{ order.product.price }}
-                    </div>
-
-                    <div class="price-col">
-                        ₱{{ order.total_price }}
-                    </div>
-
-                    <div class="action-col">
-                        {% if order.status == 'CP' %}
-                            <button class="rate-btn">RATE</button>
+                <a href="{% url "marketplace:buyer_order_detail" order.id %}">
+                    <div class="card-body">
+                        {% if order.product.image %}
+                            <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="product-img">
+                        {% else %}
+                            <div class="product-img no-image-placeholder">No Image</div>
                         {% endif %}
+                        
+                        <div class="product-details">
+                            <h3 class="product-title">{{ order.product.name }}</h3>
+                            <span class="product-qty">x{{ order.quantity }}</span>
+                        </div>
+
+                        <div class="price-col">
+                            ₱{{ order.product.price }}
+                        </div>
+
+                        <div class="price-col">
+                            ₱{{ order.total_price }}
+                        </div>
+
+                        <div class="action-col">
+                            {% if order.status == 'CP' %}
+                                <button class="rate-btn">RATE</button>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             {% empty %}
             <div style="text-align: center; padding: 4vw; color: #888; font-weight: bold;">

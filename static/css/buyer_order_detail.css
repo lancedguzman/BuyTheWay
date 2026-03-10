@@ -63,7 +63,7 @@ main * {
     justify-content: center;
 }
 
-button {
+.buttons .btn {
     background-color: #DCCFF9;
     color: #280379;
     border: none;
@@ -71,4 +71,5 @@ button {
     border-radius: 22px;
     font-weight: bold;
     margin: 0px 20px;
+    text-decoration: none;
 }

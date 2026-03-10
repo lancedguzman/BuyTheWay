@@ -5,35 +5,35 @@
 {% endblock stylesheet %}
 
 {% block content %}
-    <section class="status"><p>This order has been marked as confirmed on 01/29/2026 10:10PM</p></section>
+    <section class="status"><p>This order has been marked as {{ status }} on {{ order.timestamp }}</p></section>
     <section class="delivery">
         <h3>Delivery Information</h3>
-        <h4>Buyer Name</h4>
-        <h4>+63 917 707 5165</h4>
+        <h4>{{ order.buyer.first_name }} {{ order.buyer.last_name }}</h4>
+        <h4>{{ order.buyer.phone_number }}</h4>
         <br>
-        <h4>Expected Date of Arrival: 01/30/2026</h4>
-        <h4>Delivery Address: Unit 2, 221 Street Ave., Barangay West, Quezon City 1102, Metro Manila, Philippines</h4>
+        <h4>Expected Date of Arrival: {{ order.product.expected_delivery }}</h4>
+        <h4>Delivery Address: {{ order.address }}</h4>
     </section>
     <section class="order">
         <h3>Order Information</h3>
-        <img src="{% static "images/sample-product.png" %}" alt="">
+        <img src="{{ order.product.image.url }}" alt="">
         <div>
             <span>
-                <h4>Order No.</h4>
-                <h4>Date</h4>
+                <h4>Order No. {{ order.id }}</h4>
+                <h4>{{ order.date }} </h4>
             </span>
             <br>
-            <h4>FINO Hair Mask Premium Imported Touch Hair Treatment</h4>
+            <h4>{{ order.product.name }}</h4>
             <br>
             <span>
-                <h4>3</h4>
-                <h4>P640</h4>
-                <h4>Total: 1920</h4>
+                <h4>{{ order.quantity }}</h4>
+                <h4>₱{{ order.product.price }}</h4>
+                <h4>₱{{ order.total_price }}</h4>
             </span>
         </div>
     </section>
     <section class="buttons">
-        <button>RETURN TO HISTORY</button>
-        <button>VIEW ACTIVE LISTING</button>
+        <a class="btn" href="{% url "marketplace:order_history" %}" >RETURN TO HISTORY</a>
+        <a class="btn" href="{% url "marketplace:product_view" order.product.id %}" >VIEW ACTIVE LISTING</a>
     </section>
 {% endblock content %}

@@ -167,11 +167,16 @@ def seller_view_order_history(request):
         'orders': orders
     })
 
-def order_detail(request):
+def order_detail(request, id):
     """View for the buyer's individual order"""
-    return render(request, 'buyer_order_detail.html')
+    order = Order.objects.get(id=id)
+    if order.buyer != request.user:
+        raise PermissionDenied("This is not your order!")
+    
+    status = order.get_status_display()
+    return render(request, 'buyer_order_detail.html', {'order': order, 'status': status})
 
-def order_history(request, pk):
+def order_history(request):
     """View for the buyer's order history page."""
     # This fetches orders that the logged-in user has made
     buyer_orders = Order.objects.filter(buyer=request.user).order_by('-date')
