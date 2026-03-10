@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Order
+from .models import Product, Order, Store, Payment
 
 
 class ProductForm(forms.ModelForm):
@@ -73,3 +73,50 @@ class ProductForm(forms.ModelForm):
             cleaned_data['group_price'] = None
 
         return cleaned_data
+    
+
+class CheckoutForm(forms.ModelForm):
+    """Form for processing checkout and orders in the marketplace."""
+    class Meta:
+        model = Order
+        fields = ['address']
+        widgets = {
+            'address': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Enter delivery address'
+            }),
+        }
+
+    PAYMENT_CHOICES = [
+        ('gcash', 'GCash'),
+        ('maya', 'Maya'),
+        ('bank', 'Bank Transfer'),
+    ]
+    payment_method = forms.ChoiceField(choices=PAYMENT_CHOICES, widget=forms.HiddenInput())
+
+
+class PaymentMethod(forms.ModelForm):
+    """Form for selecting payment method during checkout."""
+    class Meta:
+        model = Payment
+        fields = ['payment_method']
+        widgets = {
+            'payment_method': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+class StorePaymentForm(forms.ModelForm):
+    """Form for the Seller to upload their receiving QR codes."""
+    class Meta:
+        model = Store
+        fields = ['gcash_qr', 'maya_qr', 'bank_qr']
+        widgets = {
+            'gcash_qr': forms.ClearableFileInput(attrs={'class': 'form-control-file', 'accept': 'image/jpeg, image/png'}),
+            'maya_qr': forms.ClearableFileInput(attrs={'class': 'form-control-file', 'accept': 'image/jpeg, image/png'}),
+            'bank_qr': forms.ClearableFileInput(attrs={'class': 'form-control-file', 'accept': 'image/jpeg, image/png'}),
+        }
+        labels = {
+            'gcash_qr': 'GCash QR Code',
+            'maya_qr': 'Maya QR Code',
+            'bank_qr': 'Bank Transfer (QRPh) QR Code',
+        }

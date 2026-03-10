@@ -2,8 +2,58 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import Product, Cart, Order
-from .forms import ProductForm
-from decimal import Decimal
+from .forms import ProductForm, CheckoutForm
+
+
+@login_required
+def checkout_view(request):
+    """View for the checkout page."""
+    if request.user.user_type != 'B':
+        raise PermissionDenied("Only buyers can checkout.")
+
+    # Get all items in the user's cart
+    cart_items = request.user.cart_buyer.select_related('product', 'product__store')
+    if not cart_items.exists():
+        return redirect('marketplace:marketplace')
+
+    # Get unique stores from the cart items to display their QRs
+    stores = set(item.product.store for item in cart_items)
+
+    # Calculate the grand total for display
+    grand_total = sum(item.subtotal for item in cart_items)
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            address = form.cleaned_data['address']
+            
+            for item in cart_items:
+                # Create Order instance
+                Order.objects.create(
+                    product=item.product,
+                    buyer=request.user,
+                    address=address,
+                    quantity=item.quantity,
+                    total_price=item.subtotal, # Based on Cart.subtotal property
+                    status='P' # Set to Pending
+                )
+                # Update inventory stock
+                item.product.stock -= item.quantity
+                item.product.save()
+
+            # Clear the cart after orders are recorded
+            cart_items.delete() 
+            return redirect('marketplace:order_history')
+    else:
+        form = CheckoutForm()
+
+    return render(request, 'checkout.html', {
+        'form': form, 
+        'cart_items': cart_items,
+        'grand_total': grand_total,
+        'stores': stores
+    })
+
 
 @login_required
 def cart_view(request):

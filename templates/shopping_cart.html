@@ -81,7 +81,9 @@
         {% endfor %}
         <div class="cart-summary">
             <div class="summary-text text-blue font-bold">TOTAL: {{ cart_price }} ({{ cart_size }} item{{ cart_size|pluralize:"s" }})</div>
-            <button class="checkout-product-btn">PASABUY NOW</button>
+            <a href="{% url 'marketplace:checkout' %}"style="text-decoration: none;">
+                <button class="checkout-product-btn">PASABUY NOW</button>
+            </a>
         </div>
 
     </main>
