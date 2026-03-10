@@ -1,0 +1,123 @@
+main {
+    font-family: "Roboto", sans-serif;
+    padding: 1.5vw;
+    font-size: 1.2vw;
+}
+main * {
+    margin: 0vw;
+    padding: 0vw;
+}
+.status {
+    background-color: #DCCFF9;
+    border-radius: 1.5vw;
+    padding: 1vw;
+    margin: 0.8vw;
+    font-size: 1.1vw;
+}
+
+.delivery {
+    background-color: #F2F2F2;
+    padding: 2vw;
+    margin: 0.8vw;
+    position: relative;
+}
+
+.delivery h4 {
+    color: #989898;
+    font-weight:normal;
+    font-size: 1.1vw;
+
+}
+
+.delivery .btn {
+    position: absolute;
+    right: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #DCCFF9;
+    color: #280379;
+    border: none;
+    padding: 1.2vw;
+    border-radius: 1.5vw;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1vw;
+}
+
+.order {
+    background-color: #F2F2F2;
+    padding: 2vw;
+    margin: 0.8vw;
+    position: relative;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.status-dropdown {
+        background-color: #E0D4FF;
+        right: 2vw;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #21005D;
+        border: none;
+        border-radius: 1.5vw;
+        padding: 1.2vw;
+        font-size: 1.1vw;
+        font-weight: 900;
+        font-family: 'Roboto', sans-serif;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2321005D'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5vw center;
+        background-size: 1.2vw;
+        outline: none;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.05);
+    }
+.order img {
+    margin: 0.8vw 0vw;
+    width: 10vw;
+    height: 10vw;
+    object-fit: cover;
+}
+.order h3 {
+    flex: 1 1 100%;
+    font-size: 1.6vw;
+}
+
+.order div {
+    margin: 0.8vw;
+    flex-basis: 60%;
+}
+
+
+.order h4 {
+    color: #989898;
+    font-weight: normal;
+    font-size: 1.1vw;
+}
+.order span {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.buttons .btn {
+    background-color: #DCCFF9;
+    color: #280379;
+    border: none;
+    padding: 1.2vw;
+    border-radius: 1.5vw;
+    font-weight: bold;
+    margin: 0vw 0.8vw;
+    text-decoration: none;
+    font-size: 1.1vw;
+}

@@ -167,6 +167,32 @@ def seller_view_order_history(request):
         'orders': orders
     })
 
+@login_required
+def transaction_detail(request, pk):
+    """View for the transaction detail page."""
+    order = get_object_or_404(Order, pk=pk)
+    
+    # Check if user is authorized to view this order
+    is_buyer = order.buyer == request.user
+    is_seller = (request.user.user_type == 'S' and 
+                 order.product.store == request.user.store)
+    
+    if not (is_buyer or is_seller):
+        raise PermissionDenied("You don't have permission to view this order")
+    
+    if request.method == 'POST':
+        # Only sellers can update order status
+        if not is_seller:
+            raise PermissionDenied("Only sellers can update order status")
+        
+        new_status = request.POST.get("status")
+        order.status = new_status
+        order.save()
+        return redirect('marketplace:transaction_detail', pk=pk)
+    
+    return render(request, 'transaction_detail.html', {'order': order})
+
+@login_required
 def order_history(request):
     """View for the buyer's order history page."""
     # This fetches orders that the logged-in user has made
