@@ -1,6 +1,39 @@
 {% extends "base.html" %}
 {% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/buyer_order_detail.css" %}">
+{% endblock stylesheet %}
 
 {% block content %}
-    
+    <section class="status"><p>This order has been marked as confirmed on 01/29/2026 10:10PM</p></section>
+    <section class="delivery">
+        <h3>Delivery Information</h3>
+        <h4>Buyer Name</h4>
+        <h4>+63 917 707 5165</h4>
+        <br>
+        <h4>Expected Date of Arrival: 01/30/2026</h4>
+        <h4>Delivery Address: Unit 2, 221 Street Ave., Barangay West, Quezon City 1102, Metro Manila, Philippines</h4>
+    </section>
+    <section class="order">
+        <h3>Order Information</h3>
+        <img src="{% static "images/sample-product.png" %}" alt="">
+        <div>
+            <span>
+                <h4>Order No.</h4>
+                <h4>Date</h4>
+            </span>
+            <br>
+            <h4>FINO Hair Mask Premium Imported Touch Hair Treatment</h4>
+            <br>
+            <span>
+                <h4>3</h4>
+                <h4>P640</h4>
+                <h4>Total: 1920</h4>
+            </span>
+        </div>
+    </section>
+    <section class="buttons">
+        <button>RETURN TO HISTORY</button>
+        <button>VIEW ACTIVE LISTING</button>
+    </section>
 {% endblock content %}
