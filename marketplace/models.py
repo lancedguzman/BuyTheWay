@@ -106,14 +106,22 @@ class Store(models.Model):
                                   related_name='store',
                                   limit_choices_to={'user_type': 'S'})
     # products = models.ManyToManyField(Product)
+    gcash_qr = models.ImageField(upload_to='store_qrs/gcash/', null=True, blank=True, 
+                                 help_text="Upload Store GCash QR (.jpg or .png)")
+    maya_qr = models.ImageField(upload_to='store_qrs/maya/', null=True, blank=True, 
+                                help_text="Upload Store Maya QR (.jpg or .png)")
+    bank_qr = models.ImageField(upload_to='store_qrs/bank/', null=True, blank=True, 
+                                help_text="Upload Store Bank Transfer/QRPh QR (.jpg or .png)")
 
     def __str__(self):
         return self.name
 
 
 class Cart(models.Model):
-    """Model representing the associative relationship
-    between buyers and the current products in their shopping cart"""
+    """
+    Model representing the associative relationship 
+    between buyers and the current products in their shopping cart
+    """
     buyer = models.ForeignKey('account_management.UserProfile',
                               on_delete=models.CASCADE,
                               related_name='cart_buyer')
@@ -126,3 +134,23 @@ class Cart(models.Model):
     def subtotal(self):
         """Calculates subtotal for the cart"""
         return self.product.price * self.quantity
+
+
+class Payment(models.Model):
+    """Model representing a payment in the marketplace."""
+
+    PAYMENT_METHOD_CHOICES = [
+        ('gcash', 'GCash'),
+        ('maya', 'Maya'),
+        ('bank', 'Bank Transfer (QRPh)'),
+    ]
+
+    order = models.OneToOneField(Order, on_delete=models.CASCADE,
+                                 related_name='payment')
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, 
+                                      null=False, blank=False, default='gcash')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Payment for Order {self.order.id} - Amount: {self.amount} via {self.get_payment_method_display()}'

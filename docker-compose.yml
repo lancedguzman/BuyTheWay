@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app  # Syncs your local code with the container in real-time
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env    # Automatically loads your environment variables
