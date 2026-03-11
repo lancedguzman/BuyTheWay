@@ -134,9 +134,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 1.5vw;
         padding: 2vw;
+        padding-top: 3vw;
     }
 
     .buyer-name {
@@ -172,50 +173,51 @@
 
     <div class="transactions-container">
         {% for order in orders %}
-        <div class="order-card">
+        <div class="order-card" style="position: relative;">
+            
             <div class="order-header">
               
                 <span>Order No. {{ order.id }}</span>
                 <span>{{ order.timestamp }}</span>
             </div>
             <div class="order-body">
-                <div class="product-section">
-                    <img class="product-image" src="{{ order.product.image.url }}" alt="Product">
-                    <div class="product-details">
-                        <h3 class="product-name">{{ order.product.name }}</h3>
-                        <div class="price-row">
-                            <span>{{ order.quantity }}</span>
-                            <span>{{ order.product.price }}</span>
-                            <span class="total">{{ order.total_price }}</span>
-                        </div>
-                        <div class="address-status-row">
-                            <div class="address">{{ order.address }}</div>
-                            <form method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="order_id" value="{{ order.id }}">
-
-                                <select name="status"
-                                        onchange="this.form.submit()"
-                                        class="status-dropdown">
-                                    {% for value, label in order.STATUS_CHOICES %}
-                                        <option value="{{ value }}"
-                                            {% if order.status == value %}selected{% endif %}>
-                                            {{ label }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </form>
+                <a href="{% url 'marketplace:transaction_detail' order.id %}" style="text-decoration: none; color: inherit; display: contents;">
+                    <div class="product-section" style="position: relative;">
+                        <img class="product-image" src="{{ order.product.image.url }}" alt="Product">
+                        <div class="product-details">
+                            <h3 class="product-name">{{ order.product.name }}</h3>
+                            <div class="price-row">
+                                <span>{{ order.quantity }}</span>
+                                <span>{{ order.product.price }}</span>
+                                <span class="total">{{ order.total_price }}</span>
+                            </div>
+                            <div class="address-status-row">
+                                <div class="address">{{ order.address }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="buyer-section">
-                    <div class="buyer-name">{{ order.buyer.first_name }}  {{order.buyer.last_name }}</div>
-                    <button class="see-profile-btn">SEE PROFILE</button>
-                </div>
+                    <div class="buyer-section">
+                        <div class="buyer-name">{{ order.buyer.first_name }}  {{order.buyer.last_name }}</div>
+                    </div>
+                </a>
+                <form method="POST" style="position: absolute; bottom: 1.2vw; right: 25vw; z-index: 10;">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <select name="status"
+                            onchange="this.form.submit();"
+                            class="status-dropdown">
+                        {% for value, label in order.STATUS_CHOICES %}
+                            <option value="{{ value }}"
+                                {% if order.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+                <button class="see-profile-btn" style="position: absolute; bottom: 3vw; right: 7.2vw; z-index: 10;">SEE PROFILE</button>
             </div>
         </div>
         {% endfor %}
-        </div>
     </div>
 </div>
 {% endblock %}

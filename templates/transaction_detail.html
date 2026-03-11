@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/buyer_order_detail.css" %}">
+{% endblock stylesheet %}
+
+{% block content %}
+    <section class="status"><p>This order has been marked as {{ order.get_status_display }} on {{ order.status_updated_at }}</p></section>
+    <section class="delivery">
+        <h3>Delivery Information</h3>
+        <h4>{{ order.buyer.first_name }} {{ order.buyer.last_name }}</h4>
+        <h4>{{ order.buyer.phone_number }}</h4>
+        <br>
+        <h4>Expected Date of Arrival: {{ order.product.expected_delivery }}</h4>
+        <h4>Delivery Address: {{ order.address }}</h4>
+        <a class="btn" href="">SEE PROFILE</a>
+    </section>
+    <section class="order">
+        <h3>Order Information</h3>
+        <img src="{{ order.product.image.url }}" alt="">
+        <div>
+            <span>
+                <h4>Order No. {{ order.id }}</h4>
+                <h4>{{ order.date }} </h4>
+            </span>
+            <br>
+            <h4>{{ order.product.name }}</h4>
+            <br>
+            <span>
+                <h4>{{ order.quantity }}</h4>
+                <h4>₱{{ order.product.price }}</h4>
+                <h4>₱{{ order.total_price }}</h4>
+            </span>
+        </div>
+        {% if user.user_type == 'S' %}
+        <form method="POST">
+            {% csrf_token %}
+            <select name="status"
+                onchange="this.form.submit();"
+                class="status-dropdown">
+                    {% for value, label in order.STATUS_CHOICES %}
+                        <option value="{{ value }}"
+                            {% if order.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+    </section>
+    <section class="buttons">
+        <a class="btn" href="{% url "marketplace:transaction-history" %}" >RETURN TO HISTORY</a>
+        <a class="btn" href="{% url "marketplace:product_view" order.product.id %}" >VIEW ACTIVE LISTING</a>
+    </section>
+{% endblock content %}
