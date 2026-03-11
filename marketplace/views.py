@@ -217,6 +217,14 @@ def seller_view_order_history(request):
         'orders': orders
     })
 
+def order_detail(request, id):
+    """View for the buyer's individual order"""
+    order = Order.objects.get(id=id)
+    if order.buyer != request.user:
+        raise PermissionDenied("This is not your order!")
+    
+    status = order.get_status_display()
+    return render(request, 'buyer_order_detail.html', {'order': order, 'status': status})
 @login_required
 def transaction_detail(request, pk):
     """View for the transaction detail page."""
