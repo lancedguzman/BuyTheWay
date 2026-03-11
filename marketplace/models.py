@@ -69,8 +69,26 @@ class Order(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, null=False,
                               blank=False, default='P')
+    status_updated_at = models.DateTimeField(null=True, blank=True)
     buyer = models.ForeignKey('account_management.UserProfile',
                               on_delete=models.CASCADE, related_name='orders')
+
+    def save(self, *args, **kwargs):
+        """Override save to update status_updated_at when status changes."""
+        from django.utils import timezone
+        
+        # Set status_updated_at on first creation
+        if not self.pk:
+            self.status_updated_at = timezone.now()
+        else:
+            # Update status_updated_at only when status changes
+            try:
+                old_instance = Order.objects.get(pk=self.pk)
+                if old_instance.status != self.status:
+                    self.status_updated_at = timezone.now()
+            except Order.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Order for {self.product.name} - {self.quantity} items'
@@ -97,6 +115,7 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Cart(models.Model):
     """
