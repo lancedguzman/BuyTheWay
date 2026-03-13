@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import Product, Cart, Order
-from .forms import ProductForm, CheckoutForm
+from .forms import ProductForm, CheckoutForm, StorePaymentForm
 
 
 @login_required
@@ -217,6 +217,33 @@ def seller_view_order_history(request):
         'orders': orders
     })
 
+
+@login_required
+def edit_store_payments(request):
+    """View for a seller to upload their receiving QR codes."""
+    # Ensure only sellers can access this view
+    if request.user.user_type != 'S':
+        raise PermissionDenied("Only sellers can update store payment methods.")
+
+    # Fetch the store associated with the logged-in seller
+    store = request.user.store
+
+    if request.method == 'POST':
+        # Pass request.FILES because the form handles image uploads
+        form = StorePaymentForm(request.POST, request.FILES, instance=store)
+        if form.is_valid():
+            form.save()
+            # Redirect back to the transaction history or store dashboard upon success
+            return redirect('marketplace:transaction-history')
+    else:
+        # Pre-populate the form with existing QR codes if the seller already uploaded them
+        form = StorePaymentForm(instance=store)
+
+    return render(request, 'store_payment_form.html', {
+        'form': form,
+    })
+
+
 def order_detail(request, id):
     """View for the buyer's individual order"""
     order = Order.objects.get(id=id)
@@ -224,7 +251,12 @@ def order_detail(request, id):
         raise PermissionDenied("This is not your order!")
     
     status = order.get_status_display()
-    return render(request, 'buyer_order_detail.html', {'order': order, 'status': status})
+    return render(request, 'buyer_order_detail.html', {
+        'order': order,
+        'status': status
+    })
+
+
 @login_required
 def transaction_detail(request, pk):
     """View for the transaction detail page."""
@@ -248,14 +280,20 @@ def transaction_detail(request, pk):
         order.save()
         return redirect('marketplace:transaction_detail', pk=pk)
     
-    return render(request, 'transaction_detail.html', {'order': order})
+    return render(request, 'transaction_detail.html',{
+        'order': order
+    })
+
 
 @login_required
 def order_history(request):
     """View for the buyer's order history page."""
     # This fetches orders that the logged-in user has made
     buyer_orders = Order.objects.filter(buyer=request.user).order_by('-date')
-    return render(request, 'order_history.html', {'orders': buyer_orders})
+    return render(request, 'order_history.html',{
+        'orders': buyer_orders
+    })
+
 
 def track_list(request):
     """View for the seller's product tracking list"""

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Update Store Payments | Buy The Way{% endblock %}
+
+{% block stylesheet %}
+<style>
+    .payment-form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .payment-form-container h2 {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-form-container">
+    <h2>Update Store Payment Methods</h2>
+    <p style="text-align: center; margin-bottom: 1.5rem;">
+        Upload your QR codes below so buyers can easily pay you via GCash, Maya, or Bank Transfer.
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+
+        <button type="submit" class="submit-btn">Save Payment Methods</button>
+    </form>
+</div>
+{% endblock %}
