@@ -1,0 +1,194 @@
+.checkout-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+.checkout-header {
+    background-color: #B28DFF;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.checkout-title {
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.checkout-card {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border-radius: 30px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 40px solid #2A008E;
+}
+
+.checkout-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 15px;
+}
+
+.checkout-item-details {
+    flex-grow: 1;
+}
+
+.checkout-item-name {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.checkout-item-meta {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 5px 0;
+}
+
+.checkout-item-category {
+    background: #D1C4E9;
+    color: #512DA8;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.checkout-item-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.checkout-item-quantity {
+    background: #2A008E;
+    color: white;
+    border-radius: 20px;
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.checkout-form {
+    margin-top: 20px;
+}
+
+.address-box {
+    background: #2A008E;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.address-label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.pay-btn {
+    background: #D1C4E9;
+    border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    font-weight: bold;
+    color: #2A008E;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pay-btn-arrow {
+    font-size: 1.2rem;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+#modalTitle {
+    color: #2A008E;
+    margin-top: 0;
+}
+
+.modal-text {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.qr-container {
+    margin: 20px 0;
+}
+
+.store-qr-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.store-title {
+    margin: 0 0 10px 0;
+}
+
+.qr-img {
+    max-width: 200px;
+    border-radius: 10px;
+}
+
+.missing-qr-text {
+    color: red;
+    font-size: 0.8rem;
+}
+
+.modal-submit-btn {
+    background-color: #2A008E;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}

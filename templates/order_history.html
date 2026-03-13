@@ -4,176 +4,7 @@
 {% block title %}My Order History - Buy The Way{% endblock %}
 
 {% block stylesheet %}
-<style>
-    .order-history-wrapper {
-        background-color: #fcfcfc;
-        min-height: 100vh;
-        padding: 3vw 0 5vw 0;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .container {
-        max-width: 65vw;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .history-banner {
-        background-color: #8AABFF; 
-        color: #ffffff;
-        text-align: center;
-        padding: 1vw 2vw;
-        border-radius: 1vw;
-        font-size: 3vw;
-        font-weight: 900;
-        margin-bottom: 1.5vw;
-        text-transform: uppercase;
-        letter-spacing: 0.1vw;
-    }
-
-    .tabs-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 1.5vw;
-        margin-bottom: 2vw;
-    }
-
-    .tab {
-        flex: 1;
-        text-align: center;
-        padding: 0.6vw 0;
-        border-radius: 2vw;
-        font-weight: 700;
-        font-size: 1vw;
-        cursor: pointer;
-        transition: background-color 0.2s, color 0.2s;
-    }
-
-    .tab.active {
-        background-color: #3D70EF;
-        color: #ffffff;
-    }
-
-    .tab.inactive {
-        background-color: #D1CCFF; 
-        color: #0036BC;
-    }
-
-    .tab.inactive:hover {
-        background-color: #CDB8FB;
-    }
-
-    .order-card {
-        background-color: #ffffff;
-        border-radius: 0.5vw;
-        margin-bottom: 2vw;
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9vw;
-        font-weight: 900;
-        color: #000;
-        margin-bottom: 0.8vw;
-        padding: 0 0.5vw;
-    }
-
-    .header-meta {
-        display: flex;
-        gap: 1.5vw;
-    }
-
-    .card-body {
-        background-color: #F6F6F6;
-        border-radius: 0.5vw;
-        padding: 1.5vw;
-        display: flex;
-        align-items: center;
-        gap: 1.5vw;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .product-img {
-        width: 7vw;
-        height: 7vw;
-        object-fit: cover;
-        background-color: white;
-        border: 1px solid #eaeaea;
-    }
-    
-    .no-image-placeholder {
-        background-color: #eaeaea;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 0.8vw;
-        text-align: center;
-    }
-
-    .product-details {
-        flex: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5vw;
-    }
-
-    .product-title {
-        font-size: 1vw;
-        font-weight: 700;
-        margin: 0;
-        color: #000;
-    }
-
-    .product-qty {
-        font-size: 1vw;
-        font-weight: 900;
-        color: #0036BC;
-    }
-
-    .price-col {
-        flex: 1;
-        font-size: 1.1vw;
-        font-weight: 900;
-        color: #0036BC;
-        text-align: center;
-    }
-
-    .action-col {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .rate-btn {
-        background-color: #3D70EF;
-        color: white;
-        border: none;
-        border-radius: 2vw;
-        padding: 0.6vw 2vw;
-        font-size: 0.9vw;
-        font-weight: 900;
-        cursor: pointer;
-        text-transform: uppercase;
-        box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-        transition: background-color 0.2s;
-    }
-
-    .rate-btn:hover {
-        background-color: #2b5bc7;
-    }
-
-    .empty-state-message {
-        text-align: center;
-        padding: 4vw;
-        font-size: 1.2vw;
-        color: #888;
-        font-weight: bold;
-        display: none; 
-    }
-</style>
+    <link rel="stylesheet" href="{% static 'css/order_history.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -203,7 +34,7 @@
                         <span>Order Total: ₱{{ order.total_price }}</span>
                     </div>
                 </div>
-                <a href="{% url "marketplace:buyer_order_detail" order.id %}">
+                <a href="{% url 'marketplace:buyer_order_detail' order.id %}" style="text-decoration: none;">
                     <div class="card-body">
                         {% if order.product.image %}
                             <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="product-img">
@@ -233,7 +64,7 @@
                 </a>
             </div>
             {% empty %}
-            <div style="text-align: center; padding: 4vw; color: #888; font-weight: bold;">
+            <div class="no-orders-overall">
                 You haven't made any orders yet.
             </div>
             {% endfor %}
@@ -246,58 +77,5 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const tabs = document.querySelectorAll('.tab');
-        const cards = document.querySelectorAll('.order-card');
-        const emptyMessage = document.getElementById('emptyMessage');
-        
-        const statusMap = {
-            'Pending': 'P',
-            'Confirmed': 'C',
-            'Shipping': 'S',
-            'Completed': 'CP',
-            'Cancelled': 'X'
-        };
-
-        function filterOrders(statusText) {
-            const targetStatus = statusMap[statusText];
-            let itemsFound = false;
-            
-            cards.forEach(card => {
-                if (card.getAttribute('data-status') === targetStatus) {
-                    card.style.display = 'block';
-                    itemsFound = true;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            if (!itemsFound && cards.length > 0) {
-                emptyMessage.style.display = 'block';
-            } else {
-                emptyMessage.style.display = 'none';
-            }
-        }
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => {
-                    t.classList.remove('active');
-                    t.classList.add('inactive');
-                });
-                
-                tab.classList.remove('inactive');
-                tab.classList.add('active');
-                
-                filterOrders(tab.innerText.trim());
-            });
-        });
-
-        const initialTab = document.querySelector('.tab.active');
-        if(initialTab) {
-            filterOrders(initialTab.innerText.trim());
-        }
-    });
-</script>
+<script src="{% static 'js/order_history.js' %}"></script>
 {% endblock %}

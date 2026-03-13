@@ -3,152 +3,105 @@
 
 {% block title %}Checkout | Buy The Way{% endblock %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="checkout-wrapper" style="max-width: 600px; margin: 2rem auto; font-family: 'Roboto', sans-serif;">
+<div class="checkout-wrapper">
     
-    <div style="background-color: #B28DFF; color: white; text-align: center; padding: 10px; border-radius: 15px; margin-bottom: 20px;">
-        <h1 style="margin: 0; letter-spacing: 2px;">CHECKOUT</h1>
+    <div class="checkout-header">
+        <h1 class="checkout-title">CHECKOUT</h1>
     </div>
 
     {% for item in cart_items %}
-    <div class="checkout-card" style="display: flex; align-items: center; background: #f9f9f9; border-radius: 30px; padding: 15px; margin-bottom: 15px; position: relative; border-left: 40px solid #2A008E;">
-        <img src="{{ item.product.image.url }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-right: 15px;">
+    <div class="checkout-card">
+        <img src="{{ item.product.image.url }}" class="checkout-item-img" alt="{{ item.product.name }}">
         
-        <div style="flex-grow: 1;">
-            <h3 style="margin: 0; font-size: 1rem;">{{ item.product.name }}</h3>
-            <p style="font-size: 0.8rem; color: #666; margin: 5px 0;">
+        <div class="checkout-item-details">
+            <h3 class="checkout-item-name">{{ item.product.name }}</h3>
+            <p class="checkout-item-meta">
                 {{ item.product.store.name }} | {{ item.product.location }} | Delivery by {{ item.product.expected_delivery }}
             </p>
-            <span style="background: #D1C4E9; color: #512DA8; padding: 3px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">
+            <span class="checkout-item-category">
                 {{ item.product.get_category_display }}
             </span>
-            <div style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">₱{{ item.product.price }}</div>
+            <div class="checkout-item-price">₱{{ item.product.price }}</div>
         </div>
 
-        <div style="background: #2A008E; color: white; border-radius: 20px; padding: 15px 25px; font-size: 1.2rem; font-weight: bold;">
+        <div class="checkout-item-quantity">
             {{ item.quantity }}x
         </div>
     </div>
     {% endfor %}
 
-    <form method="post" id="checkout-form" style="margin-top: 20px;">
+    <form method="post" id="checkout-form" class="checkout-form">
         {% csrf_token %}
-        <div style="background: #2A008E; border-radius: 15px; padding: 10px 20px; color: white; margin-bottom: 20px;">
-            <label style="display: block; font-size: 0.9rem; margin-bottom: 5px;">Input Address of Delivery</label>
+        <div class="address-box">
+            <label class="address-label" for="id_address">Input Address of Delivery</label>
             {{ form.address }}
             {{ form.payment_method }} 
         </div>
 
         <div class="payment-methods">
-            <button type="button" onclick="openModal('gcash')" class="pay-btn" style="background: #D1C4E9; border: none; width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: left; font-weight: bold; color: #2A008E; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                PAY VIA GCASH <span style="font-size: 1.2rem;">›</span>
+            <button type="button" onclick="openModal('gcash')" class="pay-btn">
+                PAY VIA GCASH <span class="pay-btn-arrow">›</span>
             </button>
-            <button type="button" onclick="openModal('maya')" class="pay-btn" style="background: #D1C4E9; border: none; width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: left; font-weight: bold; color: #2A008E; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                PAY VIA MAYA <span style="font-size: 1.2rem;">›</span>
+            <button type="button" onclick="openModal('maya')" class="pay-btn">
+                PAY VIA MAYA <span class="pay-btn-arrow">›</span>
             </button>
-            <button type="button" onclick="openModal('bank')" class="pay-btn" style="background: #D1C4E9; border: none; width: 100%; padding: 15px; border-radius: 10px; text-align: left; font-weight: bold; color: #2A008E; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                PAY VIA BANK TRANSFER <span style="font-size: 1.2rem;">›</span>
+            <button type="button" onclick="openModal('bank')" class="pay-btn">
+                PAY VIA BANK TRANSFER <span class="pay-btn-arrow">›</span>
             </button>
         </div>
     </form>
 </div>
 
-<div id="qrModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+<div id="qrModal" class="modal-overlay">
     
-    <div style="background-color: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; text-align: center; position: relative;">
-        <span onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666;">&times;</span>
+    <div class="modal-content">
+        <span onclick="closeModal()" class="modal-close">&times;</span>
         
-        <h2 id="modalTitle" style="color: #2A008E; margin-top: 0;">Scan to Pay</h2>
-        <p style="color: #666; font-size: 0.9rem;">Grand Total: <strong>₱{{ grand_total }}</strong></p>
+        <h2 id="modalTitle">Scan to Pay</h2>
+        <p class="modal-text">Grand Total: <strong>₱{{ grand_total }}</strong></p>
 
-        <div id="qrContainer" style="margin: 20px 0;">
+        <div id="qrContainer" class="qr-container">
             {% for store in stores %}
-                <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 10px;">
-                    <h4 style="margin: 0 0 10px 0;">{{ store.name }}</h4>
+                <div class="store-qr-box">
+                    <h4 class="store-title">{{ store.name }}</h4>
                     
                     <div class="qr-code qr-gcash" style="display: none;">
                         {% if store.gcash_qr %}
-                            <img src="{{ store.gcash_qr.url }}" alt="GCash QR" style="max-width: 200px; border-radius: 10px;">
+                            <img src="{{ store.gcash_qr.url }}" alt="GCash QR" class="qr-img">
                         {% else %}
-                            <p style="color: red; font-size: 0.8rem;">Seller has not uploaded a GCash QR.</p>
+                            <p class="missing-qr-text">Seller has not uploaded a GCash QR.</p>
                         {% endif %}
                     </div>
 
                     <div class="qr-code qr-maya" style="display: none;">
                         {% if store.maya_qr %}
-                            <img src="{{ store.maya_qr.url }}" alt="Maya QR" style="max-width: 200px; border-radius: 10px;">
+                            <img src="{{ store.maya_qr.url }}" alt="Maya QR" class="qr-img">
                         {% else %}
-                            <p style="color: red; font-size: 0.8rem;">Seller has not uploaded a Maya QR.</p>
+                            <p class="missing-qr-text">Seller has not uploaded a Maya QR.</p>
                         {% endif %}
                     </div>
 
                     <div class="qr-code qr-bank" style="display: none;">
                         {% if store.bank_qr %}
-                            <img src="{{ store.bank_qr.url }}" alt="Bank QR" style="max-width: 200px; border-radius: 10px;">
+                            <img src="{{ store.bank_qr.url }}" alt="Bank QR" class="qr-img">
                         {% else %}
-                            <p style="color: red; font-size: 0.8rem;">Seller has not uploaded a Bank Transfer QR.</p>
+                            <p class="missing-qr-text">Seller has not uploaded a Bank Transfer QR.</p>
                         {% endif %}
                     </div>
                 </div>
             {% endfor %}
         </div>
 
-        <button onclick="submitCheckoutForm()" style="background-color: #2A008E; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;">
+        <button onclick="submitCheckoutForm()" class="modal-submit-btn">
             I HAVE PAID - PLACE ORDER
         </button>
     </div>
 </div>
 
-<script>
-    // Get the form and the hidden payment method input
-    const checkoutForm = document.getElementById('checkout-form');
-    const paymentInput = document.getElementById('id_payment_method'); // Django auto-generates this ID
-    const modal = document.getElementById('qrModal');
-    const modalTitle = document.getElementById('modalTitle');
-
-    function openModal(method) {
-        // 1. Set the hidden input value in the form
-        paymentInput.value = method;
-
-        // 2. Hide all QR codes first
-        const allQrs = document.querySelectorAll('.qr-code');
-        allQrs.forEach(qr => qr.style.display = 'none');
-
-        // 3. Show only the requested QR codes and set the title
-        let qrsToShow;
-        if (method === 'gcash') {
-            qrsToShow = document.querySelectorAll('.qr-gcash');
-            modalTitle.innerText = 'Scan GCash QR';
-        } else if (method === 'maya') {
-            qrsToShow = document.querySelectorAll('.qr-maya');
-            modalTitle.innerText = 'Scan Maya QR';
-        } else if (method === 'bank') {
-            qrsToShow = document.querySelectorAll('.qr-bank');
-            modalTitle.innerText = 'Scan Bank QR';
-        }
-        
-        qrsToShow.forEach(qr => qr.style.display = 'block');
-
-        // 4. Show the modal
-        modal.style.display = 'flex';
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-    }
-
-    function submitCheckoutForm() {
-        // Check if the user actually typed an address before submitting
-        const addressInput = document.getElementById('id_address');
-        if (!addressInput.value) {
-            alert("Please enter a delivery address first!");
-            closeModal();
-            addressInput.focus();
-            return;
-        }
-        
-        // Submit the form
-        checkoutForm.submit();
-    }
-</script>
+<script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}
