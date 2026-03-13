@@ -3,7 +3,9 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import Product, Order, Store
+from django.db.utils import IntegrityError
+from decimal import Decimal
+from .models import Product, Order, Store, Payment
 
 
 User = get_user_model()
@@ -13,7 +15,7 @@ class MarketplaceModelsTest(TestCase):
 
     def setUp(self):
         """Set up standard data for the test cases."""
-        # 1. Create a Seller UserProfile using your custom manager
+        # Create a Seller UserProfile using your custom manager
         self.seller_profile = User.objects.create_user(
             email='seller@buytheway.com',
             password='SecurePassword123!',
@@ -21,7 +23,7 @@ class MarketplaceModelsTest(TestCase):
             phone_number='09123456789'
         )
 
-        # 2. Create a Buyer UserProfile using your custom manager
+        # Create a Buyer UserProfile using your custom manager
         self.buyer_profile = User.objects.create_user(
             email='buyer@buytheway.com',
             password='SecurePassword123!',
@@ -29,7 +31,7 @@ class MarketplaceModelsTest(TestCase):
             phone_number='09987654321'
         )
 
-        # 3. Create a Store
+        # Create a Store
         self.store = Store.objects.create(
             name='Tech Haven',
             description='The best tech store.',
@@ -37,7 +39,7 @@ class MarketplaceModelsTest(TestCase):
             seller=self.seller_profile
         )
 
-        # 4. Create a Base Product
+        # Create a Base Product
         self.product = Product.objects.create(
             name='Wireless Mouse',
             store=self.store,
@@ -134,3 +136,63 @@ class MarketplaceModelsTest(TestCase):
             buyer=self.buyer_profile
         )
         self.assertEqual(order.status, 'P')
+
+
+    # --- Payment Tests ---
+
+    def test_payment_default_method(self):
+        """Test that a Payment defaults to 'gcash' if no method is specified."""
+        order = Order.objects.create(
+            product=self.product,
+            address='123 Main St',
+            quantity=1,
+            total_price=25.00,
+            buyer=self.buyer_profile
+        )
+        payment = Payment.objects.create(
+            order=order,
+            amount=25.00
+        )
+        self.assertEqual(payment.payment_method, 'gcash')
+
+    def test_payment_str_representation(self):
+        """Test the __str__ method correctly maps the payment method display name."""
+        order = Order.objects.create(
+            product=self.product,
+            address='123 Main St',
+            quantity=1,
+            total_price=25.00,
+            buyer=self.buyer_profile
+        )
+        payment = Payment.objects.create(
+            order=order,
+            payment_method='bank',
+            amount=Decimal('25.00')
+        )
+        expected_str = f'Payment for Order {order.id} - Amount: 25.00 via Bank Transfer (QRPh)'
+        self.assertEqual(str(payment), expected_str)
+
+    def test_payment_one_to_one_constraint(self):
+        """Test that an Order cannot have more than one Payment associated with it."""
+        order = Order.objects.create(
+            product=self.product,
+            address='123 Main St',
+            quantity=1,
+            total_price=25.00,
+            buyer=self.buyer_profile
+        )
+        
+        # Create the first payment (Should succeed)
+        Payment.objects.create(
+            order=order,
+            payment_method='maya',
+            amount=25.00
+        )
+        
+        # Attempt to create a second payment for the exact same order
+        with self.assertRaises(IntegrityError):
+            Payment.objects.create(
+                order=order,
+                payment_method='gcash',
+                amount=25.00
+            )
