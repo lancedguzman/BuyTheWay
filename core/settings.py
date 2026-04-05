@@ -30,6 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
 
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'apps',
     'account_management',
     'marketplace',
+    'chat',
 ]
 
 MIDDLEWARE = [

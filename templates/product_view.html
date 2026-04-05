@@ -73,7 +73,9 @@
                 </div>
                 <h2 class="name-of-seller">{{ product.store.name }}</h2>
             </div>
-            <button class="chat-seller-btn">CHAT WITH SELLER</button>
+            {% if request.user.user_type == 'B' %}
+                <a href="{% url 'chat:start_conversation' product.pk %}" class="chat-seller-btn">CHAT WITH SELLER</a>
+            {% endif %}
         </section>
         
         <section class="purchase-actions">
