@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Group #{{ group.pk }} – {{ group.product.name }} | BuyTheWay{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/groupings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="group-wrapper">
+
+    <!-- ── Header banner ── -->
+    <div class="group-banner">
+        <h1 class="group-banner-title">GROUP ORDER</h1>
+    </div>
+
+    <!-- ── Product card ── -->
+    <div class="group-product-card">
+        <img src="{{ group.product.image.url }}" alt="{{ group.product.name }}" class="group-product-img">
+        <div class="group-product-info">
+            <h2 class="group-product-name">{{ group.product.name }}</h2>
+            <p class="group-product-meta">
+                {{ group.product.store.name }} &nbsp;|&nbsp; {{ group.product.location }}
+            </p>
+            <span class="category-tag">{{ group.product.get_category_display }}</span>
+            <div class="group-price-row">
+                <span class="group-original-price">₱{{ group.product.price }}</span>
+                <span class="group-discount-price">₱{{ group.product.group_price }}
+                    <span class="group-price-label">GROUP PRICE</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Status pill ── -->
+    <div class="group-status-row">
+        <span class="status-pill status-{{ group.status|lower }}">
+            {% if group.status == 'O' %}OPEN
+            {% elif group.status == 'L' %}LOCKED
+            {% else %}CANCELLED
+            {% endif %}
+        </span>
+        <span class="group-progress">
+            {{ group.member_count }} / {{ group.target_size }} members joined
+        </span>
+    </div>
+
+    <!-- ── Progress bar ── -->
+    <div class="group-progress-bar-track">
+        <div class="group-progress-bar-fill"
+             style="width: {% widthratio group.member_count group.target_size 100 %}%;">
+        </div>
+    </div>
+
+    <!-- ── Invite link (open groups only) ── -->
+    {% if group.status == 'O' %}
+    <div class="invite-box">
+        <p class="invite-label">Share this link so others can join:</p>
+        <div class="invite-link-row">
+            <input type="text" id="inviteLink" class="invite-input" readonly
+                   value="{{ request.scheme }}://{{ request.get_host }}{% url 'groupings:join_group' group.invite_token %}">
+            <button type="button" class="copy-btn" onclick="copyInviteLink()">COPY</button>
+        </div>
+        <p class="copy-feedback" id="copyFeedback"></p>
+    </div>
+    {% endif %}
+
+    <!-- ── Members table ── -->
+    <div class="members-section">
+        <h3 class="members-title">MEMBERS</h3>
+        <div class="members-list">
+            {% for member in members %}
+            <div class="member-card {% if member.buyer == group.creator %}member-card--creator{% endif %}">
+                <div class="member-avatar">
+                    {% if member.buyer.profile_picture %}
+                        <img src="{{ member.buyer.profile_picture.url }}" alt="{{ member.buyer.first_name }}" class="avatar-img">
+                    {% else %}
+                        <img src="{% static 'icons/user-photo.png' %}" alt="avatar" class="avatar-img">
+                    {% endif %}
+                </div>
+                <div class="member-details">
+                    <span class="member-name">
+                        {{ member.buyer.first_name }} {{ member.buyer.last_name }}
+                        {% if member.buyer == group.creator %}
+                            <span class="creator-badge">CREATOR</span>
+                        {% endif %}
+                    </span>
+                    <span class="member-qty">{{ member.quantity }}x &nbsp;·&nbsp; {{ member.address }}</span>
+                </div>
+                <div class="member-subtotal">
+                    ₱{% widthratio group.product.group_price 1 member.quantity %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ── Creator actions ── -->
+    {% if is_creator and group.status == 'O' %}
+    <div class="creator-actions">
+
+        {% if group.member_count >= 2 %}
+        <form method="POST" action="{% url 'groupings:lock_group' group.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="lock-btn">
+                LOCK GROUP &amp; PLACE ORDERS
+            </button>
+        </form>
+        {% else %}
+        <p class="lock-hint">You need at least 2 members before locking.</p>
+        {% endif %}
+
+        <form method="POST" action="{% url 'groupings:cancel_group' group.pk %}"
+              onsubmit="return confirm('Are you sure you want to cancel this group?');">
+            {% csrf_token %}
+            <button type="submit" class="cancel-btn">CANCEL GROUP</button>
+        </form>
+
+    </div>
+    {% endif %}
+
+    <!-- ── Locked: order summary ── -->
+    {% if group.status == 'L' %}
+    <div class="locked-notice">
+        <p>This group has been locked. Orders have been placed for all members.</p>
+        <a href="{% url 'marketplace:order_history' %}" class="view-orders-btn">VIEW MY ORDERS</a>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function copyInviteLink() {
+    const input = document.getElementById('inviteLink');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value).then(() => {
+        const fb = document.getElementById('copyFeedback');
+        fb.textContent = 'Link copied!';
+        setTimeout(() => { fb.textContent = ''; }, 2000);
+    });
+}
+</script>
+{% endblock %}

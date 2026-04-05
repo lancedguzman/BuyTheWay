@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'account_management',
     'marketplace',
     'chat',
+    'groupings',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Group Unavailable | BuyTheWay{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/groupings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="group-wrapper">
+
+    <div class="group-banner">
+        <h1 class="group-banner-title">GROUP UNAVAILABLE</h1>
+    </div>
+
+    <div class="group-product-card">
+        <img src="{{ group.product.image.url }}" alt="{{ group.product.name }}" class="group-product-img">
+        <div class="group-product-info">
+            <h2 class="group-product-name">{{ group.product.name }}</h2>
+            <p class="group-product-meta">
+                {{ group.product.store.name }} &nbsp;|&nbsp; {{ group.product.location }}
+            </p>
+            <span class="category-tag">{{ group.product.get_category_display }}</span>
+        </div>
+    </div>
+
+    <div class="locked-notice">
+        {% if group.status == 'L' %}
+            <p>This group has already been <strong>locked</strong> and orders have been placed. You can no longer join.</p>
+        {% else %}
+            <p>This group has been <strong>cancelled</strong> and is no longer accepting members.</p>
+        {% endif %}
+        <a href="{% url 'marketplace:marketplace' %}" class="view-orders-btn">BROWSE PRODUCTS</a>
+    </div>
+
+</div>
+{% endblock %}
