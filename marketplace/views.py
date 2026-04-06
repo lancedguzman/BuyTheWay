@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import Product, Cart, Order
 from .forms import ProductForm, CheckoutForm, StorePaymentForm
-
+from watson import search
 
 @login_required
 def checkout_view(request):
@@ -107,6 +107,14 @@ def cart_view(request):
 @login_required
 def marketplace_view(request):
     """View for the marketplace page."""
+
+    search_query = request.GET.get("search_bar")
+    if search_query != None:
+        search_results = search.filter(Product, search_query)
+        print(search_results)
+        return render(request, 'marketplace.html', 
+                      { 'products' : search_results})
+
     products = Product.objects.all()
     return render(request, 'marketplace.html',
                   {'products': products})
