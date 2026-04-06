@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps',
     'account_management',
     'marketplace',
+    'watson'
 ]
 
 MIDDLEWARE = [

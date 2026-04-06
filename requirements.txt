@@ -1,5 +1,6 @@
 asgiref==3.11.1
 Django==6.0.2
+django-watson==1.6.3
 pillow==12.1.1
 python-dotenv==1.2.1
 sqlparse==0.5.5
