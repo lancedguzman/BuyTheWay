@@ -26,5 +26,17 @@ COPY . /app/
 # Expose port 8000 for the Django server
 EXPOSE 8000
 
+# Migrations
+CMD ["python", "manage.py", "migrate"]
+
+# Install Watson search indexes
+CMD ["python", "manage.py", "installwatson"]
+
+# Linus: This is needed to build the search index for existing products in the database. 
+# If you don't have any products, you can skip this step. 
+# I am unsure how to selectively do this in docker, haha
+# https://github.com/etianen/django-watson/wiki
+CMD ["python", "manage.py", "buildwatson"]
+
 # The default command to run when starting the container
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
