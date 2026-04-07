@@ -65,7 +65,7 @@ ROOT_URLCONF = 'core.urls'
 AUTH_USER_MODEL = 'account_management.UserProfile'
 
 # Login/Logout URLs
-LOGIN_REDIRECT_URL = '/marketplace'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/account_management/login/'
 LOGOUT_REDIRECT_URL = '/account_management/login/'
 

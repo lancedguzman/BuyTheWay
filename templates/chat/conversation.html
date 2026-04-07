@@ -23,14 +23,31 @@
         {% for message in messages %}
             <div class="message {% if message.sender == request.user %}message-mine{% else %}message-theirs{% endif %}"
                  data-id="{{ message.pk }}">
-                <p class="message-content">{{ message.content }}</p>
-                <span class="message-time">{{ message.timestamp|date:"M d, H:i" }}</span>
+                <div class="message-avatar-wrap">
+                    {% if message.sender.profile_picture %}
+                        <img class="message-avatar" src="{{ message.sender.profile_picture.url }}" alt="{{ message.sender.first_name }} profile photo">
+                    {% else %}
+                        <div class="message-avatar message-avatar-fallback">{{ message.sender.first_name|default:message.sender.email|first|upper }}</div>
+                    {% endif %}
+                </div>
+                <div class="message-body">
+                    <p class="message-content">{{ message.content }}</p>
+                    <span class="message-time">{{ message.timestamp|date:"M d, H:i" }}</span>
+                </div>
             </div>
         {% endfor %}
     </div>
 
     <form class="chat-input-form" id="chat-form">
         {% csrf_token %}
+        <div class="chat-input-actions" aria-label="Attachment actions">
+            <button type="button" class="chat-icon-btn" aria-label="Add image">
+                <img src="{% static 'icons/image.png' %}" alt="" class="chat-input-icon">
+            </button>
+            <button type="button" class="chat-icon-btn" aria-label="Attach file">
+                <img src="{% static 'icons/paperclip.png' %}" alt="" class="chat-input-icon">
+            </button>
+        </div>
         <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." autocomplete="off">
         <button type="submit" class="chat-send-btn">Send</button>
     </form>
@@ -42,6 +59,10 @@
     const sendUrl = "{% url 'chat:send_message' conversation.pk %}";
     const pollUrl = "{% url 'chat:poll_messages' conversation.pk %}";
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const currentUserProfilePicture = "{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% endif %}";
+    const otherUserProfilePicture = "{% if other_user.profile_picture %}{{ other_user.profile_picture.url }}{% endif %}";
+    const currentUserDisplayName = "{{ request.user.first_name|default:request.user.email|escapejs }}";
+    const otherUserDisplayName = "{{ other_user.first_name|default:other_user.email|escapejs }}";
 
     const messagesDiv = document.getElementById('chat-messages');
     const form = document.getElementById('chat-form');
@@ -63,7 +84,22 @@
         const div = document.createElement('div');
         div.className = 'message ' + (isMine ? 'message-mine' : 'message-theirs');
         div.dataset.id = msg.id;
-        div.innerHTML = `<p class="message-content">${escapeHtml(msg.content)}</p><span class="message-time">${msg.timestamp}</span>`;
+
+        const senderName = msg.sender_name || (isMine ? currentUserDisplayName : otherUserDisplayName);
+        const avatarUrl = msg.sender_profile_picture || (isMine ? currentUserProfilePicture : otherUserProfilePicture);
+        const fallbackInitial = escapeHtml(senderName.trim().charAt(0).toUpperCase() || '?');
+
+        const avatarHtml = avatarUrl
+            ? `<img class="message-avatar" src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(senderName)} profile photo">`
+            : `<div class="message-avatar message-avatar-fallback">${fallbackInitial}</div>`;
+
+        div.innerHTML = `
+            <div class="message-avatar-wrap">${avatarHtml}</div>
+            <div class="message-body">
+                <p class="message-content">${escapeHtml(msg.content)}</p>
+                <span class="message-time">${msg.timestamp}</span>
+            </div>
+        `;
         messagesDiv.appendChild(div);
         scrollToBottom();
     }
