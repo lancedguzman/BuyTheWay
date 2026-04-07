@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chat with {{ other_user.first_name }}{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <a href="{% url 'chat:inbox' %}" class="back-link">&larr; Inbox</a>
+        <div class="chat-header-info">
+            <span class="chat-other-name">{{ other_user.first_name }} {{ other_user.last_name }}</span>
+            {% if conversation.product %}
+                <span class="chat-product-ref">re: <a href="{% url 'marketplace:product_view' conversation.product.pk %}">{{ conversation.product.name }}</a></span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}message-mine{% else %}message-theirs{% endif %}"
+                 data-id="{{ message.pk }}">
+                <p class="message-content">{{ message.content }}</p>
+                <span class="message-time">{{ message.timestamp|date:"M d, H:i" }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <form class="chat-input-form" id="chat-form">
+        {% csrf_token %}
+        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." autocomplete="off">
+        <button type="submit" class="chat-send-btn">Send</button>
+    </form>
+</div>
+
+<script>
+    const conversationId = {{ conversation.pk }};
+    const currentUserId = {{ request.user.pk }};
+    const sendUrl = "{% url 'chat:send_message' conversation.pk %}";
+    const pollUrl = "{% url 'chat:poll_messages' conversation.pk %}";
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const messagesDiv = document.getElementById('chat-messages');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+
+    // Track the last message id for polling
+    let lastMessageId = 0;
+    const existingMessages = messagesDiv.querySelectorAll('.message[data-id]');
+    if (existingMessages.length > 0) {
+        lastMessageId = parseInt(existingMessages[existingMessages.length - 1].dataset.id);
+    }
+
+    function scrollToBottom() {
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    scrollToBottom();
+
+    function appendMessage(msg, isMine) {
+        const div = document.createElement('div');
+        div.className = 'message ' + (isMine ? 'message-mine' : 'message-theirs');
+        div.dataset.id = msg.id;
+        div.innerHTML = `<p class="message-content">${escapeHtml(msg.content)}</p><span class="message-time">${msg.timestamp}</span>`;
+        messagesDiv.appendChild(div);
+        scrollToBottom();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const content = input.value.trim();
+        if (!content) return;
+
+        fetch(sendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ content }),
+        })
+        .then(r => r.json())
+        .then(msg => {
+            if (msg.id) {
+                appendMessage(msg, true);
+                lastMessageId = msg.id;
+                input.value = '';
+            }
+        });
+    });
+
+    function poll() {
+        fetch(`${pollUrl}?after=${lastMessageId}`)
+            .then(r => r.json())
+            .then(data => {
+                data.messages.forEach(msg => {
+                    if (msg.sender_id !== currentUserId) {
+                        appendMessage(msg, false);
+                    }
+                    if (msg.id > lastMessageId) lastMessageId = msg.id;
+                });
+            })
+            .catch(() => {});
+    }
+
+    setInterval(poll, 3000);
+</script>
+{% endblock %}

@@ -32,7 +32,7 @@
             </search>
 
             <div class="nav-icons">
-                <a href="#"><img src="{% static 'icons/chat.png' %}" style="width: 2vw;" alt=""></a>
+                <a href="{% url 'chat:inbox' %}"><img src="{% static 'icons/chat.png' %}" style="width: 2vw;" alt=""></a>
                 <a href="{% url 'marketplace:shopping_cart' %}"><img src="{% static 'icons/cart.png' %}" style="width: 2.5vw;" alt=""></a>
                 <form action="{% url 'account_management:logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
