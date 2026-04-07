@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('marketplace.urls')),
     path('account_management/', include('account_management.urls')),
     path('accounts/', include("django.contrib.auth.urls")),
+    path('chat/', include('chat.urls')),
 ]
 
 # Serve media files in development

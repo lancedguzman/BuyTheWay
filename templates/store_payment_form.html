@@ -6,48 +6,154 @@
 {% block stylesheet %}
 <style>
     .payment-form-container {
-        max-width: 600px;
+        max-width: 650px;
         margin: 2rem auto;
-        padding: 2rem;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #f9f9f9;
+        padding: 2.5rem 2rem;
+        background-color: var(--bg-secondary, #ffffff);
+        border: 1px solid var(--border-gray, #e0e0e0);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        font-family: 'Roboto', sans-serif;
     }
+
     .payment-form-container h2 {
-        margin-bottom: 1.5rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
         text-align: center;
+        color: var(--primary-blue, #333);
     }
-    .form-group {
-        margin-bottom: 1.5rem;
+
+    .payment-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
     }
+
+    .payment-upload-card {
+        background: #fdfdfd;
+        border: 2px solid var(--border-gray, #e0e0e0);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: border-color 0.3s ease;
+    }
+
+    .payment-upload-card:hover {
+        border-color: var(--qty-btn-purple, #9b59b6);
+    }
+
+    .payment-brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .payment-logo {
+        height: 35px;
+        width: 80px;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+    .payment-brand label {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: var(--text-dark, #333);
+        margin: 0;
+    }
+
+    .payment-input {
+        font-size: 0; 
+        color: #555;
+    }
+
+    .payment-input a, 
+    .payment-input br, 
+    .payment-input input[type="checkbox"] {
+        display: none !important;
+    }
+
+    .payment-input input[type="file"] {
+        display: block;
+        font-size: 0.95rem;
+        margin-top: 5px;
+        width: 100%;
+    }
+
+    .errorlist {
+        color: #d9534f;
+        list-style-type: none;
+        padding: 0;
+        margin: 10px 0 0 0;
+        font-size: 0.85rem;
+    }
+
     .submit-btn {
         width: 100%;
-        padding: 0.75rem;
-        background-color: #4CAF50;
+        padding: 15px;
+        background-color: var(--primary-blue, #4CAF50);
         color: white;
         border: none;
-        border-radius: 4px;
-        font-size: 1rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: bold;
         cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.2s;
     }
+
     .submit-btn:hover {
-        background-color: #45a049;
+        background-color: var(--qty-btn-purple, #45a049);
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="payment-form-container">
-    <h2>Update Store Payment Methods</h2>
-    <p style="text-align: center; margin-bottom: 1.5rem;">
+    <h2>Store Payment Methods</h2>
+    <p class="payment-subtitle">
         Upload your QR codes below so buyers can easily pay you via GCash, Maya, or Bank Transfer.
     </p>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <div class="form-group">
-            {{ form.as_p }}
+        <div class="payment-upload-card">
+            <div class="payment-brand">
+                <img src="{% static 'images/gcash-logo.png' %}" alt="GCash" class="payment-logo">
+                <label for="{{ form.gcash_qr.id_for_label }}">GCash QR Code</label>
+            </div>
+            <div class="payment-input">
+                {{ form.gcash_qr }}
+                {{ form.gcash_qr.errors }}
+            </div>
+        </div>
+
+        <div class="payment-upload-card">
+            <div class="payment-brand">
+                <img src="{% static 'images/maya-logo.png' %}" alt="Maya" class="payment-logo">
+                <label for="{{ form.maya_qr.id_for_label }}">Maya QR Code</label>
+            </div>
+            <div class="payment-input">
+                {{ form.maya_qr }}
+                {{ form.maya_qr.errors }}
+            </div>
+        </div>
+
+        <div class="payment-upload-card">
+            <div class="payment-brand">
+                <img src="{% static 'images/bank-logo.png' %}" alt="Bank Transfer" class="payment-logo">
+                <label for="{{ form.bank_qr.id_for_label }}">Bank Transfer (QRPh)</label>
+            </div>
+            <div class="payment-input">
+                {{ form.bank_qr }}
+                {{ form.bank_qr.errors }}
+            </div>
         </div>
 
         <button type="submit" class="submit-btn">Save Payment Methods</button>

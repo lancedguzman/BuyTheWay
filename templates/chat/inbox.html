@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chat Inbox{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-inbox-container">
+    <h2 class="inbox-title">Messages</h2>
+
+    {% if conversation_data %}
+        <ul class="conversation-list">
+            {% for item in conversation_data %}
+                {% with conv=item.conversation %}
+                <li class="conversation-item">
+                    <a href="{% url 'chat:conversation' conv.pk %}" class="conversation-link">
+                        <div class="conv-meta">
+                            <span class="conv-name">
+                                {% if request.user == conv.buyer %}
+                                    {{ conv.seller.first_name }} {{ conv.seller.last_name }}
+                                {% else %}
+                                    {{ conv.buyer.first_name }} {{ conv.buyer.last_name }}
+                                {% endif %}
+                            </span>
+                            {% if conv.product %}
+                                <span class="conv-product">re: {{ conv.product.name }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="conv-preview">
+                            {% if conv.last_message %}
+                                <span class="conv-last-msg">{{ conv.last_message.content|truncatechars:60 }}</span>
+                                <span class="conv-time">{{ conv.last_message.timestamp|date:"M d, H:i" }}</span>
+                            {% else %}
+                                <span class="conv-last-msg conv-empty">No messages yet</span>
+                            {% endif %}
+                            {% if item.unread > 0 %}
+                                <span class="unread-badge">{{ item.unread }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-conversations">No conversations yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
