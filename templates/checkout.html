@@ -5,6 +5,7 @@
 
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/root.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -45,31 +46,39 @@
 
         <div class="payment-methods">
             <button type="button" onclick="openModal('gcash')" class="pay-btn">
-                PAY VIA GCASH <span class="pay-btn-arrow">›</span>
+                <div class="pay-btn-content">
+                    <img src="{% static 'images/gcash-logo.png' %}" alt="GCash" class="payment-icon">
+                    PAY VIA GCASH
+                </div>
+                <span class="pay-btn-arrow">›</span>
             </button>
             <button type="button" onclick="openModal('maya')" class="pay-btn">
-                PAY VIA MAYA <span class="pay-btn-arrow">›</span>
+                <div class="pay-btn-content">
+                    <img src="{% static 'images/maya-logo.png' %}" alt="Maya" class="payment-icon">
+                    PAY VIA MAYA
+                </div>
+                <span class="pay-btn-arrow">›</span>
             </button>
             <button type="button" onclick="openModal('bank')" class="pay-btn">
-                PAY VIA BANK TRANSFER <span class="pay-btn-arrow">›</span>
+                <div class="pay-btn-content">
+                    <img src="{% static 'images/bank-logo.png' %}" alt="Bank Transfer" class="payment-icon">
+                    PAY VIA BANK TRANSFER
+                </div>
+                <span class="pay-btn-arrow">›</span>
             </button>
         </div>
     </form>
 </div>
 
 <div id="qrModal" class="modal-overlay">
-    
     <div class="modal-content">
         <span onclick="closeModal()" class="modal-close">&times;</span>
-        
         <h2 id="modalTitle">Scan to Pay</h2>
         <p class="modal-text">Grand Total: <strong>₱{{ grand_total }}</strong></p>
-
         <div id="qrContainer" class="qr-container">
             {% for store in stores %}
                 <div class="store-qr-box">
                     <h4 class="store-title">{{ store.name }}</h4>
-                    
                     <div class="qr-code qr-gcash" style="display: none;">
                         {% if store.gcash_qr %}
                             <img src="{{ store.gcash_qr.url }}" alt="GCash QR" class="qr-img">
@@ -77,7 +86,6 @@
                             <p class="missing-qr-text">Seller has not uploaded a GCash QR.</p>
                         {% endif %}
                     </div>
-
                     <div class="qr-code qr-maya" style="display: none;">
                         {% if store.maya_qr %}
                             <img src="{{ store.maya_qr.url }}" alt="Maya QR" class="qr-img">
@@ -85,7 +93,6 @@
                             <p class="missing-qr-text">Seller has not uploaded a Maya QR.</p>
                         {% endif %}
                     </div>
-
                     <div class="qr-code qr-bank" style="display: none;">
                         {% if store.bank_qr %}
                             <img src="{{ store.bank_qr.url }}" alt="Bank QR" class="qr-img">
@@ -96,7 +103,6 @@
                 </div>
             {% endfor %}
         </div>
-
         <button onclick="submitCheckoutForm()" class="modal-submit-btn">
             I HAVE PAID - PLACE ORDER
         </button>
