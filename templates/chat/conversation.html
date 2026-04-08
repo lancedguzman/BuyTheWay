@@ -31,20 +31,38 @@
                     {% endif %}
                 </div>
                 <div class="message-body">
-                    <p class="message-content">{{ message.content }}</p>
+                    <div class="message-content">
+                        {% if message.content %}{{ message.content }}{% endif %}
+                        {% if message.attachment %}
+                            {% with ext=message.attachment.name|lower %}
+                                {% if ".jpg" in ext or ".jpeg" in ext or ".png" in ext or ".gif" in ext or ".webp" in ext %}
+                                    <img class="message-attachment-img" src="{{ message.attachment.url }}" alt="image attachment">
+                                {% else %}
+                                    <a class="message-attachment-file" href="{{ message.attachment.url }}" target="_blank" rel="noopener">&#128206; {{ message.attachment.name|cut:"chat_attachments/" }}</a>
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    </div>
                     <span class="message-time">{{ message.timestamp|date:"M d, H:i" }}</span>
                 </div>
             </div>
         {% endfor %}
     </div>
 
+    <input type="file" id="image-input" accept="image/*" style="display:none">
+    <input type="file" id="file-input" style="display:none">
+    <div class="chat-attachment-preview" id="attachment-preview" style="display:none">
+        <div class="attachment-preview-thumb" id="attachment-preview-thumb"></div>
+        <span id="attachment-preview-name"></span>
+        <button type="button" id="attachment-clear-btn" aria-label="Remove attachment">&times;</button>
+    </div>
     <form class="chat-input-form" id="chat-form">
         {% csrf_token %}
         <div class="chat-input-actions" aria-label="Attachment actions">
-            <button type="button" class="chat-icon-btn" aria-label="Add image">
+            <button type="button" class="chat-icon-btn" id="image-btn" aria-label="Add image">
                 <img src="{% static 'icons/image.png' %}" alt="" class="chat-input-icon">
             </button>
-            <button type="button" class="chat-icon-btn" aria-label="Attach file">
+            <button type="button" class="chat-icon-btn" id="file-btn" aria-label="Attach file">
                 <img src="{% static 'icons/paperclip.png' %}" alt="" class="chat-input-icon">
             </button>
         </div>
@@ -67,6 +85,78 @@
     const messagesDiv = document.getElementById('chat-messages');
     const form = document.getElementById('chat-form');
     const input = document.getElementById('chat-input');
+    const imageInput = document.getElementById('image-input');
+    const fileInput = document.getElementById('file-input');
+    const attachmentPreview = document.getElementById('attachment-preview');
+    const attachmentPreviewName = document.getElementById('attachment-preview-name');
+    const attachmentPreviewThumb = document.getElementById('attachment-preview-thumb');
+    const attachmentClearBtn = document.getElementById('attachment-clear-btn');
+
+    let pendingFile = null;
+
+    const FILE_TYPE_ICONS = {
+        pdf:  { icon: '📄', label: 'PDF' },
+        doc:  { icon: '📝', label: 'DOC' },
+        docx: { icon: '📝', label: 'DOCX' },
+        xls:  { icon: '📊', label: 'XLS' },
+        xlsx: { icon: '📊', label: 'XLSX' },
+        ppt:  { icon: '📊', label: 'PPT' },
+        pptx: { icon: '📊', label: 'PPTX' },
+        zip:  { icon: '🗜️', label: 'ZIP' },
+        rar:  { icon: '🗜️', label: 'RAR' },
+        mp4:  { icon: '🎬', label: 'MP4' },
+        mp3:  { icon: '🎵', label: 'MP3' },
+        txt:  { icon: '📃', label: 'TXT' },
+    };
+
+    document.getElementById('image-btn').addEventListener('click', () => imageInput.click());
+    document.getElementById('file-btn').addEventListener('click', () => fileInput.click());
+
+    function setPendingFile(file) {
+        pendingFile = file;
+        attachmentPreviewName.textContent = file.name;
+        attachmentPreviewThumb.innerHTML = '';
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        const isImage = /^(jpg|jpeg|png|gif|webp)$/.test(ext);
+
+        if (isImage) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'attachment-thumb-img';
+                img.alt = file.name;
+                attachmentPreviewThumb.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            const info = FILE_TYPE_ICONS[ext] || { icon: '📎', label: ext.toUpperCase() || 'FILE' };
+            attachmentPreviewThumb.innerHTML =
+                `<div class="attachment-thumb-file"><span class="attachment-thumb-icon">${info.icon}</span><span class="attachment-thumb-label">${info.label}</span></div>`;
+        }
+
+        attachmentPreview.style.display = 'flex';
+    }
+
+    function clearPendingFile() {
+        pendingFile = null;
+        imageInput.value = '';
+        fileInput.value = '';
+        attachmentPreview.style.display = 'none';
+        attachmentPreviewName.textContent = '';
+        attachmentPreviewThumb.innerHTML = '';
+    }
+
+    imageInput.addEventListener('change', () => {
+        if (imageInput.files[0]) setPendingFile(imageInput.files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files[0]) setPendingFile(fileInput.files[0]);
+    });
+
+    attachmentClearBtn.addEventListener('click', clearPendingFile);
 
     // Track the last message id for polling
     let lastMessageId = 0;
@@ -79,6 +169,15 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
     scrollToBottom();
+
+    function buildAttachmentHtml(attachmentUrl, attachmentName) {
+        if (!attachmentUrl) return '';
+        const lower = attachmentName ? attachmentName.toLowerCase() : attachmentUrl.toLowerCase();
+        if (/\.(jpg|jpeg|png|gif|webp)$/.test(lower)) {
+            return `<img class="message-attachment-img" src="${escapeHtml(attachmentUrl)}" alt="image attachment">`;
+        }
+        return `<a class="message-attachment-file" href="${escapeHtml(attachmentUrl)}" target="_blank" rel="noopener">&#128206; ${escapeHtml(attachmentName || 'attachment')}</a>`;
+    }
 
     function appendMessage(msg, isMine) {
         const div = document.createElement('div');
@@ -93,10 +192,13 @@
             ? `<img class="message-avatar" src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(senderName)} profile photo">`
             : `<div class="message-avatar message-avatar-fallback">${fallbackInitial}</div>`;
 
+        const attachmentHtml = buildAttachmentHtml(msg.attachment_url, msg.attachment_name);
+        const contentHtml = msg.content ? escapeHtml(msg.content) : '';
+
         div.innerHTML = `
             <div class="message-avatar-wrap">${avatarHtml}</div>
             <div class="message-body">
-                <p class="message-content">${escapeHtml(msg.content)}</p>
+                <div class="message-content">${contentHtml}${attachmentHtml}</div>
                 <span class="message-time">${msg.timestamp}</span>
             </div>
         `;
@@ -113,24 +215,40 @@
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         const content = input.value.trim();
-        if (!content) return;
+        if (!content && !pendingFile) return;
 
-        fetch(sendUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify({ content }),
-        })
-        .then(r => r.json())
-        .then(msg => {
-            if (msg.id) {
-                appendMessage(msg, true);
-                lastMessageId = msg.id;
-                input.value = '';
-            }
-        });
+        let fetchOptions;
+        if (pendingFile) {
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            formData.append('content', content);
+            formData.append('attachment', pendingFile);
+            fetchOptions = {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                body: formData,
+            };
+        } else {
+            fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({ content }),
+            };
+        }
+
+        fetch(sendUrl, fetchOptions)
+            .then(r => r.json())
+            .then(msg => {
+                if (msg.id) {
+                    appendMessage(msg, true);
+                    lastMessageId = msg.id;
+                    input.value = '';
+                    clearPendingFile();
+                }
+            });
     });
 
     function poll() {
