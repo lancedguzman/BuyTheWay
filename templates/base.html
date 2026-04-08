@@ -23,12 +23,14 @@
             <a class="home-link" href="{% url 'marketplace:marketplace' %}"><img src="{% static 'icons/logo.png' %}" style="width: 3vw" alt=""></a>
             
             <search>
-                <input type="text" placeholder="What are you looking for?">
-                <a class="search-link" href="">
-                    <button type="button">
-                        <img src="{% static 'icons/search.png' %}" alt="">
-                    </button>
-                </a>
+                <form action="{% url "marketplace:marketplace" %}" method="get">
+                <input type="text" placeholder="What are you looking for?" id="search_bar" name="search_bar">
+                    <a class="search-link">
+                        <button type="submit" value="OK">
+                            <img src="{% static 'icons/search.png' %}" alt="">
+                        </button>
+                    </a>
+                </form>
             </search>
 
             <div class="nav-icons">
