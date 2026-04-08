@@ -29,7 +29,7 @@
             {% for item in data.items %}
             <div class="cart-item cart-section">
                 <div class='select-product'>
-                    <input type="checkbox" checked>
+                    <input type="checkbox" checked class="item-checkbox">
                 </div>
 
                 <!-- insert backend django tag for product details -->
@@ -87,4 +87,37 @@
         </div>
 
     </main>
+
+    <script>
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+
+        if (selectAllCheckbox && itemCheckboxes.length > 0) {
+            selectAllCheckbox.addEventListener('change', function () {
+                itemCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+                selectAllCheckbox.indeterminate = false;
+            });
+
+            itemCheckboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    const checkedCount = document.querySelectorAll(
+                        '.item-checkbox:checked'
+                    ).length;
+
+                    if (checkedCount === 0) {
+                        selectAllCheckbox.checked = false;
+                        selectAllCheckbox.indeterminate = false;
+                    } else if (checkedCount === itemCheckboxes.length) {
+                        selectAllCheckbox.checked = true;
+                        selectAllCheckbox.indeterminate = false;
+                    } else {
+                        selectAllCheckbox.checked = false;
+                        selectAllCheckbox.indeterminate = true;
+                    }
+                });
+            });
+        }
+    </script>
 {% endblock %}

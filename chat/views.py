@@ -99,6 +99,9 @@ def send_message(request, pk):
         'id': message.pk,
         'sender_id': user.pk,
         'sender_name': user.first_name or user.email,
+        'sender_profile_picture': (
+            user.profile_picture.url if user.profile_picture else None
+        ),
         'content': message.content,
         'timestamp': message.timestamp.strftime('%b %d, %Y %H:%M'),
     })
@@ -124,6 +127,11 @@ def poll_messages(request, pk):
             'id': m.pk,
             'sender_id': m.sender.pk,
             'sender_name': m.sender.first_name or m.sender.email,
+            'sender_profile_picture': (
+                m.sender.profile_picture.url
+                if m.sender.profile_picture
+                else None
+            ),
             'content': m.content,
             'timestamp': m.timestamp.strftime('%b %d, %Y %H:%M'),
         }

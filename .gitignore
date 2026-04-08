@@ -62,6 +62,7 @@ db.sqlite3
 db.sqlite3-journal
 media/product_images/*
 media/store_images/*
+media/profile_pics/*
 # Ignore migrations but keep the required __init__.py files
 **/migrations/*.py
 !**/migrations/__init__.py

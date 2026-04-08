@@ -9,7 +9,9 @@
 
 {% block content %}
 <div class="chat-inbox-container">
-    <h2 class="inbox-title">Messages</h2>
+    <div class="banner">
+        <h1>MESSAGES</h1>
+    </div>
 
     {% if conversation_data %}
         <ul class="conversation-list">
@@ -17,28 +19,45 @@
                 {% with conv=item.conversation %}
                 <li class="conversation-item">
                     <a href="{% url 'chat:conversation' conv.pk %}" class="conversation-link">
-                        <div class="conv-meta">
-                            <span class="conv-name">
-                                {% if request.user == conv.buyer %}
-                                    {{ conv.seller.first_name }} {{ conv.seller.last_name }}
+                        <div class="conv-avatar-wrap">
+                            {% if request.user == conv.buyer %}
+                                {% if conv.seller.profile_picture %}
+                                    <img class="conv-avatar" src="{{ conv.seller.profile_picture.url }}" alt="{{ conv.seller.first_name }} profile photo">
                                 {% else %}
-                                    {{ conv.buyer.first_name }} {{ conv.buyer.last_name }}
+                                    <div class="conv-avatar conv-avatar-fallback">{{ conv.seller.first_name|default:conv.seller.email|first|upper }}</div>
                                 {% endif %}
-                            </span>
-                            {% if conv.product %}
-                                <span class="conv-product">re: {{ conv.product.name }}</span>
+                            {% else %}
+                                {% if conv.buyer.profile_picture %}
+                                    <img class="conv-avatar" src="{{ conv.buyer.profile_picture.url }}" alt="{{ conv.buyer.first_name }} profile photo">
+                                {% else %}
+                                    <div class="conv-avatar conv-avatar-fallback">{{ conv.buyer.first_name|default:conv.buyer.email|first|upper }}</div>
+                                {% endif %}
                             {% endif %}
                         </div>
-                        <div class="conv-preview">
-                            {% if conv.last_message %}
-                                <span class="conv-last-msg">{{ conv.last_message.content|truncatechars:60 }}</span>
-                                <span class="conv-time">{{ conv.last_message.timestamp|date:"M d, H:i" }}</span>
-                            {% else %}
-                                <span class="conv-last-msg conv-empty">No messages yet</span>
-                            {% endif %}
-                            {% if item.unread > 0 %}
-                                <span class="unread-badge">{{ item.unread }}</span>
-                            {% endif %}
+                        <div class="conv-content">
+                            <div class="conv-meta">
+                                <span class="conv-name">
+                                    {% if request.user == conv.buyer %}
+                                        {{ conv.seller.first_name }} {{ conv.seller.last_name }}
+                                    {% else %}
+                                        {{ conv.buyer.first_name }} {{ conv.buyer.last_name }}
+                                    {% endif %}
+                                </span>
+                                {% if conv.product %}
+                                    <span class="conv-product">re: {{ conv.product.name }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="conv-preview">
+                                {% if conv.last_message %}
+                                    <span class="conv-last-msg">{{ conv.last_message.content|truncatechars:60 }}</span>
+                                    <span class="conv-time">{{ conv.last_message.timestamp|date:"M d, H:i" }}</span>
+                                {% else %}
+                                    <span class="conv-last-msg conv-empty">No messages yet</span>
+                                {% endif %}
+                                {% if item.unread > 0 %}
+                                    <span class="unread-badge">{{ item.unread }}</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </a>
                 </li>
