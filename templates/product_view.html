@@ -4,7 +4,7 @@
 {% block content %}
     <title>{{ product.name }}</title>
     
-    <link rel="stylesheet" href="{% static 'css/buyer_productview.css' %}">
+    <link rel="stylesheet" href="{% static 'css/product_view.css' %}">
     
     <main class="buyerProduct-container">
 
@@ -79,15 +79,22 @@
         </section>
         
         <section class="purchase-actions">
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="quantity" id="quantity-input" value="1" data-max-stock="{{ product.stock }}">
-                <button class="addToCart-btn" name="action" value="add-to-cart" type="submit">ADD TO CART</button>
-            </form>
-            <button class="pasabuyNow-btn">
-                PASABUY NOW
-                <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
-            </button>
+            {% if request.user.user_type == 'B' %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" id="quantity-input" value="1" data-max-stock="{{ product.stock }}">
+                    <button class="addToCart-btn" name="action" value="add-to-cart" type="submit">ADD TO CART</button>
+                </form>
+                <button class="pasabuyNow-btn">
+                    PASABUY NOW
+                    <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
+                </button>
+            {% else %}
+                <a href="{% url 'marketplace:edit_product' product.pk %}" class="pasabuyNow-btn">
+                    EDIT LISTING
+                </a>
+            {% endif %}
+
         </section>
 
     </main>

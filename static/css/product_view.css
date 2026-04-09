@@ -125,6 +125,7 @@ button {
     border-radius: 20px;
     align-self: flex-start;
     margin-bottom: 25px;
+    text-decoration: none;
     
 }
 
@@ -306,6 +307,7 @@ button {
     border-radius: 20px;
     font-weight: 900;
     cursor: pointer;
+    text-decoration: none;
 
 }
 
@@ -346,6 +348,7 @@ button {
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
 
 }
 
