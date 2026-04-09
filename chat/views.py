@@ -80,19 +80,25 @@ def send_message(request, pk):
     if user != conversation.buyer and user != conversation.seller:
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
-    try:
-        data = json.loads(request.body)
-        content = data.get('content', '').strip()
-    except (json.JSONDecodeError, AttributeError):
+    attachment = None
+    if request.content_type and 'multipart' in request.content_type:
         content = request.POST.get('content', '').strip()
+        attachment = request.FILES.get('attachment')
+    else:
+        try:
+            data = json.loads(request.body)
+            content = data.get('content', '').strip()
+        except (json.JSONDecodeError, AttributeError):
+            content = request.POST.get('content', '').strip()
 
-    if not content:
+    if not content and not attachment:
         return JsonResponse({'error': 'Empty message'}, status=400)
 
     message = Message.objects.create(
         conversation=conversation,
         sender=user,
         content=content,
+        attachment=attachment,
     )
 
     return JsonResponse({
@@ -103,6 +109,8 @@ def send_message(request, pk):
             user.profile_picture.url if user.profile_picture else None
         ),
         'content': message.content,
+        'attachment_url': message.attachment.url if message.attachment else None,
+        'attachment_name': message.attachment.name.split('/')[-1] if message.attachment else None,
         'timestamp': message.timestamp.strftime('%b %d, %Y %H:%M'),
     })
 
@@ -133,6 +141,8 @@ def poll_messages(request, pk):
                 else None
             ),
             'content': m.content,
+            'attachment_url': m.attachment.url if m.attachment else None,
+            'attachment_name': m.attachment.name.split('/')[-1] if m.attachment else None,
             'timestamp': m.timestamp.strftime('%b %d, %Y %H:%M'),
         }
         for m in new_messages
