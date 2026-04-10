@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'marketplace',
     'watson',
     'chat',
+    'groupings',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,385 @@
+/* ── Layout ─────────────────────────────────────────────── */
+.group-wrapper {
+    max-width: 640px;
+    margin: 2rem auto;
+    font-family: 'Roboto', sans-serif;
+    padding: 0 1rem 3rem;
+}
+
+/* ── Banner ──────────────────────────────────────────────── */
+.group-banner {
+    background-color: #B28DFF;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.group-banner-title {
+    margin: 0;
+    letter-spacing: 2px;
+    font-size: 1.4rem;
+}
+
+/* ── Product card ────────────────────────────────────────── */
+.group-product-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f9f9f9;
+    border-radius: 20px;
+    padding: 1rem 1.2rem;
+    border-left: 10px solid #2A008E;
+    margin-bottom: 1.2rem;
+}
+
+.group-product-img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.group-product-name {
+    margin: 0 0 4px;
+    font-size: 1rem;
+}
+
+.group-product-meta {
+    font-size: 0.78rem;
+    color: #666;
+    margin: 0 0 6px;
+}
+
+.category-tag {
+    background: #D1C4E9;
+    color: #512DA8;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.group-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-top: 8px;
+}
+
+.group-original-price {
+    font-size: 0.9rem;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.group-discount-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2A008E;
+}
+
+.group-price-label {
+    font-size: 0.65rem;
+    background: #2A008E;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+/* ── Status row ──────────────────────────────────────────── */
+.group-status-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-pill {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.status-o  { background: #C8E6C9; color: #2E7D32; }   /* Open */
+.status-l  { background: #BBDEFB; color: #1565C0; }   /* Locked */
+.status-x  { background: #FFCDD2; color: #B71C1C; }   /* Cancelled */
+
+.group-progress {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+/* ── Progress bar ────────────────────────────────────────── */
+.group-progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background: #E0E0E0;
+    border-radius: 10px;
+    margin-bottom: 1.4rem;
+    overflow: hidden;
+}
+
+.group-progress-bar-fill {
+    height: 100%;
+    background: #3D70EF;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* ── Invite box ──────────────────────────────────────────── */
+.invite-box {
+    background: #EDE7F6;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.invite-label {
+    margin: 0 0 8px;
+    font-size: 0.85rem;
+    color: #4A148C;
+    font-weight: 500;
+}
+
+.invite-link-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.invite-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #B39DDB;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #333;
+    background: #fff;
+    outline: none;
+}
+
+.copy-btn {
+    background: #2A008E;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.copy-btn:hover { background: #3D70EF; }
+
+.copy-feedback {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: #2E7D32;
+    min-height: 1em;
+}
+
+/* ── Members list ────────────────────────────────────────── */
+.members-section { margin-bottom: 1.5rem; }
+
+.members-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #2A008E;
+    margin-bottom: 0.8rem;
+}
+
+.members-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    border-left: 4px solid #E0E0E0;
+}
+
+.member-card--creator { border-left-color: #3D70EF; }
+
+.avatar-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.member-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.member-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.creator-badge {
+    background: #3D70EF;
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.member-qty {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.member-subtotal {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #2A008E;
+}
+
+/* ── Creator actions ─────────────────────────────────────── */
+.creator-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+}
+
+.lock-hint {
+    font-size: 0.82rem;
+    color: #888;
+    margin: 0;
+    text-align: center;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.lock-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2A008E;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.lock-btn:hover { background: #3D70EF; }
+
+.cancel-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: #B71C1C;
+    border: 2px solid #B71C1C;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cancel-btn:hover { background: #FFCDD2; }
+
+/* ── Locked / closed notice ──────────────────────────────── */
+.locked-notice {
+    background: #E8F5E9;
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+    color: #2E7D32;
+    font-size: 0.9rem;
+}
+
+.locked-notice p { margin: 0 0 1rem; }
+
+.view-orders-btn {
+    display: inline-block;
+    background: #2A008E;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+.view-orders-btn:hover { background: #3D70EF; }
+
+/* ── Join form ───────────────────────────────────────────── */
+.join-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-input {
+    padding: 10px 14px;
+    border: 1px solid #B39DDB;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+}
+
+.form-input:focus { border-color: #3D70EF; }
+
+.stock-hint {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+/* ── Quantity controllers (reuse product_view style) ─────── */
+.quantity-controllers {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.quantity-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.quantity-btn:hover { background: #f0f0f0; }
+
+.arrow-icon { width: 14px; }
+
+.quantity-num {
+    min-width: 28px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+}

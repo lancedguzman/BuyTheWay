@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Join Group – {{ group.product.name }} | BuyTheWay{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/groupings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="group-wrapper">
+
+    <div class="group-banner">
+        <h1 class="group-banner-title">JOIN GROUP ORDER</h1>
+    </div>
+
+    <!-- ── Product preview ── -->
+    <div class="group-product-card">
+        <img src="{{ group.product.image.url }}" alt="{{ group.product.name }}" class="group-product-img">
+        <div class="group-product-info">
+            <h2 class="group-product-name">{{ group.product.name }}</h2>
+            <p class="group-product-meta">
+                {{ group.product.store.name }} &nbsp;|&nbsp; {{ group.product.location }}
+            </p>
+            <span class="category-tag">{{ group.product.get_category_display }}</span>
+            <div class="group-price-row">
+                <span class="group-original-price">₱{{ group.product.price }}</span>
+                <span class="group-discount-price">
+                    ₱{{ group.product.group_price }}
+                    <span class="group-price-label">GROUP PRICE</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Current progress ── -->
+    <div class="group-status-row">
+        <span class="status-pill status-o">OPEN</span>
+        <span class="group-progress">
+            {{ group.member_count }} / {{ group.target_size }} members joined
+        </span>
+    </div>
+    <div class="group-progress-bar-track">
+        <div class="group-progress-bar-fill"
+             style="width: {% widthratio group.member_count group.target_size 100 %}%;">
+        </div>
+    </div>
+
+    <!-- ── Join form ── -->
+    <form method="POST" class="join-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="form-label" for="id_quantity">Quantity</label>
+            <div class="quantity-controllers">
+                <button type="button" class="quantity-btn" onclick="changeQty(-1)">
+                    <img src="{% static 'icons/left-chevron.png' %}" alt="decrease" class="arrow-icon">
+                </button>
+                <span class="quantity-num" id="qty-display">1</span>
+                <button type="button" class="quantity-btn" onclick="changeQty(1)">
+                    <img src="{% static 'icons/right-chevron.png' %}" alt="increase" class="arrow-icon">
+                </button>
+                <input type="hidden" name="quantity" id="id_quantity" value="1"
+                       data-max="{{ group.product.stock }}">
+            </div>
+            <span class="stock-hint">{{ group.product.stock }} pcs available</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="id_address">Delivery Address</label>
+            <input type="text" name="address" id="id_address" class="form-input"
+                   placeholder="Enter your delivery address" required maxlength="255">
+        </div>
+
+        <button type="submit" class="lock-btn">JOIN GROUP</button>
+    </form>
+
+</div>
+
+<script>
+function changeQty(delta) {
+    const input = document.getElementById('id_quantity');
+    const display = document.getElementById('qty-display');
+    const max = parseInt(input.dataset.max, 10);
+    let val = parseInt(input.value, 10) + delta;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+    display.textContent = val;
+}
+</script>
+{% endblock %}
