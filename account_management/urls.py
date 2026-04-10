@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, CustomLoginView
+from .views import RegisterView, CustomLoginView, buyer_profile, seller_profile, public_buyer_profile, public_seller_profile
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
@@ -8,6 +8,10 @@ app_name = 'account_management'
 urlpatterns = [
     path('signup/', RegisterView.as_view(), name='signup'),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('profile/', buyer_profile, name='buyer_profile'),
+    path('seller-profile/', seller_profile, name='seller_profile'),
+    path('buyer/<int:pk>/', public_buyer_profile, name='public_buyer_profile'),
+    path('seller/<int:pk>/', public_seller_profile, name='public_seller_profile'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path(
      'password-reset/',

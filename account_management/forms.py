@@ -4,6 +4,41 @@ from account_management.models import UserProfile
 from marketplace.models import Store
 
 
+class SellerUserForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=150, label='First Name')
+    last_name = forms.CharField(max_length=150, label='Last Name')
+
+    class Meta:
+        model = UserProfile
+        fields = ['first_name', 'last_name',
+                  'gender', 'email', 
+                  'phone_number']
+
+
+class SellerStoreForm(forms.ModelForm):
+    class Meta:
+        model = Store
+        fields = ['name', 'description', 'picture']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class BuyerProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=150, label='First Name')
+    last_name = forms.CharField(max_length=150, label='Last Name')
+
+    class Meta:
+        model = UserProfile
+        fields = ['first_name', 'last_name',
+                  'gender', 'birthdate',
+                  'email', 'phone_number',
+                  'profile_picture']
+        widgets = {
+            'birthdate': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
 class UserProfileForm(UserCreationForm):
     """Form for creating user profiles with optional store creation."""
 
