@@ -1,0 +1,105 @@
+.payment-form-container {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 2.5rem 2rem;
+    background-color: var(--bg-secondary, #ffffff);
+    border: 1px solid var(--border-gray, #e0e0e0);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    font-family: 'Roboto', sans-serif;
+}
+
+.payment-form-container h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: var(--primary-blue, #333);
+}
+
+.payment-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.payment-upload-card {
+    background: #fdfdfd;
+    border: 2px solid var(--border-gray, #e0e0e0);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.payment-upload-card:hover {
+    border-color: var(--qty-btn-purple, #9b59b6);
+}
+
+.payment-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-logo {
+    height: 35px;
+    width: 80px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.payment-brand label {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-dark, #333);
+    margin: 0;
+}
+
+.payment-input {
+    font-size: 0;
+    color: #555;
+}
+
+.payment-input a,
+.payment-input br,
+.payment-input input[type="checkbox"] {
+    display: none !important;
+}
+
+.payment-input input[type="file"] {
+    display: block;
+    font-size: 0.95rem;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.errorlist {
+    color: #d9534f;
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    font-size: 0.85rem;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-blue, #4CAF50);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: var(--qty-btn-purple, #45a049);
+}
