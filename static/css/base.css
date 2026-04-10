@@ -74,6 +74,12 @@ search button img {
     width: 1vw;
 }
 
+search form {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .blue-footer {
     display: flex;
     width: 100%;
@@ -119,8 +125,9 @@ footer h2:hover {
 .search-link {
     position: absolute;
     right: .5vw;
+    top: 50%;
+    transform: translateY(-50%);
 }
-
 .nav-icons {
     margin-left: auto;
     display: flex;
