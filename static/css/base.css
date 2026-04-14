@@ -131,9 +131,34 @@ footer h2:hover {
 .nav-icons {
     margin-left: auto;
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 2vw;
+}
+
+.nav-icons a, .nav-icons form {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .text-link {
     text-decoration: none;
+}
+
+.cart-dot {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 1.2vw;
+    height: 1.2vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8vw; 
+    position: absolute;
+    top: -1.2vw;
+    right: -0.5vw; 
+    font-family: 'Roboto', sans-serif;
 }
