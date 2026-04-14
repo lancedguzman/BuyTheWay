@@ -19,13 +19,14 @@
                 <img src="{% static 'icons/leftscroll.png' %}" onclick="scrollCategories(-1)" class="scroll-btn-left" alt="Scroll Left">
                 
                 <div id="categoryContainer">
-                    <button class="category-btn">MEN'S CLOTHING</button>
-                    <button class="category-btn">WOMEN'S CLOTHING</button>
-                    <button class="category-btn">BEAUTY</button>
-                    <button class="category-btn">TECHNOLOGY</button>
-                    <button class="category-btn">ACCESSORIES</button>
-                    <button class="category-btn">HAIR & BODY CARE</button>
-                    <button class="category-btn">OTHER</button>
+                    <button id="ALL" class="category-btn active" onclick="filterProducts('ALL')">ALL</button>
+                    <button id="M" class="category-btn" onclick="filterProducts('M')">MEN'S CLOTHING</button>
+                    <button id="W" class="category-btn" onclick="filterProducts('W')">WOMEN'S CLOTHING</button>
+                    <button id="B" class="category-btn" onclick="filterProducts('B')">BEAUTY</button>
+                    <button id="T" class="category-btn" onclick="filterProducts('T')">TECHNOLOGY</button>
+                    <button id="A" class="category-btn" onclick="filterProducts('A')">ACCESSORIES</button>
+                    <button id="H" class="category-btn" onclick="filterProducts('H')">HAIR & BODY CARE</button>
+                    <button id="O" class="category-btn" onclick="filterProducts('O')">OTHER</button>
                 </div>
                 
                 <img src="{% static 'icons/rightscroll.png' %}" onclick="scrollCategories(1)" class="scroll-btn-right" alt="Scroll Right">
@@ -49,7 +50,7 @@
             {% if user.user_type == "B" %}
             
                 {% for product in products %}
-                    <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
+                    <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %} {{ product.category }}">
                         <a href="{% url 'marketplace:product_view' product.pk %}" class="product-link">
                             <div class="product-card">
                         
