@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
+from datetime import timedelta
+import random
 
 
 class UserProfileManager(BaseUserManager):
@@ -95,5 +98,28 @@ class UserProfile(AbstractUser):
         help_text="Only .png and .jpg formats are allowed."
     )
 
+    is_email_verified = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
+
+
+class EmailVerificationToken(models.Model):
+    """Stores a 6-digit OTP for email verification, valid for 10 minutes."""
+    user = models.OneToOneField(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='email_verification',
+    )
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(minutes=10)
+
+    @staticmethod
+    def generate_otp():
+        return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+    def __str__(self):
+        return f"OTP for {self.user.email}"

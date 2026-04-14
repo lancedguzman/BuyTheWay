@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, CustomLoginView
+from .views import RegisterView, CustomLoginView, VerifyEmailView, buyer_profile, seller_profile, public_buyer_profile, public_seller_profile
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
@@ -7,6 +7,7 @@ app_name = 'account_management'
 
 urlpatterns = [
     path('signup/', RegisterView.as_view(), name='signup'),
+    path('verify-email/', VerifyEmailView.as_view(), name='verify_email'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path(
