@@ -38,10 +38,6 @@ class UserProfileAdmin(admin.ModelAdmin):
     image_preview.short_description = 'Profile Picture'
 
 
-admin.site.register(UserProfile, UserProfileAdmin)
-
-
-@admin.register(SellerIDVerification)
 class SellerIDVerificationAdmin(admin.ModelAdmin):
     list_display = ('seller_email', 'get_id_type_display',
                     'status', 'submitted_at',
@@ -104,3 +100,7 @@ class SellerIDVerificationAdmin(admin.ModelAdmin):
     def reject_submissions(self, request, queryset):
         updated = queryset.update(status='rejected', reviewed_at=timezone.now())
         self.message_user(request, f'{updated} submission(s) rejected.')
+
+
+admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(SellerIDVerification, SellerIDVerificationAdmin)
