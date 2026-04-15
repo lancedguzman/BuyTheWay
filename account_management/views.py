@@ -1,4 +1,4 @@
-from .forms import UserProfileForm, SellerIDVerificationForm
+from .forms import UserProfileForm
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import UserProfile, EmailVerificationToken, SellerIDVerification
+from .models import UserProfile, EmailVerificationToken
 
 # Create your views here.
 
@@ -121,11 +121,3 @@ class VerifyEmailView(FormView):
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
-    seller = get_object_or_404(UserProfile, pk=pk, user_type='S')
-    store = seller.store
-    products = store.product_set.all()
-    return render(request, 'public_seller_profile.html', {
-        'seller': seller,
-        'store': store,
-        'products': products,
-    })
