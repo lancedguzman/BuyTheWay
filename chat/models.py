@@ -29,7 +29,17 @@ class Conversation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('buyer', 'seller', 'product')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['buyer', 'seller', 'product'],
+                name='unique_conversation_with_product'
+            ),
+            models.UniqueConstraint(
+                fields=['buyer', 'seller'],
+                condition=models.Q(product__isnull=True),
+                name='unique_general_conversation_without_product'
+            )
+        ]
         ordering = ['-created_at']
 
     def __str__(self):
@@ -55,7 +65,8 @@ class Message(models.Model):
         on_delete=models.CASCADE,
         related_name='sent_messages',
     )
-    content = models.TextField()
+    content = models.TextField(blank=True)
+    attachment = models.FileField(upload_to='chat_attachments/', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 

@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/png" href="{% static 'icons/favicon.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+</head>
+
+<body>
+    <main>
+        <div class="left-panel">
+            <img src="{% static 'icons/logo.png' %}" alt="">
+        </div>
+        <div class="right-panel">
+            <img src="{% static 'icons/welcomeback.png' %}">
+            <div class="form-wrapper">
+                <form method="post" class="form-container">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="forgot-password-link">
+                        <a href="{% url 'account_management:password_reset' %}">Forgot Password?</a>
+                    </div>
+                    <button type="submit">LOGIN</button>
+                    <div class="additional-links">
+                        <p style="color: #989898">Don't have an account? <a href="{% url 'account_management:signup' %}">Sign up here.</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

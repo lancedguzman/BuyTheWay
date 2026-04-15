@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
+from datetime import timedelta
+import random
 
 
 class UserProfileManager(BaseUserManager):
@@ -95,5 +98,75 @@ class UserProfile(AbstractUser):
         help_text="Only .png and .jpg formats are allowed."
     )
 
+    is_email_verified = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
+
+
+class EmailVerificationToken(models.Model):
+    """Stores a 6-digit OTP for email verification, valid for 10 minutes."""
+    user = models.OneToOneField(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='email_verification',
+    )
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(minutes=10)
+
+    @staticmethod
+    def generate_otp():
+        return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+    def __str__(self):
+        return f"OTP for {self.user.email}"
+
+
+class SellerIDVerification(models.Model):
+    """Stores a seller's government ID submission for manual review."""
+
+    ID_TYPE_CHOICES = [
+        ('philsys', 'PhilSys (National ID)'),
+        ('passport', 'Philippine Passport'),
+        ('drivers_license', "Driver's License"),
+        ('sss', 'SSS ID'),
+        ('gsis', 'GSIS ID'),
+        ('prc', 'PRC ID'),
+        ('voters', "Voter's ID"),
+        ('postal', 'Postal ID'),
+        ('senior', 'Senior Citizen ID'),
+        ('pwd', 'PWD ID'),
+        ('umid', 'UMID'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    seller = models.OneToOneField(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='id_verification',
+        limit_choices_to={'user_type': 'S'},
+    )
+    id_type = models.CharField(max_length=20, choices=ID_TYPE_CHOICES)
+    id_photo = models.ImageField(
+        upload_to='seller_id_photos/',
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+    )
+    selfie_with_id = models.ImageField(
+        upload_to='seller_selfies/',
+        validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])],
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(blank=True, null=True)
+    reviewer_notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"ID Verification — {self.seller.email} [{self.get_status_display()}]"

@@ -84,13 +84,216 @@
                 <input type="hidden" name="quantity" id="quantity-input" value="1" data-max-stock="{{ product.stock }}">
                 <button class="addToCart-btn" name="action" value="add-to-cart" type="submit">ADD TO CART</button>
             </form>
+
+            {% if product.group_payment %}
+            <!-- Pasabuy Now splits into Solo and Group when group payments are enabled -->
+            <div class="pasabuy-dropdown-wrapper">
+                <button class="pasabuyNow-btn" id="pasabuyToggle" type="button"
+                        onclick="togglePasabuyMenu()">
+                    PASABUY NOW
+                    <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
+                </button>
+                <div class="pasabuy-menu" id="pasabuyMenu" style="display:none;">
+                    <!-- Solo: goes straight to checkout via cart -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1" id="solo-qty-input" data-max-stock="{{ product.stock }}">
+                        <button class="pasabuy-option" name="action" value="add-to-cart" type="submit">
+                            Buy Solo
+                        </button>
+                    </form>
+                    <!-- Group: opens the group creation modal -->
+                    <button class="pasabuy-option pasabuy-option--group" type="button"
+                            onclick="openGroupModal()">
+                        Group Discount
+                    </button>
+                </div>
+            </div>
+
+            <!-- Group creation modal -->
+            <div id="groupModal" class="group-modal-overlay" style="display:none;">
+                <div class="group-modal-content">
+                    <span class="group-modal-close" onclick="closeGroupModal()">&times;</span>
+                    <h2 class="group-modal-title">Start a Group Order</h2>
+                    <p class="group-modal-sub">
+                        Group price: <strong>₱{{ product.group_price }}</strong> per unit
+                    </p>
+
+                    <form method="POST" action="{% url 'groupings:create_group' product.pk %}">
+                        {% csrf_token %}
+
+                        <label class="group-modal-label" for="gm-quantity">Your Quantity</label>
+                        <div class="quantity-controllers" style="margin-bottom:1rem;">
+                            <button type="button" class="quantity-btn" onclick="changeGroupQty(-1)">
+                                <img src="{% static 'icons/left-chevron.png' %}" alt="-" class="arrow-icon">
+                            </button>
+                            <span class="quantity-num" id="gm-qty-display">1</span>
+                            <button type="button" class="quantity-btn" onclick="changeGroupQty(1)">
+                                <img src="{% static 'icons/right-chevron.png' %}" alt="+" class="arrow-icon">
+                            </button>
+                            <input type="hidden" name="quantity" id="gm-quantity" value="1"
+                                   data-max="{{ product.stock }}">
+                        </div>
+
+                        <label class="group-modal-label" for="gm-target">Group Size (min 2)</label>
+                        <input type="number" name="target_size" id="gm-target"
+                               class="group-modal-input" min="2" max="50" value="2" required>
+
+                        <label class="group-modal-label" for="gm-address">Your Delivery Address</label>
+                        <input type="text" name="address" id="gm-address"
+                               class="group-modal-input" placeholder="Enter your delivery address"
+                               maxlength="255" required>
+
+                        <button type="submit" class="group-modal-submit">CREATE GROUP</button>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- No group payment – plain Pasabuy Now -->
             <button class="pasabuyNow-btn">
                 PASABUY NOW
                 <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
             </button>
+            {% endif %}
         </section>
 
     </main>
 
     <script src="{% static 'js/product_view.js' %}"></script>
+    <script>
+    /* ── Pasabuy dropdown ── */
+    function togglePasabuyMenu() {
+        const menu = document.getElementById('pasabuyMenu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+    document.addEventListener('click', function(e) {
+        const wrapper = document.querySelector('.pasabuy-dropdown-wrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            document.getElementById('pasabuyMenu').style.display = 'none';
+        }
+    });
+
+    /* ── Group modal ── */
+    function openGroupModal() {
+        document.getElementById('pasabuyMenu').style.display = 'none';
+        document.getElementById('groupModal').style.display = 'flex';
+    }
+    function closeGroupModal() {
+        document.getElementById('groupModal').style.display = 'none';
+    }
+
+    function changeGroupQty(delta) {
+        const input = document.getElementById('gm-quantity');
+        const display = document.getElementById('gm-qty-display');
+        const max = parseInt(input.dataset.max, 10);
+        let val = parseInt(input.value, 10) + delta;
+        if (val < 1) val = 1;
+        if (val > max) val = max;
+        input.value = val;
+        display.textContent = val;
+    }
+    </script>
+
+    <style>
+    /* ── Pasabuy dropdown ── */
+    .pasabuy-dropdown-wrapper { position: relative; display: inline-block; }
+    .pasabuy-menu {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        min-width: 160px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.12);
+        z-index: 100;
+        overflow: hidden;
+    }
+    .pasabuy-option {
+        display: block;
+        width: 100%;
+        padding: 10px 16px;
+        background: none;
+        border: none;
+        text-align: left;
+        font-family: 'Roboto', sans-serif;
+        font-size: .9rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: #2A008E;
+    }
+    .pasabuy-option:hover { background: #EDE7F6; }
+    .pasabuy-option--group { color: #3D70EF; border-top: 1px solid #eee; }
+
+    /* ── Group creation modal ── */
+    .group-modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.45);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .group-modal-content {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 420px;
+        position: relative;
+        font-family: 'Roboto', sans-serif;
+    }
+    .group-modal-close {
+        position: absolute; top: 14px; right: 18px;
+        font-size: 1.4rem; cursor: pointer; color: #666;
+    }
+    .group-modal-title {
+        margin: 0 0 4px;
+        color: #2A008E;
+        font-size: 1.2rem;
+    }
+    .group-modal-sub { margin: 0 0 1.2rem; font-size: .85rem; color: #555; }
+    .group-modal-label {
+        display: block;
+        font-size: .82rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    .group-modal-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 9px 12px;
+        border: 1px solid #B39DDB;
+        border-radius: 8px;
+        font-size: .9rem;
+        font-family: 'Roboto', sans-serif;
+        margin-bottom: 1rem;
+        outline: none;
+    }
+    .group-modal-input:focus { border-color: #3D70EF; }
+    .group-modal-submit {
+        width: 100%;
+        padding: 13px;
+        background: #2A008E;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: .95rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        margin-top: .4rem;
+    }
+    .group-modal-submit:hover { background: #3D70EF; }
+    .quantity-controllers { display:flex; align-items:center; gap:.6rem; }
+    .quantity-btn {
+        background: none; border: 1px solid #ccc;
+        border-radius: 6px; padding: 4px 8px; cursor: pointer;
+        display: flex; align-items: center;
+    }
+    .quantity-btn:hover { background: #f0f0f0; }
+    .arrow-icon { width: 14px; }
+    .quantity-num { min-width:28px; text-align:center; font-weight:700; font-size:1rem; }
+    </style>
 {% endblock %}

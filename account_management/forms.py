@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from account_management.models import UserProfile
+from account_management.models import UserProfile, SellerIDVerification
 from marketplace.models import Store
 
 
@@ -120,3 +120,15 @@ class UserProfileForm(UserCreationForm):
                 )
 
         return user
+
+
+class SellerIDVerificationForm(forms.ModelForm):
+    class Meta:
+        model = SellerIDVerification
+        fields = ['id_type', 'id_photo', 'selfie_with_id']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id_type'].label = 'Type of Government ID'
+        self.fields['id_photo'].label = 'Information Side of Government ID'
+        self.fields['selfie_with_id'].label = 'Selfie with Government ID'
