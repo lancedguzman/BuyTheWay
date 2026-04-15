@@ -21,7 +21,6 @@
     border-radius: 1vw;
     font-size: 2.5vw;
     font-weight: 900;
-    letter-spacing: 0.15vw;
     text-transform: uppercase;
 }
 
@@ -103,11 +102,6 @@
     text-decoration: underline;
 }
 
-.following-count {
-    color: #fff;
-    font-size: 0.85vw;
-    font-weight: 600;
-}
 
 .btn-save {
     width: 100%;
@@ -118,9 +112,9 @@
     padding: 0.7vw 0;
     font-size: 0.95vw;
     font-weight: 700;
-    letter-spacing: 0.05vw;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-family: 'Roboto', sans-serif;
 }
 .btn-save:hover { background-color: #2b5bc7; }
 
@@ -135,10 +129,11 @@
     padding: 0.7vw 0;
     font-size: 0.95vw;
     font-weight: 700;
-    letter-spacing: 0.05vw;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-family: 'Roboto', sans-serif;
 }
+
 .btn-logout:hover { background-color: #2b5bc7; }
 
 /* ── Right panel ── */

@@ -53,7 +53,7 @@
                     </select>
                 </form>
                 
-                <button class="see-profile-btn">SEE PROFILE</button>
+                <a href="{% url 'account_management:public_buyer_profile' order.buyer.pk %}" class="see-profile-btn">SEE PROFILE</a>
             </div>
             
         </div>

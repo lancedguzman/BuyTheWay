@@ -11,7 +11,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,54 +22,6 @@
             flex-direction: column;
             font-family: 'Roboto', sans-serif;
             background: #fff;
-        }
-
-        /* ── Navbar ── */
-        nav {
-            display: flex;
-            align-items: center;
-            padding: 0.6rem 2rem;
-            background: #3D70EF;
-            gap: 1rem;
-        }
-
-        nav .logo {
-            width: 48px;
-        }
-
-        nav .search-bar {
-            flex: 1;
-            max-width: 520px;
-            display: flex;
-            border-radius: 999px;
-            overflow: hidden;
-            background: #fff;
-        }
-
-        nav .search-bar input {
-            flex: 1;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            outline: none;
-            background: transparent;
-        }
-
-        nav .search-bar button {
-            background: #3D70EF;
-            border: none;
-            padding: 0 0.9rem;
-            cursor: pointer;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        nav .nav-icons {
-            margin-left: auto;
-            display: flex;
-            gap: 1.4rem;
-            color: #fff;
-            font-size: 1.4rem;
         }
 
         /* ── Main card ── */
@@ -149,8 +101,8 @@
 
         /* ── Submit button ── */
         button[type="submit"] {
-            background: #9B71F7;
-            color: #fff;
+            background: #CDB8FB;
+            color: #0036BC;
             border: none;
             border-radius: 999px;
             padding: 0.65rem 3rem;
@@ -158,58 +110,18 @@
             font-weight: 900;
             letter-spacing: 0.05em;
             cursor: pointer;
+            font-family: 'Roboto', sans-serif;
         }
 
         button[type="submit"]:hover {
-            background: #7c52e0;
-        }
-
-        /* ── Footer ── */
-        footer {
-            text-align: center;
-        }
-
-        .footer-brand {
-            background: #3D70EF;
-            color: #fff;
-            font-size: 1.6rem;
-            font-weight: 900;
-            letter-spacing: 0.2em;
-            padding: 1rem;
-        }
-
-        .footer-help {
             background: #9B71F7;
             color: #fff;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            padding: 0.75rem;
-        }
-
-        .footer-signup {
-            padding: 0.5rem;
-            font-size: 0.85rem;
-            color: #555;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-    <nav>
-        <img class="logo" src="{% static 'icons/logo.png' %}" alt="BuyTheWay">
-        <div class="search-bar">
-            <input type="text" placeholder="What are you looking for?!">
-            <button>&#128269;</button>
-        </div>
-        <div class="nav-icons">
-            <span>&#128172;</span>
-            <span>&#128722;</span>
-            <span>&#128100;</span>
-        </div>
-    </nav>
 
     <!-- OTP Card -->
     <main>
@@ -244,13 +156,6 @@
             </form>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-brand">* &nbsp; BUYTHEWAY &nbsp; *</div>
-        <div class="footer-help">HELP CENTER</div>
-        <div class="footer-signup">SIGN UP</div>
-    </footer>
 
 <script>
     const inputs = Array.from(document.querySelectorAll('.otp-inputs input'));
