@@ -18,3 +18,24 @@ function showMoreProducts() {
         seeMoreContainer.style.display = 'none';
     }
 }
+
+function filterProducts(category) {
+    const products = document.querySelectorAll('.product-item');
+    products.forEach(product => {
+        if (category === 'ALL' || product.classList.contains(category)) {
+            product.style.display = 'block';
+        } else {
+            product.style.display = 'none';
+        }
+    });
+    
+    // Update active button styling
+    const buttons = document.querySelectorAll('.category-btn');
+    buttons.forEach(button => {
+        if (button.id === category || category === 'ALL' && button.id === 'ALL') {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
