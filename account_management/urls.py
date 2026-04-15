@@ -1,5 +1,9 @@
 from django.urls import path
+<<<<<<< feat/profile-pages
+from .views import RegisterView, CustomLoginView, buyer_profile, seller_profile, public_buyer_profile, public_seller_profile
+=======
 from .views import RegisterView, CustomLoginView, VerifyEmailView
+>>>>>>> main
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 

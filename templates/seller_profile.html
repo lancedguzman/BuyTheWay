@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Seller Profile - Buy The Way{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/seller_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="seller-profile-wrapper">
+
+    <div class="profile-banner">MY SELLER PROFILE</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="profile-message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form id="seller-profile-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="profile-body">
+
+            <!-- Left Panel -->
+            <div class="profile-left">
+                <div class="avatar-wrapper">
+                    <label for="id_picture" class="avatar-label">
+                        {% if store.picture %}
+                            <img src="{{ store.picture.url }}" alt="Store Picture" class="avatar-img">
+                        {% else %}
+                            <div class="avatar-placeholder">
+                                <img src="{% static 'icons/profile.png' %}" alt="Default Avatar" class="avatar-default-icon">
+                            </div>
+                        {% endif %}
+                    </label>
+                    <input type="file" id="id_picture" name="picture" accept=".png,.jpg,.jpeg" style="display: none;">
+                    <span class="change-image-text">Change Image</span>
+                    <span class="store-rating">{{ store.rating }}/5.0</span>
+                    <span class="follower-count">0 Followers</span>
+                </div>
+
+                <button type="submit" class="btn-save">SAVE CHANGES</button>
+
+                <form action="{% url 'account_management:logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">LOG OUT</button>
+                </form>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="profile-right">
+                <p class="public-note">*These fields are displayed on your public profile.</p>
+
+                <!-- Store Name -->
+                <div class="field-group">
+                    <label class="field-label">Store Name*</label>
+                    <input type="text" name="name" value="{{ store.name }}" class="text-input">
+                    {% if store_form.name.errors %}
+                        <span class="field-error">{{ store_form.name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="field-group">
+                    <label class="field-label">Description*</label>
+                    <textarea name="description" class="textarea-input" rows="3">{{ store.description }}</textarea>
+                    {% if store_form.description.errors %}
+                        <span class="field-error">{{ store_form.description.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Full Name & Date of Birth -->
+                <div class="field-row two-col">
+                    <div class="field-group">
+                        <label class="field-label">Full Name*</label>
+                        <div class="name-inputs">
+                            <input type="text" name="first_name" value="{{ request.user.first_name }}" class="text-input" placeholder="First Name">
+                            <input type="text" name="last_name" value="{{ request.user.last_name }}" class="text-input" placeholder="Last Name">
+                        </div>
+                        {% if user_form.first_name.errors %}
+                            <span class="field-error">{{ user_form.first_name.errors.0 }}</span>
+                        {% endif %}
+                        {% if user_form.last_name.errors %}
+                            <span class="field-error">{{ user_form.last_name.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label">Date of Birth</label>
+                        <span class="field-static">
+                            {% if request.user.birthdate %}
+                                {{ request.user.birthdate|date:"m/d/Y" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Email & Phone -->
+                <div class="field-row two-col">
+                    <div class="field-group">
+                        <label class="field-label">
+                            Email Address
+                            <button type="button" class="edit-toggle" data-target="email-field">Edit</button>
+                        </label>
+                        <span class="field-static" id="email-display">{{ masked_email }}</span>
+                        <input type="email" id="email-field" name="email" value="{{ request.user.email }}" class="text-input hidden-field">
+                        {% if user_form.email.errors %}
+                            <span class="field-error">{{ user_form.email.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label">
+                            Phone Number
+                            <button type="button" class="edit-toggle" data-target="phone-field">Edit</button>
+                        </label>
+                        <span class="field-static" id="phone-display">{{ masked_phone }}</span>
+                        <input type="text" id="phone-field" name="phone_number" value="{{ request.user.phone_number }}" class="text-input hidden-field">
+                        {% if user_form.phone_number.errors %}
+                            <span class="field-error">{{ user_form.phone_number.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Password & Gender -->
+                <div class="field-row two-col">
+                    <div class="field-group">
+                        <label class="field-label">
+                            Password
+                            <a href="{% url 'account_management:password_reset' %}" class="change-link">Change Password</a>
+                        </label>
+                        <span class="field-static">••••••••••••</span>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label">Gender*</label>
+                        <select name="gender" class="select-input">
+                            <option value="">— Select —</option>
+                            {% for value, label in user_form.fields.gender.choices %}
+                                {% if value %}
+                                    <option value="{{ value }}" {% if request.user.gender == value %}selected{% endif %}>{{ label }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if user_form.gender.errors %}
+                            <span class="field-error">{{ user_form.gender.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <!-- My Transaction History -->
+    <a href="{% url 'marketplace:transaction-history' %}" class="history-row">
+        <span>My Transaction History</span>
+        <span class="arrow">&#8250;</span>
+    </a>
+
+</div>
+
+<script>
+    document.querySelectorAll('.edit-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var targetId = this.dataset.target;
+            var input = document.getElementById(targetId);
+            var display = document.getElementById(targetId.replace('-field', '-display'));
+            var isHidden = input.classList.contains('hidden-field');
+
+            if (isHidden) {
+                input.classList.remove('hidden-field');
+                if (display) display.style.display = 'none';
+                this.textContent = 'Cancel';
+            } else {
+                input.classList.add('hidden-field');
+                if (display) display.style.display = '';
+                this.textContent = 'Edit';
+            }
+        });
+    });
+
+    document.getElementById('id_picture').addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var label = document.querySelector('.avatar-label');
+            label.innerHTML = '<img src="' + e.target.result + '" alt="Store Picture" class="avatar-img">';
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+{% endblock %}
