@@ -1,4 +1,4 @@
-from .forms import UserProfileForm
+from .forms import UserProfileForm, BuyerProfileForm, SellerUserForm, SellerStoreForm
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
@@ -48,9 +48,6 @@ class RegisterView(FormView):
         # Pass the user id via session so the verify view knows who to verify
         self.request.session['verify_user_id'] = user.id
         return redirect('account_management:verify_email')
-
-
-class VerifyEmailView(FormView):
     template_name = 'registration/verify_email.html'
 
     def _get_pending_user(self):
@@ -121,7 +118,6 @@ class VerifyEmailView(FormView):
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
-<<<<<<< feat/profile-pages
 
 
 @login_required
@@ -208,5 +204,3 @@ def public_seller_profile(request, pk):
         'store': store,
         'products': products,
     })
-=======
->>>>>>> main
