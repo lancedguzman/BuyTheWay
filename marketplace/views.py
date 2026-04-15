@@ -5,6 +5,13 @@ from .models import Product, Cart, Order
 from .forms import ProductForm, CheckoutForm, StorePaymentForm
 from watson import search
 
+def count_cart_items(user):
+    """Helper function to count the total number of items in a buyer's cart."""
+    if user.is_authenticated and user.user_type == 'B':
+        cart = user.cart_buyer.select_related('product')
+        return sum(item.quantity for item in cart)
+    return 0
+
 @login_required
 def checkout_view(request):
     """View for the checkout page."""
@@ -116,8 +123,11 @@ def marketplace_view(request):
                       { 'products' : search_results})
 
     products = Product.objects.all()
+
+    result = {'products': products}
+    result['cart_size'] =  count_cart_items(request.user)
     return render(request, 'marketplace.html',
-                  {'products': products})
+                  result)
 
 
 @login_required
@@ -125,7 +135,7 @@ def product_view(request, pk):
     """View for the product page."""
     if request.method == 'GET':
         product = get_object_or_404(Product, pk=pk)
-        return render(request, 'product_view.html', {'product': product})
+        return render(request, 'product_view.html', {'product': product, 'cart_size': count_cart_items(request.user)})
 
     # add product to cart, if its not there yet
     if request.method == 'POST':
@@ -261,7 +271,8 @@ def order_detail(request, id):
     status = order.get_status_display()
     return render(request, 'buyer_order_detail.html', {
         'order': order,
-        'status': status
+        'status': status,
+        "cart_size": count_cart_items(request.user)
     })
 
 
