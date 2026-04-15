@@ -1,4 +1,4 @@
-from .forms import UserProfileForm, BuyerProfileForm, SellerUserForm, SellerStoreForm
+from .forms import UserProfileForm, BuyerProfileForm, SellerUserForm, SellerStoreForm, SellerIDVerificationForm
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
@@ -48,6 +48,9 @@ class RegisterView(FormView):
         # Pass the user id via session so the verify view knows who to verify
         self.request.session['verify_user_id'] = user.id
         return redirect('account_management:verify_email')
+
+
+class VerifyEmailView(FormView):
     template_name = 'registration/verify_email.html'
 
     def _get_pending_user(self):
@@ -186,6 +189,44 @@ def seller_profile(request):
         'masked_phone': mask_phone(user.phone_number) if user.phone_number else '',
     }
     return render(request, 'seller_profile.html', context)
+
+
+@login_required
+def seller_id_verification(request):
+    if request.user.user_type != 'S':
+        raise PermissionDenied("This page is for sellers only.")
+
+    user = request.user
+
+    # If already approved, nothing to do
+    existing = getattr(user, 'id_verification', None)
+    if existing and existing.status == 'approved':
+        messages.info(request, 'Your identity has already been verified.')
+        return redirect('account_management:seller_profile')
+
+    if request.method == 'POST':
+        form = SellerIDVerificationForm(
+            request.POST, request.FILES,
+            instance=existing,
+        )
+        if form.is_valid():
+            verification = form.save(commit=False)
+            verification.seller = user
+            verification.status = 'pending'
+            verification.save()
+            messages.success(
+                request,
+                'Your ID has been submitted and is under review. '
+                'We will notify you once verified.'
+            )
+            return redirect('account_management:seller_profile')
+    else:
+        form = SellerIDVerificationForm(instance=existing)
+
+    return render(request, 'seller_id_verification.html', {
+        'form': form,
+        'existing': existing,
+    })
 
 
 @login_required
