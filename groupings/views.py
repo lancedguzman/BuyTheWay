@@ -31,7 +31,7 @@ def create_group(request, product_pk):
     except (TypeError, ValueError):
         return redirect('marketplace:product_view', pk=product_pk)
 
-    if target_size < 2 or quantity < 1 or not address:
+    if quantity < 2 or quantity < target_size or not address:
         return redirect('marketplace:product_view', pk=product_pk)
 
     with transaction.atomic():

@@ -63,6 +63,9 @@ db.sqlite3-journal
 media/product_images/*
 media/store_images/*
 media/profile_pics/*
+media/chat_attachments/*
+media/seller_selfies/*
+media/seller_id_photos/*
 # Ignore migrations but keep the required __init__.py files
 **/migrations/*.py
 !**/migrations/__init__.py
@@ -212,3 +215,5 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+media/store_qrs/

@@ -1,0 +1,202 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email</title>
+    <link rel="icon" type="image/png" href="{% static 'icons/favicon.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Roboto', sans-serif;
+            background: #fff;
+        }
+
+        /* ── Main card ── */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            padding: 3rem 4rem;
+            text-align: center;
+            max-width: 560px;
+            width: 100%;
+        }
+
+        .card p.intro {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #111;
+            margin-bottom: 0.6rem;
+        }
+
+        .card p.masked-email {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 0.03em;
+            margin-bottom: 1.4rem;
+        }
+
+        .card p.instruction {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111;
+            margin-bottom: 0.8rem;
+        }
+
+        .card p.expiry-notice {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 1.8rem;
+        }
+
+        /* ── OTP inputs ── */
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 0.7rem;
+            margin-bottom: 2rem;
+        }
+
+        .otp-inputs input {
+            width: 52px;
+            height: 64px;
+            border: none;
+            border-radius: 0.75rem;
+            background: #F0F0F0;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #111;
+            outline: none;
+            caret-color: #9B71F7;
+        }
+
+        .otp-inputs input:focus {
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.15), 0 0 0 2px #9B71F7;
+        }
+
+        /* ── Error message ── */
+        .error-msg {
+            color: #e53935;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Submit button ── */
+        button[type="submit"] {
+            background: #CDB8FB;
+            color: #0036BC;
+            border: none;
+            border-radius: 999px;
+            padding: 0.65rem 3rem;
+            font-size: 0.95rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        button[type="submit"]:hover {
+            background: #9B71F7;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- OTP Card -->
+    <main>
+        <div class="card">
+            <p class="intro">We have sent an e-mail to your email address:</p>
+            <p class="masked-email">{{ masked_email }}</p>
+            <p class="instruction">Kindly check your inbox and enter the 6-digit code below:</p>
+            <p class="expiry-notice">This code expires in <strong>10 minutes</strong>.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="error-msg">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="otp-inputs">
+                    {% for i in "123456" %}
+                        <input
+                            type="text"
+                            name="digit_{{ i }}"
+                            id="digit_{{ i }}"
+                            maxlength="1"
+                            inputmode="numeric"
+                            pattern="[0-9]"
+                            autocomplete="off"
+                            required
+                        >
+                    {% endfor %}
+                </div>
+                <button type="submit">SUBMIT</button>
+            </form>
+        </div>
+    </main>
+
+<script>
+    const inputs = Array.from(document.querySelectorAll('.otp-inputs input'));
+
+    inputs.forEach((input, idx) => {
+        input.addEventListener('input', () => {
+            // Strip non-digits
+            input.value = input.value.replace(/\D/g, '').slice(0, 1);
+            if (input.value && idx < inputs.length - 1) {
+                inputs[idx + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && idx > 0) {
+                inputs[idx - 1].focus();
+            }
+        });
+
+        // Handle paste on the first box
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData)
+                .getData('text')
+                .replace(/\D/g, '')
+                .slice(0, 6);
+            pasted.split('').forEach((ch, i) => {
+                if (inputs[i]) inputs[i].value = ch;
+            });
+            const nextEmpty = inputs.findIndex(inp => !inp.value);
+            (inputs[nextEmpty] || inputs[inputs.length - 1]).focus();
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import Product, Cart, Order
+from .models import Product, Cart, Order, Rating
 from .forms import ProductForm, CheckoutForm, StorePaymentForm
 from watson import search
 
@@ -163,7 +164,28 @@ def product_view(request, pk):
             
             # notify user thru message or flash that success!
             return redirect("marketplace:product_view", pk=pk)
+        if action == "checkout":
+            if request.user.user_type != "B":
+                raise PermissionDenied("Only buyers can checkout")
 
+            product = get_object_or_404(Product, pk=pk)
+            qty = int(request.POST.get('quantity'))
+
+            # check if already in cart
+            item, created = Cart.objects.get_or_create(
+                buyer = request.user,
+                product = product,
+                defaults={'quantity': qty}
+            )
+
+            if not created:
+                if item.quantity + qty > product.stock:
+                    # insert flash or warning that stock is not enough
+                    return redirect("marketplace:product_view", pk=pk)
+                item.quantity += qty
+                item.save()
+            
+            return redirect("marketplace:checkout")
 
 @login_required
 def add_product(request):
@@ -312,6 +334,32 @@ def order_history(request):
     return render(request, 'order_history.html',{
         'orders': buyer_orders
     })
+
+@login_required
+def submit_rating(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        rating_value = request.POST.get('rating')
+        review_text = request.POST.get('review')
+
+        order = get_object_or_404(Order, id=order_id, buyer=request.user)
+
+        if hasattr(order, 'review'):
+            messages.error(request, 'You have already rated this order.')
+            return redirect('marketplace:order_history')
+        
+        Rating.objects.create(
+            order=order,
+            product=order.product,
+            buyer=request.user, 
+            rating=rating_value,
+            comment=review_text
+        )
+
+        messages.success(request, 'Thank you! Your rating has been submitted.')
+        return redirect('marketplace:order_history')
+    
+    return redirect("marketplace:order_history")
 
 
 def track_list(request):

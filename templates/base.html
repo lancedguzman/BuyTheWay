@@ -35,20 +35,20 @@
 
             <div class="nav-icons">
                 <a href="{% url 'chat:inbox' %}"><img src="{% static 'icons/chat.png' %}" style="width: 2vw;" alt=""></a>
-                {% if user.user_type == "B" %}
-                <a href="{% url 'marketplace:shopping_cart' %}">
-                    <img src="{% static 'icons/cart.png' %}" style="width: 2.5vw;" alt="">
-                    {% if cart_size != 0 %}
-                        <p class="cart-dot"> {{ cart_size }}</p>
-                    {% endif %}
-                </a>
+                {% if user.is_authenticated and user.user_type == 'B' %}
+                    <a href="{% url 'marketplace:shopping_cart' %}"><img src="{% static 'icons/cart.png' %}" style="width: 2.5vw;" alt=""></a>
                 {% endif %}
-                <form action="{% url 'account_management:logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center;">
-                        <img src="{% static 'icons/profile.png' %}" style="width: 1.8vw; padding-left: .2vw;" alt="Logout">
-                    </button>
-                </form>
+                {% if user.is_authenticated %}
+                    {% if user.user_type == 'S' %}
+                        <a href="{% url 'account_management:seller_profile' %}">
+                            <img src="{% static 'icons/profile.png' %}" style="width: 1.8vw; padding-left: .2vw;" alt="Profile">
+                        </a>
+                    {% else %}
+                        <a href="{% url 'account_management:buyer_profile' %}">
+                            <img src="{% static 'icons/profile.png' %}" style="width: 1.8vw; padding-left: .2vw;" alt="Profile">
+                        </a>
+                    {% endif %}
+                {% endif %}
             </div>
         </nav>
     </header>

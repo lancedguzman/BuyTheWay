@@ -13,7 +13,7 @@
         <br>
         <h4>Expected Date of Arrival: {{ order.product.expected_delivery }}</h4>
         <h4>Delivery Address: {{ order.address }}</h4>
-        <a class="btn" href="">SEE PROFILE</a>
+        <a class="btn" href="{% url 'account_management:public_buyer_profile' order.buyer.pk %}">SEE PROFILE</a>
     </section>
     <section class="order">
         <h3>Order Information</h3>

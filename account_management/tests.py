@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
+from datetime import timedelta
 
 # Use get_user_model() to dynamically retrieve your UserProfile model
 User = get_user_model()
@@ -115,3 +118,130 @@ class UserProfileTests(TestCase):
         )
         expected_string = f"Maria Clara ({self.valid_email})"
         self.assertEqual(str(user), expected_string)
+
+
+class EmailVerificationTokenTests(TestCase):
+    
+    def setUp(self):
+        """Set up base data for email token tests."""
+        self.user = User.objects.create_user(
+            email="tokenuser@buytheway.com",
+            password="SecurePassword123!",
+            user_type='B',
+            phone_number="09123456789"
+        )
+
+    def test_token_creation_and_otp_generation(self):
+        """Test generating an OTP and assigning it to an EmailVerificationToken."""
+        # Import here to avoid circular dependencies if models are heavily linked
+        from .models import EmailVerificationToken 
+
+        otp_code = EmailVerificationToken.generate_otp()
+        self.assertEqual(len(otp_code), 6)
+        self.assertTrue(otp_code.isdigit())
+
+        token = EmailVerificationToken.objects.create(
+            user=self.user,
+            otp=otp_code
+        )
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.otp, otp_code)
+        self.assertFalse(token.is_expired())
+
+    def test_token_expiration(self):
+        """Test that the token correctly reports as expired after 10 minutes."""
+        from .models import EmailVerificationToken
+        
+        token = EmailVerificationToken.objects.create(
+            user=self.user,
+            otp="123456"
+        )
+        
+        # Manually backdate the created_at field by 11 minutes
+        token.created_at = timezone.now() - timedelta(minutes=11)
+        token.save()
+        
+        self.assertTrue(token.is_expired())
+
+    def test_token_string_representation(self):
+        """Test the __str__ method of the EmailVerificationToken."""
+        from .models import EmailVerificationToken
+        
+        token = EmailVerificationToken.objects.create(
+            user=self.user,
+            otp="123456"
+        )
+        expected_string = f"OTP for {self.user.email}"
+        self.assertEqual(str(token), expected_string)
+
+
+class SellerIDVerificationTests(TestCase):
+
+    def setUp(self):
+        """Set up a valid seller user for ID verification tests."""
+        self.seller = User.objects.create_user(
+            email="seller@buytheway.com",
+            password="SecurePassword123!",
+            user_type='S',  # Must be Seller based on limit_choices_to
+            phone_number="09987654321"
+        )
+        
+        # Create dummy images for file validation tests
+        self.valid_image = SimpleUploadedFile(
+            name='test_image.jpg',
+            content=b'\x00\x00\x00\x00',
+            content_type='image/jpeg'
+        )
+        self.invalid_file = SimpleUploadedFile(
+            name='test_document.pdf',
+            content=b'%PDF-1.4...',
+            content_type='application/pdf'
+        )
+
+    def test_seller_id_creation_defaults(self):
+        """Test creating a SellerIDVerification record sets default status to pending."""
+        from .models import SellerIDVerification
+        
+        verification = SellerIDVerification(
+            seller=self.seller,
+            id_type='drivers_license',
+            id_photo=self.valid_image,
+            selfie_with_id=self.valid_image
+        )
+        verification.save()
+        
+        self.assertEqual(verification.status, 'pending')
+        self.assertIsNone(verification.reviewed_at)
+
+    def test_seller_id_file_extension_validation(self):
+        """Test that FileExtensionValidator catches invalid file types like PDFs."""
+        from .models import SellerIDVerification
+        
+        verification = SellerIDVerification(
+            seller=self.seller,
+            id_type='passport',
+            id_photo=self.invalid_file, # Invalid extension
+            selfie_with_id=self.valid_image
+        )
+        
+        with self.assertRaises(ValidationError) as context:
+            # full_clean() executes validators like FileExtensionValidator
+            verification.full_clean()
+            
+        self.assertIn('id_photo', context.exception.message_dict)
+
+    def test_seller_id_string_representation(self):
+        """Test the __str__ method of the SellerIDVerification."""
+        from .models import SellerIDVerification
+        
+        verification = SellerIDVerification(
+            seller=self.seller,
+            id_type='philsys',
+            status='approved',
+            id_photo=self.valid_image,
+            selfie_with_id=self.valid_image
+        )
+        verification.save()
+        
+        expected_string = f"ID Verification — {self.seller.email} [Approved]"
+        self.assertEqual(str(verification), expected_string)

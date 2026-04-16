@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ store.name }} - Buy The Way{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/marketplace.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public_seller_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pub-seller-wrapper">
+
+    <!-- Store Info Card -->
+    <div class="store-card">
+
+        <!-- Left: Avatar + Stats -->
+        <div class="store-left">
+            <div class="avatar-wrap">
+                {% if store.picture %}
+                    <img src="{{ store.picture.url }}" alt="{{ store.name }}" class="avatar-img">
+                {% else %}
+                    <div class="avatar-placeholder">
+                        <img src="{% static 'icons/profile.png' %}" alt="Default" class="avatar-default-icon">
+                    </div>
+                {% endif %}
+            </div>
+            <span class="store-rating">{{ store.rating }}/5.0</span>
+            <span class="follower-count">{{ follower_count }} Followers</span>
+        </div>
+
+        <!-- Right: Store Details + Actions -->
+        <div class="store-right">
+            <h1 class="store-name">{{ store.name }}</h1>
+            <p class="store-description">{{ store.description }}</p>
+
+            <div class="fields-grid">
+                <div class="field-group">
+                    <span class="field-label">Full Name</span>
+                    <span class="field-value">{{ seller.first_name }} {{ seller.last_name }}</span>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Gender</span>
+                    <span class="field-value">{{ seller.get_gender_display|default:"—" }}</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <form action="{% url 'account_management:public_seller_profile' seller.pk %}" method="post" class="follow-form">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn">
+                        {% if follow %}
+                            UNFOLLOW SELLER
+                            <span class="btn-icon">−</span>
+                        {% else %}
+                            FOLLOW SELLER
+                            <span class="btn-icon">+</span>
+                        {% endif %}
+                    </button>
+                </form>
+                <a href="{% url 'chat:inbox' %}" class="action-btn">
+                    CHAT WITH SELLER
+                    <span class="btn-icon">&#8250;</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+        <h2 class="section-heading">Products</h2>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-item{% if forloop.counter > 5 %} hidden{% endif %}">
+                    <a href="{% url 'marketplace:product_view' product.pk %}" class="product-link">
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <span class="price-badge">₱{{ product.price }}</span>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                {% else %}
+                                    <div class="no-image-placeholder">No Image Available</div>
+                                {% endif %}
+                            </div>
+                            <div class="product-info">
+                                <h2 class="product-title">{{ product.name }}</h2>
+                                <div class="product-meta">
+                                    <span class="store-name-badge">{{ product.store.name }}</span>
+                                </div>
+                                <div class="product-meta">
+                                    <span class="product-location">{{ product.location }}</span>
+                                    <span class="stock-stats">{{ product.sold }} Sold</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <p class="empty-state">This seller has no listings yet.</p>
+            {% endfor %}
+        </div>
+
+        {% if products|length > 5 %}
+            <div class="see-more-container">
+                <button class="button" onclick="showMoreProducts()">
+                    SEE MORE LISTINGS
+                    <img src="{% static 'icons/dropdown-button.png' %}" class="dropdown-icon" alt="dropdown">
+                </button>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script src="{% static 'js/marketplace.js' %}"></script>
+{% endblock %}

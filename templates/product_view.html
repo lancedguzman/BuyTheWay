@@ -39,18 +39,22 @@
                     <span class="items-sold">{{ product.sold }} Sold</span>
                 </div>
 
-                <div class="quantity-box">
-                    <div class="quantity-controllers">
-                        <button type="button" class="quantity-btn" onclick="decreaseQty()">
-                            <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
-                        </button>
-                        <span class="quantity-num" id="quantity-display">1</span> 
-                        <button type="button" class="quantity-btn" onclick="increaseQty()">
-                            <img src="{% static 'icons/right-chevron.png'%}" alt="increase" class="arrow-icon">
-                        </button>
+                {% if request.user.user_type == 'B' %}
+
+                    <div class="quantity-box">
+                        <div class="quantity-controllers">
+                            <button type="button" class="quantity-btn" onclick="decreaseQty()">
+                                <img src="{% static 'icons/left-chevron.png'%}" alt="decrease" class="arrow-icon">
+                            </button>
+                            <span class="quantity-num" id="quantity-display">1</span> 
+                            <button type="button" class="quantity-btn" onclick="increaseQty()">
+                                <img src="{% static 'icons/right-chevron.png'%}" alt="increase" class="arrow-icon">
+                            </button>
+                        </div>
+                        <span class="stocks-left"> {{ product.stock }} PCS LEFT</span>
                     </div>
-                    <span class="stocks-left"> {{ product.stock }} PCS LEFT</span>
-                </div>
+
+                {% endif %}
 
             </div>
         </div>
@@ -62,101 +66,110 @@
             </p>
         </section>
 
+
         <section class="info-card seller-box">
             <div class="seller-information">
-                <div class="seller-avatar">
-                    {% if product.store.picture %}
-                        <img src="{{ product.store.picture.url }}" alt="{{ product.store.name }}" class="user-icon">
-                    {% else %}
-                        <img src="{% static 'icons/user-photo.png' %}" alt="{{ product.store.name }}" class="user-icon">
-                    {% endif %}
-                </div>
-                <h2 class="name-of-seller">{{ product.store.name }}</h2>
+                <a href="{% url 'account_management:public_seller_profile' product.store.seller.pk %}">
+                    <div class="seller-avatar" >
+                        {% if product.store.picture %}
+                            <img src="{{ product.store.picture.url }}" alt="{{ product.store.name }}" class="user-icon">
+                        {% else %}
+                            <img src="{% static 'icons/user-photo.png' %}" alt="{{ product.store.name }}" class="user-icon">
+                        {% endif %}
+                    </div>
+                </a>
+                <a href="{% url 'account_management:public_seller_profile' product.store.seller.pk %}" style="text-decoration: none; color:#333"><h2 class="name-of-seller">{{ product.store.name }}</h2></a>
             </div>
             {% if request.user.user_type == 'B' %}
                 <a href="{% url 'chat:start_conversation' product.pk %}" class="chat-seller-btn">CHAT WITH SELLER</a>
             {% endif %}
         </section>
         
-        <section class="purchase-actions">
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="quantity" id="quantity-input" value="1" data-max-stock="{{ product.stock }}">
-                <button class="addToCart-btn" name="action" value="add-to-cart" type="submit">ADD TO CART</button>
-            </form>
+        {% if request.user.user_type == 'S' %}
+            <a href="{% url 'marketplace:edit_product' product.pk %}" class="edit-btn">
+                EDIT LISTING
+            </a>
+        {% else %}
+            <section class="purchase-actions">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" id="quantity-input" value="1" data-max-stock="{{ product.stock }}">
+                    <button class="addToCart-btn" name="action" value="add-to-cart" type="submit">ADD TO CART</button>
+                </form>
 
-            {% if product.group_payment %}
-            <!-- Pasabuy Now splits into Solo and Group when group payments are enabled -->
-            <div class="pasabuy-dropdown-wrapper">
-                <button class="pasabuyNow-btn" id="pasabuyToggle" type="button"
-                        onclick="togglePasabuyMenu()">
+                {% if product.group_payment %}
+                <!-- Pasabuy Now splits into Solo and Group when group payments are enabled -->
+                <div class="pasabuy-dropdown-wrapper">
+                    <button class="pasabuyNow-btn" id="pasabuyToggle" type="button"
+                            onclick="togglePasabuyMenu()">
+                        PASABUY NOW
+                        <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
+                    </button>
+                    <div class="pasabuy-menu" id="pasabuyMenu" style="display:none;">
+                        <!-- Solo: goes straight to checkout via cart -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1" id="solo-qty-input" data-max-stock="{{ product.stock }}">
+                            <button class="pasabuy-option" name="action" value="checkout" type="submit">
+                                Buy Solo
+                            </button>
+                        </form>
+                        <!-- Group: opens the group creation modal -->
+                        <button class="pasabuy-option pasabuy-option--group" type="button"
+                                onclick="openGroupModal()">
+                            Group Discount
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Group creation modal -->
+                <div id="groupModal" class="group-modal-overlay" style="display:none;">
+                    <div class="group-modal-content">
+                        <span class="group-modal-close" onclick="closeGroupModal()">&times;</span>
+                        <h2 class="group-modal-title">Start a Group Order</h2>
+                        <p class="group-modal-sub">
+                            Group price: <strong>₱{{ product.group_price }}</strong> per unit
+                        </p>
+
+                        <form method="POST" action="{% url 'groupings:create_group' product.pk %}">
+                            {% csrf_token %}
+
+                            <label class="group-modal-label" for="gm-quantity">Your Quantity</label>
+                            <div class="quantity-controllers" style="margin-bottom:1rem;">
+                                <button type="button" class="quantity-btn" onclick="changeGroupQty(-1)">
+                                    <img src="{% static 'icons/left-chevron.png' %}" alt="-" class="arrow-icon">
+                                </button>
+                                <span class="quantity-num" id="gm-qty-display">2</span>
+                                <button type="button" class="quantity-btn" onclick="changeGroupQty(1)">
+                                    <img src="{% static 'icons/right-chevron.png' %}" alt="+" class="arrow-icon">
+                                </button>
+                                <input type="hidden" name="quantity" id="gm-quantity" value="2"
+                                    data-max="{{ product.stock }}">
+                            </div>
+
+                            <label class="group-modal-label" for="gm-target">Group Size (min <span id="min-label">2</span>)</label>
+                            <input type="number" name="target_size" id="gm-target"
+                                class="group-modal-input" min="2" max="50" value="2" required>
+
+                            <label class="group-modal-label" for="gm-address">Your Delivery Address</label>
+                            <input type="text" name="address" id="gm-address"
+                                class="group-modal-input" placeholder="Enter your delivery address"
+                                maxlength="255" required>
+
+                            <button type="submit" class="group-modal-submit">CREATE GROUP</button>
+                        </form>
+                    </div>
+                </div>
+
+                {% else %}
+                <!-- No group payment – plain Pasabuy Now -->
+                <button class="pasabuyNow-btn">
                     PASABUY NOW
                     <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
                 </button>
-                <div class="pasabuy-menu" id="pasabuyMenu" style="display:none;">
-                    <!-- Solo: goes straight to checkout via cart -->
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="quantity" value="1" id="solo-qty-input" data-max-stock="{{ product.stock }}">
-                        <button class="pasabuy-option" name="action" value="add-to-cart" type="submit">
-                            Buy Solo
-                        </button>
-                    </form>
-                    <!-- Group: opens the group creation modal -->
-                    <button class="pasabuy-option pasabuy-option--group" type="button"
-                            onclick="openGroupModal()">
-                        Group Discount
-                    </button>
-                </div>
-            </div>
-
-            <!-- Group creation modal -->
-            <div id="groupModal" class="group-modal-overlay" style="display:none;">
-                <div class="group-modal-content">
-                    <span class="group-modal-close" onclick="closeGroupModal()">&times;</span>
-                    <h2 class="group-modal-title">Start a Group Order</h2>
-                    <p class="group-modal-sub">
-                        Group price: <strong>₱{{ product.group_price }}</strong> per unit
-                    </p>
-
-                    <form method="POST" action="{% url 'groupings:create_group' product.pk %}">
-                        {% csrf_token %}
-
-                        <label class="group-modal-label" for="gm-quantity">Your Quantity</label>
-                        <div class="quantity-controllers" style="margin-bottom:1rem;">
-                            <button type="button" class="quantity-btn" onclick="changeGroupQty(-1)">
-                                <img src="{% static 'icons/left-chevron.png' %}" alt="-" class="arrow-icon">
-                            </button>
-                            <span class="quantity-num" id="gm-qty-display">1</span>
-                            <button type="button" class="quantity-btn" onclick="changeGroupQty(1)">
-                                <img src="{% static 'icons/right-chevron.png' %}" alt="+" class="arrow-icon">
-                            </button>
-                            <input type="hidden" name="quantity" id="gm-quantity" value="1"
-                                   data-max="{{ product.stock }}">
-                        </div>
-
-                        <label class="group-modal-label" for="gm-target">Group Size (min 2)</label>
-                        <input type="number" name="target_size" id="gm-target"
-                               class="group-modal-input" min="2" max="50" value="2" required>
-
-                        <label class="group-modal-label" for="gm-address">Your Delivery Address</label>
-                        <input type="text" name="address" id="gm-address"
-                               class="group-modal-input" placeholder="Enter your delivery address"
-                               maxlength="255" required>
-
-                        <button type="submit" class="group-modal-submit">CREATE GROUP</button>
-                    </form>
-                </div>
-            </div>
-
-            {% else %}
-            <!-- No group payment – plain Pasabuy Now -->
-            <button class="pasabuyNow-btn">
-                PASABUY NOW
-                <img src="{% static 'icons/pasabuy-downarrow.png'%}" alt="down-arrow" class="down-arrow">
-            </button>
-            {% endif %}
-        </section>
+                {% endif %}
+            </section>
+        {% endif %}
 
     </main>
 
@@ -186,11 +199,17 @@
     function changeGroupQty(delta) {
         const input = document.getElementById('gm-quantity');
         const display = document.getElementById('gm-qty-display');
+        const group_size = document.getElementById('gm-target');
+        const min_label = document.getElementById('min-label');
+
         const max = parseInt(input.dataset.max, 10);
         let val = parseInt(input.value, 10) + delta;
-        if (val < 1) val = 1;
+        if (val < 2) val = 2;
         if (val > max) val = max;
         input.value = val;
+        min_label.textContent = val;
+        group_size.min = val;
+        group_size.value = Math.max(group_size.value, val);
         display.textContent = val;
     }
     </script>

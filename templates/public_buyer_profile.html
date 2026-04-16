@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ buyer.first_name }} {{ buyer.last_name }} - Buy The Way{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/public_buyer_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pub-profile-wrapper">
+    <div class="pub-profile-card">
+
+        <!-- Left Panel -->
+        <div class="pub-left">
+            <div class="avatar-wrap">
+                {% if buyer.profile_picture %}
+                    <img src="{{ buyer.profile_picture.url }}" alt="{{ buyer.first_name }}" class="avatar-img">
+                {% else %}
+                    <div class="avatar-placeholder">
+                        <img src="{% static 'icons/profile.png' %}" alt="Default Avatar" class="avatar-default-icon">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="pub-right">
+            <div class="fields-grid">
+                <div class="field-group">
+                    <span class="field-label">Full Name</span>
+                    <span class="field-value">{{ buyer.first_name }} {{ buyer.last_name }}</span>
+                </div>
+
+                <div class="field-group">
+                    <span class="field-label">Gender</span>
+                    <span class="field-value">{{ buyer.get_gender_display|default:"—" }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'chat:inbox' %}" class="chat-btn">
+                CHAT WITH BUYER
+                <span class="chat-arrow">&#8250;</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

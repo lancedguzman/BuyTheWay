@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Product(models.Model):
     """Model representing a product in the marketplace."""
@@ -29,7 +29,7 @@ class Product(models.Model):
                                       null=True, blank=True)
     description = models.TextField()
     image = models.ImageField(upload_to='product_images/')
-    rating = models.PositiveIntegerField()
+    # rating = models.PositiveIntegerField()
 
     @property
     def sold(self):
@@ -37,6 +37,18 @@ class Product(models.Model):
         from django.db.models import Sum
         total = self.order_set.aggregate(Sum('quantity'))['quantity__sum']
         return total if total is not None else 0
+    
+    @property
+    def rating(self):
+        """Calculate the average rating dynamically."""
+        from django.db.models import Avg
+        
+        avg = self.reviews.aggregate(Avg('rating'))['rating__avg']
+
+        if avg is not None:
+            return round(avg, 1) 
+        
+        return 0.0
 
     def __str__(self):
         return self.name
@@ -98,7 +110,7 @@ class Store(models.Model):
     """Model representing a store in the marketplace."""
     name = models.CharField(max_length=255)
     description = models.TextField()
-    rating = models.PositiveIntegerField()
+    # rating = models.PositiveIntegerField()
     picture = models.ImageField(upload_to='store_images/', blank=True,
                                 null=True)
     seller = models.OneToOneField('account_management.UserProfile',
@@ -113,6 +125,20 @@ class Store(models.Model):
     bank_qr = models.ImageField(upload_to='store_qrs/bank/', null=True, blank=True, 
                                 help_text="Upload Store Bank Transfer/QRPh QR (.jpg or .png)")
 
+    @property
+    def rating(self):
+        """Calculate the average rating of all products in this store."""
+        from django.db.models import Avg
+        
+        # 'product_set' gets this store's products. 
+        # 'reviews__rating' jumps from the Product to the Rating model and grabs the rating value!
+        avg = self.product_set.aggregate(Avg('reviews__rating'))['reviews__rating__avg']
+        
+        if avg is not None:
+            return round(avg, 1)
+        
+        return 0.0
+    
     def __str__(self):
         return self.name
 
@@ -154,3 +180,18 @@ class Payment(models.Model):
 
     def __str__(self):
         return f'Payment for Order {self.order.id} - Amount: {self.amount} via {self.get_payment_method_display()}'
+
+class Rating(models.Model):   
+    """Model representing a product review left by a buyer for a specific order."""
+        
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='review')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    buyer = models.ForeignKey('account_management.UserProfile', on_delete=models.CASCADE, related_name='reviews')
+        
+        # Restrict rating to be between 1 and 5
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Review: {self.rating}/5 for {self.product.name} (Order {self.order.id})'

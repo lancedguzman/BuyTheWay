@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ID Verification{% endblock %}
+
+{% block stylesheet %}
+<style>
+    /* ── Page wrapper ── */
+    .verification-page {
+        max-width: 680px;
+        margin: 2.5rem auto;
+        padding: 0 1rem 3rem;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* ── Status banner (shown when a submission already exists) ── */
+    .status-banner {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 1.1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    .status-banner.pending  { background: #FFF8E1; color: #795548; border: 1px solid #FFE082; }
+    .status-banner.approved { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+    .status-banner.rejected { background: #FFEBEE; color: #B71C1C; border: 1px solid #EF9A9A; }
+
+    /* ── Form card ── */
+    .form-card {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+        padding: 2rem 2.2rem;
+    }
+
+    /* ── Section labels ── */
+    .field-label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #111;
+        margin-bottom: 0.5rem;
+    }
+
+    /* ── Dropdown ── */
+    .id-type-select {
+        width: 100%;
+        height: 2.8rem;
+        background: #F0F0F0;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0 1rem;
+        font-size: 0.95rem;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.10);
+        appearance: auto;
+        margin-bottom: 1.6rem;
+    }
+
+    /* ── Upload zone ── */
+    .upload-section {
+        margin-bottom: 1.8rem;
+    }
+
+    .upload-zone {
+        position: relative;
+        width: 100%;
+        border: 2.5px dashed #BDBDBD;
+        border-radius: 0.75rem;
+        background: #F5F5F5;
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        transition: border-color 0.2s;
+    }
+
+    .upload-zone:hover { border-color: #9B71F7; }
+
+    .upload-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+
+    .upload-zone .camera-icon {
+        font-size: 3rem;
+        color: #BDBDBD;
+        pointer-events: none;
+    }
+
+    .upload-zone .placeholder-text {
+        font-size: 0.85rem;
+        color: #9E9E9E;
+        margin-top: 0.4rem;
+        pointer-events: none;
+    }
+
+    /* Preview image inside the zone */
+    .upload-zone .preview-img {
+        max-width: 100%;
+        max-height: 210px;
+        object-fit: contain;
+        border-radius: 0.5rem;
+        display: none;
+    }
+
+    /* Upload Photo button below the zone */
+    .upload-btn {
+        background: #F2F2F2;
+        border: none;
+        border-radius: 1vw;            
+        padding: .7vw 1.5vw;;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+        display: block;
+        margin: 0.7rem auto 0;
+    }
+
+    /* ── Errors ── */
+    .field-errors {
+        color: #e53935;
+        font-size: 0.85rem;
+        margin-top: 0.3rem;
+    }
+
+    /* ── Submit button ── */
+    .submit-row {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .submit-btn {
+        background: #CDB8FB;
+        color: #0036BC;
+        border: none;
+        border-radius: 999px;            
+        padding: 0.65rem 3rem;
+        font-size: 0.95rem;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .submit-btn:hover { background: #7c52e0; color: #FFF}
+
+    .submit-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verification-page">
+
+    {% if existing %}
+        <div class="status-banner {{ existing.status }}">
+            {% if existing.status == 'pending' %}
+                &#9203; Your ID submission is under review.
+            {% elif existing.status == 'approved' %}
+                &#10003; Your identity has been verified.
+            {% elif existing.status == 'rejected' %}
+                &#10007; Your submission was rejected.
+                {% if existing.reviewer_notes %}
+                    &mdash; {{ existing.reviewer_notes }}
+                {% endif %}
+                You may resubmit below.
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="status-banner {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not existing or existing.status == 'rejected' %}
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data" id="id-verification-form">
+            {% csrf_token %}
+
+            <!-- Government ID type -->
+            <label class="field-label" for="{{ form.id_type.id_for_label }}">
+                {{ form.id_type.label }}
+            </label>
+            <select name="{{ form.id_type.html_name }}"
+                    id="{{ form.id_type.id_for_label }}"
+                    class="id-type-select"
+                    required>
+                <option value="" disabled {% if not form.id_type.value %}selected{% endif %}></option>
+                {% for val, display in form.fields.id_type.choices %}
+                    <option value="{{ val }}"
+                        {% if form.id_type.value == val %}selected{% endif %}>
+                        {{ display }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.id_type.errors %}
+                <div class="field-errors">{{ form.id_type.errors }}</div>
+            {% endif %}
+
+            <!-- ID photo -->
+            <div class="upload-section">
+                <label class="field-label">Upload the information side of a valid Government ID here.</label>
+                <div class="upload-zone" id="id-photo-zone">
+                    <input type="file"
+                           name="{{ form.id_photo.html_name }}"
+                           id="{{ form.id_photo.id_for_label }}"
+                           accept=".png,.jpg,.jpeg"
+                           onchange="previewImage(this, 'id-photo-preview', 'id-photo-placeholder')">
+                    <div id="id-photo-placeholder">
+                        <div class="camera-icon">&#128247;</div>
+                        <div class="placeholder-text">PNG, JPG or JPEG</div>
+                    </div>
+                    <img id="id-photo-preview" class="preview-img" src="#" alt="ID preview">
+                </div>
+                <button type="button" class="upload-btn"
+                        onclick="document.getElementById('{{ form.id_photo.id_for_label }}').click()">
+                    Upload Photo
+                </button>
+                {% if form.id_photo.errors %}
+                    <div class="field-errors">{{ form.id_photo.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Selfie with ID -->
+            <div class="upload-section">
+                <label class="field-label">Upload a selfie with your valid Government ID here.</label>
+                <div class="upload-zone" id="selfie-zone">
+                    <input type="file"
+                           name="{{ form.selfie_with_id.html_name }}"
+                           id="{{ form.selfie_with_id.id_for_label }}"
+                           accept=".png,.jpg,.jpeg"
+                           onchange="previewImage(this, 'selfie-preview', 'selfie-placeholder')">
+                    <div id="selfie-placeholder">
+                        <div class="camera-icon">&#128247;</div>
+                        <div class="placeholder-text">PNG, JPG or JPEG</div>
+                    </div>
+                    <img id="selfie-preview" class="preview-img" src="#" alt="Selfie preview">
+                </div>
+                <button type="button" class="upload-btn"
+                        onclick="document.getElementById('{{ form.selfie_with_id.id_for_label }}').click()">
+                    Upload Photo
+                </button>
+                {% if form.selfie_with_id.errors %}
+                    <div class="field-errors">{{ form.selfie_with_id.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="submit-row">
+                <button type="submit" class="submit-btn">SUBMIT</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function previewImage(input, previewId, placeholderId) {
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

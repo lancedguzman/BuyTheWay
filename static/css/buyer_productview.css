@@ -306,6 +306,7 @@ button {
     border-radius: 20px;
     font-weight: 900;
     cursor: pointer;
+    text-decoration: none;
 
 }
 
@@ -348,6 +349,26 @@ button {
     gap: 10px;
 
 }
+
+.edit-btn {
+
+    background-color: var(--primary-blue, #3b82f6);
+    color: #ffffff;
+    font-size: 1.375rem;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    text-decoration: none;
+    margin: 0 auto
+
+}
+
 
 .down-arrow {
 
