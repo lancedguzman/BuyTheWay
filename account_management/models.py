@@ -170,3 +170,26 @@ class SellerIDVerification(models.Model):
 
     def __str__(self):
         return f"ID Verification — {self.seller.email} [{self.get_status_display()}]"
+
+class Follow(models.Model):
+    """"Model to represent a buyer following a seller."""
+    
+    buyer = models.ForeignKey(
+        'account_management.UserProfile',
+        on_delete=models.CASCADE,
+        related_name='following',
+        limit_choices_to={'user_type': 'B'},
+    )
+    seller = models.ForeignKey(
+        'account_management.UserProfile',
+        on_delete=models.CASCADE,
+        related_name='followers',
+        limit_choices_to={'user_type': 'S'},
+    )
+    followed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('buyer', 'seller')
+
+    def __str__(self):
+        return f"{self.buyer.email} follows {self.seller.email}"

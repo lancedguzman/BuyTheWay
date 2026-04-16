@@ -26,7 +26,7 @@
                 {% endif %}
             </div>
             <span class="store-rating">{{ store.rating }}/5.0</span>
-            <span class="follower-count">0 Followers</span>
+            <span class="follower-count">{{ follower_count }} Followers</span>
         </div>
 
         <!-- Right: Store Details + Actions -->
@@ -46,10 +46,18 @@
             </div>
 
             <div class="action-buttons">
-                <button type="button" class="action-btn">
-                    FOLLOW SELLER
-                    <span class="btn-icon">+</span>
-                </button>
+                <form action="{% url 'account_management:public_seller_profile' seller.pk %}" method="post" class="follow-form">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn">
+                        {% if follow %}
+                            UNFOLLOW SELLER
+                            <span class="btn-icon">−</span>
+                        {% else %}
+                            FOLLOW SELLER
+                            <span class="btn-icon">+</span>
+                        {% endif %}
+                    </button>
+                </form>
                 <a href="{% url 'chat:inbox' %}" class="action-btn">
                     CHAT WITH SELLER
                     <span class="btn-icon">&#8250;</span>

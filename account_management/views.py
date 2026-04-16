@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import UserProfile, EmailVerificationToken
+from .models import UserProfile, EmailVerificationToken, Follow
 
 # Create your views here.
 
@@ -244,10 +244,23 @@ def public_buyer_profile(request, pk):
 @login_required
 def public_seller_profile(request, pk):
     seller = get_object_or_404(UserProfile, pk=pk, user_type='S')
+    is_following = Follow.objects.filter(buyer=request.user, seller=seller).exists()
+    follower_count = Follow.objects.filter(seller=seller).count()
     store = seller.store
     products = store.product_set.all()
+    
+    if request.method == 'POST':
+        if is_following:
+            Follow.objects.filter(buyer=request.user, seller=seller).delete()
+        else:
+            Follow.objects.create(buyer=request.user, seller=seller)
+
+        return redirect('account_management:public_seller_profile', pk=seller.pk)
+    
     return render(request, 'public_seller_profile.html', {
         'seller': seller,
         'store': store,
         'products': products,
+        'follow': is_following,
+        'follower_count': follower_count,
     })
