@@ -66,8 +66,10 @@
 }
 
 .avatar-label {
-    cursor: pointer;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vw;
 }
 
 .avatar-img {
@@ -76,6 +78,7 @@
     border-radius: 50%;
     object-fit: cover;
     background-color: #7aaff5;
+    cursor: pointer;
 }
 
 .avatar-placeholder {
@@ -86,6 +89,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .avatar-default-icon {

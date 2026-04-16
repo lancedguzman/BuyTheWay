@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Order, Store, Payment, Cart
+from .models import Product, Order, Store, Payment, Cart, Rating
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -10,7 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
                     'price', 'stock', 
                     'rating')
     search_fields = ('name', 'category')
-    list_filter = ('category', 'rating')
+    list_filter = ('category',)
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -18,10 +18,10 @@ class OrderAdmin(admin.ModelAdmin):
     model = Order
 
     list_display = ('product', 'date',
-                    'address')
+                    'address', 'status')
     search_fields = ('product__name',
                      'address')
-    list_filter = ('date',)
+    list_filter = ('date', 'status')
 
 
 class StoreAdmin(admin.ModelAdmin):
@@ -30,7 +30,7 @@ class StoreAdmin(admin.ModelAdmin):
                     'rating', 'has_gcash',
                     'has_maya', 'has_bank')
     search_fields = ('name', 'seller__username')
-    list_filter = ('rating',)
+    list_filter = ('seller',)
 
     # Custom methods to quickly see if a store has uploaded their QRs
     def has_gcash(self, obj):
@@ -62,8 +62,15 @@ class PaymentAdmin(admin.ModelAdmin):
     search_fields = ('order__id',)
     list_filter = ('payment_method', 'timestamp')
 
+class RatingAdmin(admin.ModelAdmin):
+    """Admin interface for the Rating (Review) model."""
+    list_display = ('product', 'buyer', 'rating', 'order', 'created_at')
+    search_fields = ('product__name', 'buyer__username', 'comment')
+    list_filter = ('rating', 'created_at')
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Store, StoreAdmin)
 admin.site.register(Cart, CartAdmin)
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(Rating, RatingAdmin)

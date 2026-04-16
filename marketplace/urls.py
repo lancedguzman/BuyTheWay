@@ -15,5 +15,6 @@ urlpatterns = [
     path('transaction-detail/<int:pk>/', views.transaction_detail, name='transaction_detail'),
     path('store/payments/edit/', views.edit_store_payments, name='edit_store_payments'),
     path('orders/', views.order_history, name='order_history'),
-    path('track/', views.track_list, name='track_list')
+    path('track/', views.track_list, name='track_list'),
+    path('submit-rating/', views.submit_rating, name='submit_rating'),
 ]

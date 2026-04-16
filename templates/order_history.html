@@ -4,7 +4,7 @@
 {% block title %}My Order History - Buy The Way{% endblock %}
 
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static 'css/order_history.css' %}">
+    <link rel="stylesheet" href="{% static 'css/order_history.css' %}?v=3">
 {% endblock %}
 
 {% block content %}
@@ -57,7 +57,11 @@
 
                         <div class="action-col">
                             {% if order.status == 'CP' %}
-                                <button class="rate-btn">RATE</button>
+                                {% if not order.review %}
+                                    <button class="rate-btn" onclick="event.preventDefault(); event.stopPropagation(); openRatingModal('{{ order.id }}');">RATE</button>
+                                {% else %}
+                                    <span style="color: #28a745; font-weight: 900; font-size: 0.9vw; display: flex; align-items: center;">★ Rated</span>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -77,5 +81,30 @@
     </div>
 </div>
 
-<script src="{% static 'js/order_history.js' %}"></script>
+<div id="ratingModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeRatingModal()">&times;</span>
+        
+        <h3 style="margin-top: 0; margin-bottom: 1.5vw;">Rate Your Order</h3>
+        
+        <form method="POST" action="{% url 'marketplace:submit_rating' %}">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" id="modalOrderId" value="">
+            
+            <div class="field-group" style="margin-bottom: 1.5vw;">
+                <label class="field-label">Rating (1-5)</label>
+                <input type="number" name="rating" class="text-input" min="1" max="5" required>
+            </div>
+            
+            <div class="field-group" style="margin-bottom: 2vw;">
+                <label class="field-label">Review</label>
+                <textarea name="review" class="text-input" rows="4" placeholder="How was the product?" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-save">Submit Rating</button>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/order_history.js' %}?v=1"></script>
 {% endblock %}
