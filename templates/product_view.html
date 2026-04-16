@@ -139,15 +139,15 @@
                                 <button type="button" class="quantity-btn" onclick="changeGroupQty(-1)">
                                     <img src="{% static 'icons/left-chevron.png' %}" alt="-" class="arrow-icon">
                                 </button>
-                                <span class="quantity-num" id="gm-qty-display">1</span>
+                                <span class="quantity-num" id="gm-qty-display">2</span>
                                 <button type="button" class="quantity-btn" onclick="changeGroupQty(1)">
                                     <img src="{% static 'icons/right-chevron.png' %}" alt="+" class="arrow-icon">
                                 </button>
-                                <input type="hidden" name="quantity" id="gm-quantity" value="1"
+                                <input type="hidden" name="quantity" id="gm-quantity" value="2"
                                     data-max="{{ product.stock }}">
                             </div>
 
-                            <label class="group-modal-label" for="gm-target">Group Size (min 2)</label>
+                            <label class="group-modal-label" for="gm-target">Group Size (min <span id="min-label">2</span>)</label>
                             <input type="number" name="target_size" id="gm-target"
                                 class="group-modal-input" min="2" max="50" value="2" required>
 
@@ -199,11 +199,17 @@
     function changeGroupQty(delta) {
         const input = document.getElementById('gm-quantity');
         const display = document.getElementById('gm-qty-display');
+        const group_size = document.getElementById('gm-target');
+        const min_label = document.getElementById('min-label');
+
         const max = parseInt(input.dataset.max, 10);
         let val = parseInt(input.value, 10) + delta;
-        if (val < 1) val = 1;
+        if (val < 2) val = 2;
         if (val > max) val = max;
         input.value = val;
+        min_label.textContent = val;
+        group_size.min = val;
+        group_size.value = Math.max(group_size.value, val);
         display.textContent = val;
     }
     </script>
