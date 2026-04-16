@@ -1,6 +1,7 @@
 function increaseQty() {
     const display = document.getElementById("quantity-display");
     const input = document.getElementById("quantity-input");
+    const checkoutqtyInput = document.getElementById("solo-qty-input");
     
     if (!input || !display) return;
 
@@ -12,6 +13,7 @@ function increaseQty() {
         value++;
         input.value = value;
         display.innerText = value;
+        checkoutqtyInput.value = value;
     }
     console.log("Current Qty:", input.value);
 }
@@ -19,6 +21,7 @@ function increaseQty() {
 function decreaseQty() {
     const display = document.getElementById("quantity-display");
     const input = document.getElementById("quantity-input");
+    const checkoutqtyInput = document.getElementById("solo-qty-input");
     
     if (!input || !display) return;
 
@@ -28,6 +31,7 @@ function decreaseQty() {
         value--;
         input.value = value;
         display.innerText = value;
+        checkoutqtyInput.value = value;
     }
     console.log("Current Qty:", input.value);
 }

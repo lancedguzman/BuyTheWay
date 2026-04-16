@@ -110,7 +110,7 @@
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="quantity" value="1" id="solo-qty-input" data-max-stock="{{ product.stock }}">
-                            <button class="pasabuy-option" name="action" value="add-to-cart" type="submit">
+                            <button class="pasabuy-option" name="action" value="checkout" type="submit">
                                 Buy Solo
                             </button>
                         </form>
