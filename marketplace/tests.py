@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.db.utils import IntegrityError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from decimal import Decimal
 from .models import Product, Order, Store, Payment
 
@@ -31,12 +32,19 @@ class MarketplaceModelsTest(TestCase):
             phone_number='09987654321'
         )
 
+        self.gcash_qr =  SimpleUploadedFile(name='gcash.jpg', content=b'test', content_type='image/jpeg')
+        self.maya_qr = SimpleUploadedFile(name='maya.jpg', content=b'test', content_type='image/jpeg')
+        self.bank_qr = SimpleUploadedFile(name='bank.jpg', content=b'test', content_type='image/jpeg')
+
         # Create a Store
         self.store = Store.objects.create(
             name='Tech Haven',
             description='The best tech store.',
             rating=5,
-            seller=self.seller_profile
+            seller=self.seller_profile,
+            gcash_qr = self.gcash_qr,
+            maya_qr = self.maya_qr,
+            bank_qr = self.bank_qr
         )
 
         # Create a Base Product
@@ -54,18 +62,40 @@ class MarketplaceModelsTest(TestCase):
         )
 
     # --- Store Tests ---
-    
+
+    def test_store_fields(self):
+        """Test that the Store fields are correctly set."""
+        self.assertEqual(self.store.name, 'Tech Haven')
+        self.assertEqual(self.store.description, 'The best tech store.')
+        self.assertEqual(self.store.rating, 5)
+        self.assertEqual(self.store.seller, self.seller_profile)
+        self.assertIn("gcash",  self.store.gcash_qr.name)
+        self.assertIn("maya",  self.store.maya_qr.name)
+        self.assertIn("bank", self.store.bank_qr.name)
+
     def test_store_str_representation(self):
         """Test the __str__ method of the Store model."""
         self.assertEqual(str(self.store), 'Tech Haven')
 
     # --- Product Tests ---
 
+    def test_product_fields(self):
+        """Test that the Product fields are correctly set."""
+        self.assertEqual(self.product.name, 'Wireless Mouse')
+        self.assertEqual(self.product.store, self.store)
+        self.assertEqual(self.product.location, 'Warehouse A')
+        self.assertEqual(self.product.category, 'T')
+        self.assertEqual(self.product.price, 25.00)
+        self.assertEqual(self.product.stock, 100)
+        self.assertFalse(self.product.group_payment)
+        self.assertEqual(self.product.description, 'A great wireless mouse.')
+        self.assertEqual(self.product.rating, 4)
+
     def test_product_str_representation(self):
         """Test the __str__ method of the Product model."""
         self.assertEqual(str(self.product), 'Wireless Mouse')
 
-    def test_product_clean_valid(self):
+    def test_group_price_valid(self):
         """Test clean() passes when group_payment is True and group_price is set."""
         self.product.group_payment = True
         self.product.group_price = 20.00
@@ -76,7 +106,7 @@ class MarketplaceModelsTest(TestCase):
         except ValidationError:
             self.fail("product.clean() raised ValidationError unexpectedly!")
 
-    def test_product_clean_invalid(self):
+    def test_group_price_invalid(self):
         """Test clean() raises ValidationError when group_payment is False but group_price is set."""
         self.product.group_payment = False
         self.product.group_price = 20.00
