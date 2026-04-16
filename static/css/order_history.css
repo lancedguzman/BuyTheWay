@@ -173,3 +173,92 @@
     color: #888;
     font-weight: bold;
 }
+
+/* Rating Modal */
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2vw;
+    border-radius: 1vw;
+    width: 30vw;
+    min-width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1vw;
+    right: 1.5vw;
+    font-size: 1.5vw;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #222;
+}
+
+.modal-content .field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content .field-label {
+    font-size: 0.85vw;
+    font-weight: 700;
+    color: #222;
+    display: block;
+    margin-bottom: 0.4vw;
+}
+
+.modal-content .text-input {
+    border: none;
+    border-bottom: 1.5px solid #ccc;
+    outline: none;
+    font-size: 0.9vw;
+    color: #222;
+    padding: 0.5vw 0;
+    background: transparent;
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    transition: border-color 0.2s;
+    resize: vertical; 
+}
+
+.modal-content .text-input:focus { 
+    border-bottom-color: #3D70EF; 
+}
+
+.modal-content .btn-save {
+    width: 100%;
+    background-color: #3D70EF;
+    color: #fff;
+    border: none;
+    border-radius: 2vw;
+    padding: 0.8vw 0;
+    font-size: 0.95vw;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1vw;
+}
+
+.modal-content .btn-save:hover { 
+    background-color: #2b5bc7; 
+}
