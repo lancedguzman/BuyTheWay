@@ -1,6 +1,7 @@
 from .forms import UserProfileForm, BuyerProfileForm, SellerUserForm, SellerStoreForm, SellerIDVerificationForm
 from django.views.generic import FormView
 from django.urls import reverse_lazy
+from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -115,6 +116,11 @@ class VerifyEmailView(FormView):
         token.delete()
         del request.session['verify_user_id']
 
+        if user.user_type == 'S':
+            login(request, user)
+            messages.success(request, 'Email verified! Please complete your ID verification.')
+            return redirect('account_management:id_verification')
+
         messages.success(request, 'Email verified! You can now log in.')
         return redirect('account_management:login')
 
@@ -219,7 +225,7 @@ def seller_id_verification(request):
                 'Your ID has been submitted and is under review. '
                 'We will notify you once verified.'
             )
-            return redirect('account_management:seller_profile')
+            return redirect('account_management:id_verification')
     else:
         form = SellerIDVerificationForm(instance=existing)
 
