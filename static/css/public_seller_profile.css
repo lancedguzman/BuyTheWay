@@ -123,6 +123,12 @@
 }
 
 /* ── Action buttons ── */
+.follow-form {
+    margin: 0;
+    display: flex;
+    justify-content: stretch;
+}
+
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -146,6 +152,10 @@
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     transition: opacity 0.2s;
+}
+
+button.action-btn {
+    flex: 1;
 }
 
 .action-btn:hover { opacity: 0.88; }
