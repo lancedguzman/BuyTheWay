@@ -198,7 +198,6 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.store = request.user.store
-            product.rating = 0  
             product.save()
             return redirect('marketplace:product_view', pk=product.pk)
     else:
