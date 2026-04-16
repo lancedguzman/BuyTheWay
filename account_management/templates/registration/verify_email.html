@@ -62,6 +62,12 @@
             font-size: 1rem;
             font-weight: 500;
             color: #111;
+            margin-bottom: 0.8rem;
+        }
+
+        .card p.expiry-notice {
+            font-size: 0.9rem;
+            color: #777;
             margin-bottom: 1.8rem;
         }
 
@@ -129,6 +135,7 @@
             <p class="intro">We have sent an e-mail to your email address:</p>
             <p class="masked-email">{{ masked_email }}</p>
             <p class="instruction">Kindly check your inbox and enter the 6-digit code below:</p>
+            <p class="expiry-notice">This code expires in <strong>10 minutes</strong>.</p>
 
             {% if messages %}
                 {% for message in messages %}
