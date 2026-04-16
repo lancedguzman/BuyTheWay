@@ -66,12 +66,6 @@
     opacity: 0.85;
 }
 
-.following-count {
-    color: #fff;
-    font-size: 0.85vw;
-    font-weight: 600;
-}
-
 /* ── Right panel ── */
 .pub-right {
     flex: 1;
