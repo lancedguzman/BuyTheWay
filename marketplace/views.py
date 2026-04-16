@@ -163,7 +163,28 @@ def product_view(request, pk):
             
             # notify user thru message or flash that success!
             return redirect("marketplace:product_view", pk=pk)
+        if action == "checkout":
+            if request.user.user_type != "B":
+                raise PermissionDenied("Only buyers can checkout")
 
+            product = get_object_or_404(Product, pk=pk)
+            qty = int(request.POST.get('quantity'))
+
+            # check if already in cart
+            item, created = Cart.objects.get_or_create(
+                buyer = request.user,
+                product = product,
+                defaults={'quantity': qty}
+            )
+
+            if not created:
+                if item.quantity + qty > product.stock:
+                    # insert flash or warning that stock is not enough
+                    return redirect("marketplace:product_view", pk=pk)
+                item.quantity += qty
+                item.save()
+            
+            return redirect("marketplace:checkout")
 
 @login_required
 def add_product(request):
