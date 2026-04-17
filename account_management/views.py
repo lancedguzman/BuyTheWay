@@ -187,12 +187,15 @@ def seller_profile(request):
         user_form = SellerUserForm(instance=user)
         store_form = SellerStoreForm(instance=store)
 
+    followers = Follow.objects.filter(seller=user).count()
+
     context = {
         'user_form': user_form,
         'store_form': store_form,
         'store': store,
         'masked_email': mask_email(user.email),
         'masked_phone': mask_phone(user.phone_number) if user.phone_number else '',
+        'followers': followers,
     }
     return render(request, 'seller_profile.html', context)
 

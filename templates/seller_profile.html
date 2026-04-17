@@ -35,7 +35,7 @@
                 <input type="file" id="id_picture" name="picture" accept=".png,.jpg,.jpeg" style="display: none;">
                 <span class="change-image-text">Change Image</span>
                 <span class="store-rating">{{ store.rating }}/5.0</span>
-                <span class="follower-count">0 Followers</span>
+                <span class="follower-count">{{ followers }} Follower{% if followers != 1 %}s{% endif %}</span>
             </div>
 
             <button type="submit" class="btn-save" form="seller-profile-form">SAVE CHANGES</button>
