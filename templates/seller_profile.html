@@ -31,9 +31,11 @@
                             <img src="{% static 'icons/profile.png' %}" alt="Default Avatar" class="avatar-default-icon">
                         </div>
                     {% endif %}
+
+                    <span class="change-image-text">Change Image</span>
                 </label>
                 <input type="file" id="id_picture" name="picture" accept=".png,.jpg,.jpeg" style="display: none;">
-                <span class="change-image-text">Change Image</span>
+                
                 <span class="store-rating">{{ store.rating }}/5.0</span>
                 <span class="follower-count">0 Followers</span>
             </div>

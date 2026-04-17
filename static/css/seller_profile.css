@@ -62,12 +62,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.45vw;
+    gap: 0.5vw;
 }
 
 .avatar-label {
-    cursor: pointer;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vw;
 }
 
 .avatar-img {
@@ -75,17 +77,19 @@
     height: 8vw;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #e07050;
+    background-color: #7aaff5;
+    cursor: pointer;
 }
 
 .avatar-placeholder {
     width: 8vw;
     height: 8vw;
     border-radius: 50%;
-    background-color: #e07050;
+    background-color: #7aaff5;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .avatar-default-icon {
