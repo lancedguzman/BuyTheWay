@@ -91,7 +91,6 @@ class UserProfileForm(UserCreationForm):
                 Store.objects.create(
                     name=store_name,
                     description=f'Welcome to {store_name}!',
-                    rating=0,
                     seller=user,
                 )
 
