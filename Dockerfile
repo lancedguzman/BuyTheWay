@@ -26,10 +26,10 @@ COPY . /app/
 # Expose port 8000 for the Django server
 EXPOSE 8000
 
-# Copy and run entrypoint
-COPY entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
+RUN python manage.py migrate
+RUN python manage.py installwatson
+RUN python manage.py buildwatson
+RUN python manage.py collectstatic --noinput
+RUN exec gunicorn core.wsgi:application --bind 0.0.0.0:8000
 RUN pip install gunicorn
 
-EXPOSE 8000
-CMD ["/app/entrypoint.sh"]
