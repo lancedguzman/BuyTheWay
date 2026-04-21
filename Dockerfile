@@ -16,20 +16,14 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install them
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt gunicorn
 
-# Copy the rest of the Django project code into the container
-COPY . /app/
+COPY . .
 
-# Expose port 8000 for the Django server
+# Collect static at build time (OK)
+RUN python manage.py collectstatic --noinput
+
 EXPOSE 8000
 
-RUN python manage.py migrate
-RUN python manage.py installwatson
-RUN python manage.py buildwatson
-RUN python manage.py collectstatic --noinput
-RUN exec gunicorn core.wsgi:application --bind 0.0.0.0:8000
-RUN pip install gunicorn
-
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
