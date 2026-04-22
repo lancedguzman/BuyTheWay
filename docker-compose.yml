@@ -20,6 +20,7 @@ services:
       - .env
     restart: unless-stopped
 
-volumes:
-  static_volume:
-  media_volume:
+    volumes:
+      - .:/app
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
