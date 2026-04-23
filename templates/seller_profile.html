@@ -42,6 +42,10 @@
 
             <button type="submit" class="btn-save" form="seller-profile-form">SAVE CHANGES</button>
 
+            <a href="/store/payments/edit" class="btn-save" style="display: block; text-align: center; text-decoration: none;">
+                UPDATE STORE QRS
+            </a>
+
             <form action="{% url 'account_management:logout' %}" method="post" class="logout-form">
                 {% csrf_token %}
                 <button type="submit" class="btn-logout">LOG OUT</button>
